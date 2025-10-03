@@ -152,6 +152,16 @@
     .btn.github .gh-icon{ width:20px; height:20px; display:inline-block; flex-shrink:0; color:#c9d1d9; }
     .btn.github span{white-space:nowrap;}
 
+    /* === LinkedIn button theme === */
+    .btn.linkedin{
+      background:#0a66c2;                 /* LinkedIn blue */
+      color:#ffffff;
+      border:1px solid rgba(255,255,255,.18);
+      box-shadow:0 0 18px rgba(0,229,255,.18), 0 0 28px rgba(255,45,223,.14);
+    }
+    .btn.linkedin:hover{ filter:brightness(1.08); transform:translateY(-1px); }
+    .btn.linkedin .li-icon{ width:20px; height:20px; display:inline-block; flex-shrink:0; color:#ffffff; }
+
     /* === pill icons === */
     .pill .ic{ width:18px; height:18px; flex:0 0 18px; }
     .pill.aws .ic{ color:var(--aws); }
@@ -177,7 +187,15 @@
           <p class="muted">Currently working on the AWS Builder Challenge and learning to deploy with S3 + CloudFront. This site runs on AWS Amplify/CloudFront. </p>
           <div class="cta">
             <a class="btn" href="https://builder.aws.com/" target="_blank" rel="noopener">AWS Builder Center</a>
-            <a class="btn ghost" href="#contact">Contact</a>
+
+            <!-- LinkedIn button (replaces the old Contact button) -->
+            <a class="btn linkedin" href="www.linkedin.com/in/ramirezmichael1" target="_blank" rel="noopener" aria-label="LinkedIn profile">
+              <svg viewBox="0 0 24 24" class="li-icon" aria-hidden="true">
+                <path fill="currentColor" d="M4.98 3.5A2.48 2.48 0 0 1 2.5 6 2.48 2.48 0 0 1 0 3.5 2.48 2.48 0 0 1 2.5 1 2.48 2.48 0 0 1 4.98 3.5zM0 8h5v16H0V8zm7.5 0H12v2.2h.06c.63-1.12 2.17-2.3 4.47-2.3 4.77 0 5.64 3.14 5.64 7.22V24h-5V16.4c0-1.81-.03-4.14-2.52-4.14-2.52 0-2.91 1.97-2.91 4V24h-5V8z"/>
+              </svg>
+              <span>LinkedIn</span>
+            </a>
+
             <a class="btn github" href="https://github.com/archtestmike" target="_blank" rel="noopener" aria-label="GitHub profile">
               <svg viewBox="0 0 16 16" aria-hidden="true" class="gh-icon">
                 <path fill="currentColor" d="M8 .198a8 8 0 0 0-2.53 15.6c.4.074.55-.174.55-.386 0-.19-.007-.693-.01-1.36-2.24.487-2.71-1.08-2.71-1.08-.364-.924-.89-1.17-.89-1.17-.727-.497.055-.487.055-.487.804.057 1.226.826 1.226.826.715 1.225 1.876.871 2.334.666.073-.518.28-.872.508-1.073-1.788-.204-3.667-.894-3.667-3.98 0-.88.314-1.598.826-2.162-.083-.203-.358-1.022.078-2.13 0 0 .673-.215 2.205.825a7.67 7.67 0 0 1 2.006-.27c.68.003 1.366.092 2.006.27 1.53-1.04 2.203-.825 2.203-.825.438 1.108.163 1.927.08 2.13.514.564.825 1.282.825 2.162 0 3.095-1.882 3.774-3.674 3.975.287.247.543.735.543 1.482 0 1.07-.01 1.933-.01 2.197 0 .214.146.463.553.385A8.002 8.002 0 0 0 8 .198z"/>
@@ -207,7 +225,7 @@
 
         <!-- ===== SKILL LIST WITH BRAND-COLORED ICONS ===== -->
         <ul class="list">
-          <!-- AWS (smile) -->
+          <!-- AWS -->
           <li class="pill aws">
             <span class="ic" aria-hidden="true">
               <svg viewBox="0 0 24 24" fill="none">
@@ -217,7 +235,7 @@
             AWS
           </li>
 
-          <!-- Linux (Tux-inspired beak/face) -->
+          <!-- Linux -->
           <li class="pill linux">
             <span class="ic" aria-hidden="true">
               <svg viewBox="0 0 24 24" fill="none">
@@ -229,7 +247,7 @@
             Linux
           </li>
 
-          <!-- Docker (whale + boxes) -->
+          <!-- Docker -->
           <li class="pill docker">
             <span class="ic" aria-hidden="true">
               <svg viewBox="0 0 24 24" fill="none">
@@ -243,7 +261,7 @@
             Docker
           </li>
 
-          <!-- Terraform (three modules) -->
+          <!-- Terraform -->
           <li class="pill terraform">
             <span class="ic" aria-hidden="true">
               <svg viewBox="0 0 24 24" fill="none">
@@ -255,7 +273,7 @@
             Terraform
           </li>
 
-          <!-- CI/CD (loop+gear vibe) -->
+          <!-- CI/CD -->
           <li class="pill cicd">
             <span class="ic" aria-hidden="true">
               <svg viewBox="0 0 24 24" fill="none">
