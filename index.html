@@ -14,21 +14,17 @@
       --text:#dfe7ff;
       --muted:#9bb0ff;
 
-      /* REFINED BRAND PALETTE (teal → azure) */
+      /* refined palette */
       --brand1:#00e0b8;  /* teal */
       --brand2:#5b8aff;  /* azure */
-      --brand3:#a7b7ff;  /* soft periwinkle accent */
+      --brand3:#a7b7ff;  /* soft periwinkle */
 
       --glass:rgba(255,255,255,.06);
       --max:1100px;
       --radius:18px;
+      --shadow:0 0 32px rgba(0,224,184,.22), 0 0 48px rgba(91,138,255,.16);
 
-      /* softer, professional glow using brand tones */
-      --shadow:
-        0 0 32px rgba(0,224,184,.22),
-        0 0 48px rgba(91,138,255,.16);
-
-      /* brand colors for skill pills */
+      /* skill pill brand hints */
       --aws:#ff9900;
       --docker:#2496ED;
       --terraform:#844FBA;
@@ -83,24 +79,16 @@
     .subtitle{ color:var(--muted); font-weight:600; margin:0 0 24px; font-size:clamp(16px,2.5vw,20px); }
 
     .cta{ display:flex; gap:12px; flex-wrap:wrap; }
-
     .btn{
       position:relative; display:inline-flex; align-items:center; gap:10px;
       padding:12px 18px; font-weight:700; color:#031218;
       background:linear-gradient(90deg,var(--brand1),var(--brand2));
       border-radius:12px; border:0;
-      box-shadow:
-        0 0 22px rgba(0,224,184,.28),
-        0 0 34px rgba(91,138,255,.20);
+      box-shadow:0 0 22px rgba(0,224,184,.28), 0 0 34px rgba(91,138,255,.20);
       transition:transform .15s ease, filter .15s ease;
     }
     .btn:hover{ transform:translateY(-1px); filter:brightness(1.03); }
-
-    .btn.ghost{
-      background:transparent; color:var(--text);
-      border:1px solid rgba(255,255,255,.18);
-      box-shadow:none;
-    }
+    .btn.ghost{ background:transparent; color:var(--text); border:1px solid rgba(255,255,255,.18); box-shadow:none; }
 
     .grid{display:grid; gap:18px}
     @media(min-width:880px){
@@ -165,19 +153,13 @@
     @media (prefers-reduced-motion:no-preference){
       .avatar-wrap{ animation:avatarGlow 5s ease-in-out infinite alternate; }
       @keyframes avatarGlow{
-        from{ box-shadow:
-          0 0 18px rgba(0,224,184,.25),
-          0 0 28px rgba(91,138,255,.18),
-          inset 0 0 10px rgba(255,255,255,.06); }
-        to{ box-shadow:
-          0 0 34px rgba(0,224,184,.45),
-          0 0 48px rgba(91,138,255,.26),
-          inset 0 0 16px rgba(255,255,255,.10); }
+        from{ box-shadow:0 0 18px rgba(0,224,184,.25), 0 0 28px rgba(91,138,255,.18), inset 0 0 10px rgba(255,255,255,.06); }
+        to  { box-shadow:0 0 34px rgba(0,224,184,.45), 0 0 48px rgba(91,138,255,.26), inset 0 0 16px rgba(255,255,255,.10); }
       }
     }
     .hero-text{ min-width:0; max-width:60ch; }
 
-    /* === GitHub button theme === */
+    /* === social button themes === */
     .btn.github{
       background:#0d1117; color:#c9d1d9; border:1px solid rgba(255,255,255,.18);
       box-shadow:0 0 18px rgba(0,224,184,.18), 0 0 28px rgba(91,138,255,.14);
@@ -186,7 +168,6 @@
     .btn.github .gh-icon{ width:20px; height:20px; display:inline-block; flex-shrink:0; color:#c9d1d9; }
     .btn.github span{white-space:nowrap;}
 
-    /* === LinkedIn button theme === */
     .btn.linkedin{
       background:#0a66c2; color:#ffffff;
       border:1px solid rgba(255,255,255,.18);
@@ -195,7 +176,7 @@
     .btn.linkedin:hover{ filter:brightness(1.08); transform:translateY(-1px); }
     .btn.linkedin .li-icon{ width:20px; height:20px; display:inline-block; flex-shrink:0; color:#ffffff; }
 
-    /* === pill icons === */
+    /* === skill pill icons === */
     .pill .ic{ width:18px; height:18px; flex:0 0 18px; }
     .pill.aws .ic{ color:var(--aws); }
     .pill.linux .ic{ color:var(--linux); }
@@ -204,7 +185,7 @@
     .pill.cicd .ic{ color:var(--cicd); }
     .pill .ic svg{ width:100%; height:100%; display:block; filter:drop-shadow(0 0 6px rgba(0,224,184,.25)); }
 
-    /* ===== Quick Facts GIF row styles ===== */
+    /* ===== Quick Facts (icon rows) ===== */
     .fact-list{ list-style:none; padding:0; margin:0; display:grid; gap:14px; }
     .fact{
       display:flex; align-items:flex-start; gap:12px;
@@ -213,12 +194,15 @@
       border:1px solid rgba(255,255,255,.08);
       border-radius:12px;
     }
-    .fact .gif{
-      width:36px; height:36px; object-fit:contain; image-rendering:pixelated;
-      border-radius:8px; flex:0 0 36px;
-      filter:drop-shadow(0 0 8px rgba(91,138,255,.25));
+    .fact .icon-wrap{
+      width:38px; height:38px; flex:0 0 38px; border-radius:10px;
+      display:grid; place-items:center;
+      background:linear-gradient(180deg, rgba(91,138,255,.18), rgba(0,224,184,.12));
+      border:1px solid rgba(255,255,255,.12);
+      box-shadow:inset 0 0 10px rgba(255,255,255,.06);
     }
-    .fact span{ display:block; line-height:1.5; }
+    .fact .icon{ width:22px; height:22px; color:#a7b7ff; }
+    .fact strong{ color:#dfe7ff; }
   </style>
 </head>
 <body>
@@ -256,20 +240,38 @@
         </div>
       </div>
 
-      <!-- RIGHT: quick facts with GIFs -->
+      <!-- RIGHT: quick facts with clean icons -->
       <div class="card panel">
         <h3>Quick Facts</h3>
         <ul class="fact-list">
           <li class="fact">
-            <img class="gif" src="Simon.gif" alt="" aria-hidden="true">
+            <span class="icon-wrap">
+              <!-- target icon -->
+              <svg class="icon" viewBox="0 0 24 24" fill="none">
+                <circle cx="12" cy="12" r="8.5" stroke="currentColor" stroke-width="1.6"/>
+                <circle cx="12" cy="12" r="4.5" stroke="currentColor" stroke-width="1.6"/>
+                <circle cx="12" cy="12" r="1.6" fill="currentColor"/>
+              </svg>
+            </span>
             <span><strong>Learning goal:</strong> build cloud skills one service at a time (S3, CloudFront, and beyond).</span>
           </li>
           <li class="fact">
-            <img class="gif" src="AlucardHeaveSwords.gif" alt="" aria-hidden="true">
+            <span class="icon-wrap">
+              <!-- cloud + globe -->
+              <svg class="icon" viewBox="0 0 24 24" fill="none">
+                <path d="M6.5 15.5a3.5 3.5 0 1 0 0 7h10a4 4 0 0 0 0-8 5 5 0 0 0-9.6-1.6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+                <circle cx="17.5" cy="8" r="3.2" stroke="currentColor" stroke-width="1.6"/>
+              </svg>
+            </span>
             <span><strong>Fun project:</strong> this site is served globally via AWS.</span>
           </li>
           <li class="fact">
-            <img class="gif" src="AlucardSword3.gif" alt="" aria-hidden="true">
+            <span class="icon-wrap">
+              <!-- trophy/star -->
+              <svg class="icon" viewBox="0 0 24 24" fill="none">
+                <path d="M12 3l2.3 4.7 5.2.8-3.8 3.7.9 5.2L12 15.7 7.4 17.4l.9-5.2L4.5 8.5l5.2-.8L12 3Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+              </svg>
+            </span>
             <span><strong>Challenge:</strong> AWS Builder Challenge #2.</span>
           </li>
         </ul>
@@ -281,8 +283,6 @@
     <section class="grid cols-3">
       <div class="glass panel">
         <h2>Cloud & DevOps</h2>
-
-        <!-- ===== SKILL LIST WITH BRAND-COLORED ICONS ===== -->
         <ul class="list">
           <li class="pill aws">
             <span class="ic" aria-hidden="true">
@@ -335,7 +335,6 @@
             CI/CD
           </li>
         </ul>
-        <!-- ===== end skill list ===== -->
       </div>
 
       <div class="glass panel">
