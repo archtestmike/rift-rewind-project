@@ -14,18 +14,31 @@
       --text:#dfe7ff;
       --muted:#9bb0ff;
 
-      /* refined palette */
+      /* REFINED BRAND PALETTE (teal → azure) */
       --brand1:#00e0b8;  /* teal */
       --brand2:#5b8aff;  /* azure */
-      --brand3:#a7b7ff;  /* soft periwinkle */
+      --brand3:#a7b7ff;  /* soft periwinkle accent */
 
       --glass:rgba(255,255,255,.06);
       --max:1100px;
       --radius:18px;
-      --shadow:0 0 32px rgba(0,224,184,.22), 0 0 48px rgba(91,138,255,.16);
 
-      /* skill-pill brand colors */
-      --aws:#ff9900; --docker:#2496ED; --terraform:#844FBA; --linux:#FCC624; --cicd:#00e5ff;
+      /* softer, professional glow using brand tones */
+      --shadow:
+        0 0 32px rgba(0,224,184,.22),
+        0 0 48px rgba(91,138,255,.16);
+
+      /* brand colors for skill pills */
+      --aws:#ff9900;
+      --docker:#2496ED;
+      --terraform:#844FBA;
+      --linux:#FCC624;
+      --cicd:#00e5ff;
+
+      /* badges */
+      --ok:#16a34a;
+      --warn:#f59e0b;
+      --danger:#ef4444;
     }
 
     *{box-sizing:border-box}
@@ -57,15 +70,19 @@
       border-radius:var(--radius);
       backdrop-filter: blur(8px);
     }
+    .panel{padding:22px}
 
     /* --- hero --- */
     header.hero{ padding:88px 0 56px; position:relative; }
+
     .neon-title{
       font-size:clamp(32px,6vw,56px);
       font-weight:800;
       line-height:1.1;
       margin:0 0 8px;
-      text-shadow:0 0 10px rgba(0,224,184,.55), 0 0 22px rgba(91,138,255,.35);
+      text-shadow:
+        0 0 10px rgba(0,224,184,.55),
+        0 0 22px rgba(91,138,255,.35);
       background:linear-gradient(90deg,var(--brand1),var(--brand2) 60%,var(--brand3));
       -webkit-background-clip:text; background-clip:text; color:transparent;
     }
@@ -77,16 +94,23 @@
       padding:12px 18px; font-weight:700; color:#031218;
       background:linear-gradient(90deg,var(--brand1),var(--brand2));
       border-radius:12px; border:0;
-      box-shadow:0 0 22px rgba(0,224,184,.28), 0 0 34px rgba(91,138,255,.20);
+      box-shadow:
+        0 0 22px rgba(0,224,184,.28),
+        0 0 34px rgba(91,138,255,.20);
       transition:transform .15s ease, filter .15s ease;
     }
     .btn:hover{ transform:translateY(-1px); filter:brightness(1.03); }
-    .btn.ghost{ background:transparent; color:var(--text); border:1px solid rgba(255,255,255,.18); box-shadow:none; }
+    .btn.ghost{
+      background:transparent; color:var(--text);
+      border:1px solid rgba(255,255,255,.18);
+      box-shadow:none;
+    }
 
     .grid{display:grid; gap:18px}
     @media(min-width:880px){
       .grid.cols-2{grid-template-columns: 1.1fr 1fr}
       .grid.cols-3{grid-template-columns: repeat(3,1fr)}
+      .grid.cols-2-wide{grid-template-columns: 1.2fr 1fr}
     }
 
     section{margin:28px 0}
@@ -100,19 +124,10 @@
       background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.12);
     }
 
-    .panel{padding:22px}
     .project{padding:18px; border-left:3px solid var(--brand1)}
     .muted{color:var(--muted)}
-
-    form input, form textarea, select{
-      width:100%; padding:12px 14px; margin:8px 0 14px;
-      border-radius:12px; border:1px solid rgba(255,255,255,.12);
-      background:#0a0e18; color:var(--text);
-      outline:none; box-shadow:inset 0 0 0 9999px rgba(255,255,255,.02);
-    }
-    form button{cursor:pointer}
-    footer{padding:36px 0 64px; color:var(--muted)}
     .tiny{font-size:12px}
+    footer{padding:36px 0 64px; color:var(--muted)}
 
     .divider{
       height:1px; border:0; margin:24px 0;
@@ -134,28 +149,44 @@
         radial-gradient(140% 140% at 12% 10%, rgba(0,224,184,.55), transparent 55%),
         radial-gradient(120% 120% at 85% 85%, rgba(91,138,255,.45), transparent 60%),
         radial-gradient(120% 120% at 50% 50%, rgba(167,183,255,.35), transparent 65%);
-      box-shadow:0 0 26px rgba(0,224,184,.28), 0 0 40px rgba(91,138,255,.22), inset 0 0 14px rgba(255,255,255,.08);
+      box-shadow:
+        0 0 26px rgba(0,224,184,.28),
+        0 0 40px rgba(91,138,255,.22),
+        inset 0 0 14px rgba(255,255,255,.08);
     }
-    .avatar-wrap img{ width:100%; height:100%; display:block; border-radius:9999px; object-fit:cover;
-      background:#0a0e18; box-shadow:0 2px 10px rgba(0,0,0,.35); filter:saturate(1.04) contrast(1.02); }
+    .avatar-wrap img{
+      width:100%; height:100%; display:block; border-radius:9999px; object-fit:cover;
+      background:#0a0e18; box-shadow:0 2px 10px rgba(0,0,0,.35); filter:saturate(1.04) contrast(1.02);
+    }
     @media (prefers-reduced-motion:no-preference){
       .avatar-wrap{ animation:avatarGlow 5s ease-in-out infinite alternate; }
       @keyframes avatarGlow{
-        from{ box-shadow:0 0 18px rgba(0,224,184,.25), 0 0 28px rgba(91,138,255,.18), inset 0 0 10px rgba(255,255,255,.06); }
-        to  { box-shadow:0 0 34px rgba(0,224,184,.45), 0 0 48px rgba(91,138,255,.26), inset 0 0 16px rgba(255,255,255,.10); }
+        from{ box-shadow:
+          0 0 18px rgba(0,224,184,.25),
+          0 0 28px rgba(91,138,255,.18),
+          inset 0 0 10px rgba(255,255,255,.06); }
+        to{ box-shadow:
+          0 0 34px rgba(0,224,184,.45),
+          0 0 48px rgba(91,138,255,.26),
+          inset 0 0 16px rgba(255,255,255,.10); }
       }
     }
     .hero-text{ min-width:0; max-width:60ch; }
 
-    /* === GitHub & LinkedIn button themes === */
-    .btn.github{ background:#0d1117; color:#c9d1d9; border:1px solid rgba(255,255,255,.18);
-      box-shadow:0 0 18px rgba(0,224,184,.18), 0 0 28px rgba(91,138,255,.14); }
+    /* === social buttons === */
+    .btn.github{
+      background:#0d1117; color:#c9d1d9; border:1px solid rgba(255,255,255,.18);
+      box-shadow:0 0 18px rgba(0,224,184,.18), 0 0 28px rgba(91,138,255,.14);
+    }
     .btn.github:hover{ filter:brightness(1.1); transform:translateY(-1px); }
     .btn.github .gh-icon{ width:20px; height:20px; display:inline-block; flex-shrink:0; color:#c9d1d9; }
     .btn.github span{white-space:nowrap;}
 
-    .btn.linkedin{ background:#0a66c2; color:#ffffff; border:1px solid rgba(255,255,255,.18);
-      box-shadow:0 0 18px rgba(0,224,184,.18), 0 0 28px rgba(91,138,255,.14); }
+    .btn.linkedin{
+      background:#0a66c2; color:#ffffff;
+      border:1px solid rgba(255,255,255,.18);
+      box-shadow:0 0 18px rgba(0,224,184,.18), 0 0 28px rgba(91,138,255,.14);
+    }
     .btn.linkedin:hover{ filter:brightness(1.08); transform:translateY(-1px); }
     .btn.linkedin .li-icon{ width:20px; height:20px; display:inline-block; flex-shrink:0; color:#ffffff; }
 
@@ -168,34 +199,35 @@
     .pill.cicd .ic{ color:var(--cicd); }
     .pill .ic svg{ width:100%; height:100%; display:block; filter:drop-shadow(0 0 6px rgba(0,224,184,.25)); }
 
-    /* === EDGE MAP styles === */
-    .edge-card{ padding:22px; }
-    .edge-title{ margin:0 0 12px; font-size:20px; font-weight:800; }
-    .edge-wrap{
-      display:grid; gap:14px;
-      grid-template-columns: 1fr;
-    }
-    .edge-canvas{
-      width:100%; height:240px; border-radius:14px;
-      background: radial-gradient(120% 90% at 0% 0%, rgba(0,224,184,.12), transparent 45%),
-                  radial-gradient(120% 90% at 100% 100%, rgba(91,138,255,.12), transparent 45%),
-                  #0b0f18;
-      border:1px solid rgba(255,255,255,.08);
-      box-shadow: inset 0 0 40px rgba(0,0,0,.35);
-    }
-    .edge-meta{
-      display:flex; gap:14px; flex-wrap:wrap; align-items:center;
-      color:var(--muted); font-size:14px;
-    }
-    .edge-pill{
+    /* === badge styles === */
+    .badge{
       display:inline-flex; align-items:center; gap:8px;
-      padding:8px 12px; border-radius:999px;
-      background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.10);
+      padding:6px 10px; border-radius:999px; font-weight:700; font-size:12px;
+      border:1px solid rgba(255,255,255,.14); background:rgba(255,255,255,.06);
     }
-    .edge-dot{
-      width:8px; height:8px; border-radius:999px; background:var(--brand2);
-      box-shadow:0 0 12px rgba(91,138,255,.9), 0 0 30px rgba(0,224,184,.5);
+    .badge.ok{ color:#d1fae5; border-color:rgba(16,185,129,.35); box-shadow:0 0 16px rgba(16,185,129,.18) }
+    .badge.warn{ color:#fff7ed; border-color:rgba(245,158,11,.35); box-shadow:0 0 16px rgba(245,158,11,.18) }
+    .badge.dot{ width:8px; height:8px; border-radius:999px; display:inline-block; }
+    .dot.ok{ background:var(--ok) } .dot.warn{ background:var(--warn) } .dot.danger{ background:var(--danger) }
+
+    /* === “mini cards” list inside panels === */
+    .kv{display:grid; grid-template-columns: 1fr auto; gap:10px; align-items:center;}
+    .kv .key{ color:var(--muted); }
+    .kv .val{ font-weight:800; }
+
+    /* tiny help text */
+    .help{ color:var(--muted); font-size:12px; margin-top:8px; }
+    .row{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
+    .row > *{ flex:1 1 140px; }
+
+    /* icon chips for services */
+    .svc{
+      display:flex; align-items:center; gap:10px;
+      padding:10px 12px; border-radius:12px; border:1px solid rgba(255,255,255,.12);
+      background:linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.03));
     }
+    .svc svg{ width:18px; height:18px; }
+
   </style>
 </head>
 <body>
@@ -214,13 +246,19 @@
           <div class="cta">
             <a class="btn" href="https://builder.aws.com/" target="_blank" rel="noopener">AWS Builder Center</a>
 
+            <!-- LinkedIn -->
             <a class="btn linkedin" href="https://www.linkedin.com/in/ramirezmichael1/" target="_blank" rel="noopener" aria-label="LinkedIn profile">
-              <svg viewBox="0 0 24 24" class="li-icon" aria-hidden="true"><path fill="currentColor" d="M4.98 3.5A2.48 2.48 0 0 1 2.5 6 2.48 2.48 0 0 1 0 3.5 2.48 2.48 0 0 1 2.5 1 2.48 2.48 0 0 1 4.98 3.5zM0 8h5v16H0V8zm7.5 0H12v2.2h.06c.63-1.12 2.17-2.3 4.47-2.3 4.77 0 5.64 3.14 5.64 7.22V24h-5V16.4c0-1.81-.03-4.14-2.52-4.14-2.52 0-2.91 1.97-2.91 4V24h-5V8z"/></svg>
+              <svg viewBox="0 0 24 24" class="li-icon" aria-hidden="true">
+                <path fill="currentColor" d="M4.98 3.5A2.48 2.48 0 0 1 2.5 6 2.48 2.48 0 0 1 0 3.5 2.48 2.48 0 0 1 2.5 1 2.48 2.48 0 0 1 4.98 3.5zM0 8h5v16H0V8zm7.5 0H12v2.2h.06c.63-1.12 2.17-2.3 4.47-2.3 4.77 0 5.64 3.14 5.64 7.22V24h-5V16.4c0-1.81-.03-4.14-2.52-4.14-2.52 0-2.91 1.97-2.91 4V24h-5V8z"/>
+              </svg>
               <span>LinkedIn</span>
             </a>
 
+            <!-- GitHub -->
             <a class="btn github" href="https://github.com/archtestmike" target="_blank" rel="noopener" aria-label="GitHub profile">
-              <svg viewBox="0 0 16 16" aria-hidden="true" class="gh-icon"><path fill="currentColor" d="M8 .198a8 8 0 0 0-2.53 15.6c.4.074.55-.174.55-.386 0-.19-.007-.693-.01-1.36-2.24.487-2.71-1.08-2.71-1.08-.364-.924-.89-1.17-.89-1.17-.727-.497.055-.487.055-.487.804.057 1.226.826 1.226.826.715 1.225 1.876.871 2.334.666.073-.518.28-.872.508-1.073-1.788-.204-3.667-.894-3.667-3.98 0-.88.314-1.598.826-2.162-.083-.203-.358-1.022.078-2.13 0 0 .673-.215 2.205.825a7.67 7.67 0 0 1 2.006-.27c.68.003 1.366.092 2.006.27 1.53-1.04 2.203-.825 2.203-.825.438 1.108.163 1.927.08 2.13.514.564.825 1.282.825 2.162 0 3.095-1.882 3.774-3.674 3.975.287.247.543.735.543 1.482 0 1.07-.01 1.933-.01 2.197 0 .214.146.463.553.385A8.002 8.002 0 0 0 8 .198z"/></svg>
+              <svg viewBox="0 0 16 16" aria-hidden="true" class="gh-icon">
+                <path fill="currentColor" d="M8 .198a8 8 0 0 0-2.53 15.6c.4.074.55-.174.55-.386 0-.19-.007-.693-.01-1.36-2.24.487-2.71-1.08-2.71-1.08-.364-.924-.89-1.17-.89-1.17-.727-.497.055-.487.055-.487.804.057 1.226.826 1.226.826.715 1.225 1.876.871 2.334.666.073-.518.28-.872.508-1.073-1.788-.204-3.667-.894-3.667-3.98 0-.88.314-1.598.826-2.162-.083-.203-.358-1.022.078-2.13 0 0 .673-.215 2.205.825a7.67 7.67 0 0 1 2.006-.27c.68.003 1.366.092 2.006.27 1.53-1.04 2.203-.825 2.203-.825.438 1.108.163 1.927.08 2.13.514.564.825 1.282.825 2.162 0 3.095-1.882 3.774-3.674 3.975.287.247.543.735.543 1.482 0 1.07-.01 1.933-.01 2.197 0 .214.146.463.553.385A8.002 8.002 0 0 0 8 .198z"/>
+              </svg>
               <span>GitHub</span>
             </a>
           </div>
@@ -243,28 +281,57 @@
     <section class="grid cols-3">
       <div class="glass panel">
         <h2>Cloud & DevOps</h2>
-
-        <!-- ===== SKILL LIST ===== -->
         <ul class="list">
-          <li class="pill aws"><span class="ic" aria-hidden="true">
-            <svg viewBox="0 0 24 24" fill="none"><path d="M4 16c4-2.2 12-2.2 16 0" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
-          </span>AWS</li>
-
-          <li class="pill linux"><span class="ic" aria-hidden="true">
-            <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="10.5" r="4.5" stroke="black" stroke-width="1.4" fill="none"/><path d="M10 11.5l2-1 2 1-2 1-2-1z" fill="currentColor"/><path d="M8.2 19c1-1.8 6.6-1.8 7.6 0" stroke="black" stroke-width="1.4" stroke-linecap="round"/></svg>
-          </span>Linux</li>
-
-          <li class="pill docker"><span class="ic" aria-hidden="true">
-            <svg viewBox="0 0 24 24" fill="none"><path d="M4 13h8M5 10h3v3H5v-3Zm4 0h3v3H9v-3Zm4 0h3v3h-3v-3Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M4 13c0 4 3 6 8 6 5.5 0 8-2.5 8-5.5 0-.7-.1-1.2-.3-1.5-.2-.3-.5-.5-.9-.5h-2" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><circle cx="18.5" cy="14.2" r="0.8" fill="currentColor"/></svg>
-          </span>Docker</li>
-
-          <li class="pill terraform"><span class="ic" aria-hidden="true">
-            <svg viewBox="0 0 24 24" fill="none"><path d="M6 7l5 3v5L6 12V7Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M13 5l5 3v5l-5-3V5Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M13 13l5 3v3l-5-3v-3Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>
-          </span>Terraform</li>
-
-          <li class="pill cicd"><span class="ic" aria-hidden="true">
-            <svg viewBox="0 0 24 24" fill="none"><path d="M12 8a4 4 0 1 1 0 8 4 4 0 0 1 0-8Z" stroke="currentColor" stroke-width="1.7"/><path d="M8 12h3l-1 1.5M16 12h-3l1-1.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 3v2M12 19v2M3 12h2M19 12h2" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
-          </span>CI/CD</li>
+          <li class="pill aws">
+            <span class="ic" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none">
+                <path d="M4 16c4-2.2 12-2.2 16 0" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>
+              </svg>
+            </span>
+            AWS
+          </li>
+          <li class="pill linux">
+            <span class="ic" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none">
+                <circle cx="12" cy="10.5" r="4.5" stroke="black" stroke-width="1.4" fill="none"/>
+                <path d="M10 11.5l2-1 2 1-2 1-2-1z" fill="currentColor"/>
+                <path d="M8.2 19c1-1.8 6.6-1.8 7.6 0" stroke="black" stroke-width="1.4" stroke-linecap="round"/>
+              </svg>
+            </span>
+            Linux
+          </li>
+          <li class="pill docker">
+            <span class="ic" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none">
+                <path d="M4 13h8M5 10h3v3H5v-3Zm4 0h3v3H9v-3Zm4 0h3v3h-3v-3Z"
+                      stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+                <path d="M4 13c0 4 3 6 8 6 5.5 0 8-2.5 8-5.5 0-.7-.1-1.2-.3-1.5-.2-.3-.5-.5-.9-.5h-2"
+                      stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+                <circle cx="18.5" cy="14.2" r="0.8" fill="currentColor"/>
+              </svg>
+            </span>
+            Docker
+          </li>
+          <li class="pill terraform">
+            <span class="ic" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none">
+                <path d="M6 7l5 3v5L6 12V7Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+                <path d="M13 5l5 3v5l-5-3V5Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+                <path d="M13 13l5 3v3l-5-3v-3Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+              </svg>
+            </span>
+            Terraform
+          </li>
+          <li class="pill cicd">
+            <span class="ic" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none">
+                <path d="M12 8a4 4 0 1 1 0 8 4 4 0 0 1 0-8Z" stroke="currentColor" stroke-width="1.7"/>
+                <path d="M8 12h3l-1 1.5M16 12h-3l1-1.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M12 3v2M12 19v2M3 12h2M19 12h2" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+              </svg>
+            </span>
+            CI/CD
+          </li>
         </ul>
       </div>
 
@@ -284,26 +351,146 @@
         <h2>Highlights</h2>
         <ul class="list">
           <li>Fast, secure, globally distributed site.</li>
-          <li>Neon cyber style with accessible, semantic HTML.</li>
+          <li>Refined teal/azure glow with accessible, semantic HTML.</li>
           <li>No JS build step—easy to maintain.</li>
         </ul>
       </div>
     </section>
 
-    <!-- Visitor Edge Map -->
-    <section class="glass panel edge-card">
-      <h2 class="edge-title">Visitor Edge Map</h2>
-      <div class="edge-wrap">
-        <canvas id="edgeMap" class="edge-canvas" width="980" height="480" aria-label="Visitor location map"></canvas>
-        <div class="edge-meta">
-          <span class="edge-pill"><span class="edge-dot"></span><span id="edgeWhere">Locating…</span></span>
-          <span class="edge-pill">Latency from your region to my site is typically <b>~low</b> thanks to CloudFront.</span>
+    <hr class="divider" />
+
+    <!-- ======= IMPACT & OPS SECTION ======= -->
+    <section class="grid cols-2-wide">
+      <!-- Carbon Footprint Estimator -->
+      <div class="glass panel" id="carbon-card">
+        <h2>Carbon Footprint Estimator 🌱</h2>
+        <p class="muted">Estimate monthly CO₂e of serving this website. All client-side — no data leaves your browser.</p>
+
+        <div class="row" style="margin-top:10px">
+          <label class="pill" style="flex:1">
+            <span class="ic" aria-hidden="true">
+              <!-- glass icon -->
+              <svg viewBox="0 0 24 24" fill="none"><path d="M7 4h10l-1 8a5 5 0 1 1-8 0L7 4Z" stroke="currentColor" stroke-width="1.6"/><path d="M9 20h6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+            </span>
+            <span style="display:inline-flex;align-items:center;gap:10px;width:100%">
+              Data Transfer (GB/mo)
+              <input id="cf-gb" type="number" min="0" step="0.1" value="5" style="margin-left:auto;width:110px;background:#0a0e18;border:1px solid rgba(255,255,255,.12);color:var(--text);padding:8px 10px;border-radius:10px;">
+            </span>
+          </label>
+
+          <label class="pill" style="flex:1">
+            <span class="ic" aria-hidden="true">
+              <!-- visitors icon -->
+              <svg viewBox="0 0 24 24" fill="none"><path d="M12 12a4 4 0 1 0-4-4 4 4 0 0 0 4 4Z" stroke="currentColor" stroke-width="1.6"/><path d="M3 20a7 7 0 0 1 14 0" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+            </span>
+            <span style="display:inline-flex;align-items:center;gap:10px;width:100%">
+              Monthly Visitors (approx)
+              <input id="visitors" type="number" min="0" step="100" value="2000" style="margin-left:auto;width:110px;background:#0a0e18;border:1px solid rgba(255,255,255,.12);color:var(--text);padding:8px 10px;border-radius:10px;">
+            </span>
+          </label>
+        </div>
+
+        <div class="row">
+          <label class="pill" style="flex:1">
+            <span class="ic" aria-hidden="true">
+              <!-- request icon -->
+              <svg viewBox="0 0 24 24" fill="none"><rect x="4" y="5" width="16" height="14" rx="2" stroke="currentColor" stroke-width="1.6"/><path d="M7 9h10M7 13h6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+            </span>
+            <span style="display:inline-flex;align-items:center;gap:10px;width:100%">
+              Requests (K/mo)
+              <input id="req-k" type="number" min="0" step="10" value="100" style="margin-left:auto;width:110px;background:#0a0e18;border:1px solid rgba(255,255,255,.12);color:var(--text);padding:8px 10px;border-radius:10px;">
+            </span>
+          </label>
+
+          <label class="pill" style="flex:1">
+            <span class="ic" aria-hidden="true">
+              <!-- comparison icon -->
+              <svg viewBox="0 0 24 24" fill="none"><path d="M7 17a5 5 0 1 0-5-5 5 5 0 0 0 5 5Zm10 0a5 5 0 1 0-5-5" stroke="currentColor" stroke-width="1.6"/><path d="M2 17h10" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+            </span>
+            <span style="display:inline-flex;align-items:center;gap:10px;width:100%">
+              Legacy Host Factor
+              <select id="legacy" style="margin-left:auto;width:140px;background:#0a0e18;border:1px solid rgba(255,255,255,.12);color:var(--text);padding:8px 10px;border-radius:10px;">
+                <option value="1.0">Same</option>
+                <option value="1.4" selected>~40% higher</option>
+                <option value="1.8">~80% higher</option>
+              </select>
+            </span>
+          </label>
+        </div>
+
+        <div class="card panel" style="margin-top:14px">
+          <div class="kv"><div class="key">Estimated CO₂e (AWS, kg/mo)</div><div id="co2-aws" class="val">–</div></div>
+          <div class="kv"><div class="key">Estimated CO₂e (Legacy, kg/mo)</div><div id="co2-legacy" class="val">–</div></div>
+          <div class="kv"><div class="key">Approx. Trees Equivalent</div><div id="trees" class="val">–</div></div>
+          <p class="help">Back-of-envelope model using web data transfer intensity and efficiency multipliers. For real data, integrate CloudWatch + CUR.</p>
+        </div>
+      </div>
+
+      <!-- My Site Usage & Cost (Est.) -->
+      <div class="glass panel" id="cost-card">
+        <h2>My Site Usage & Cost (Est.)</h2>
+        <p class="muted">Shows whether your inputs likely fall in Free Tier. Update numbers to reflect your month.</p>
+
+        <div class="row" style="margin-top:10px">
+          <div class="svc" style="flex:1">
+            <!-- CloudFront icon -->
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <circle cx="12" cy="12" r="8.5" stroke="currentColor" stroke-width="1.4"/>
+              <path d="M3 12h18M12 3v18" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+            </svg>
+            <div style="flex:1">
+              <div class="tiny muted">CloudFront Transfer (GB)</div>
+              <input id="cf-usage-gb" type="number" min="0" step="0.1" value="5" style="width:100%;background:#0a0e18;border:1px solid rgba(255,255,255,.12);color:var(--text);padding:8px 10px;border-radius:10px;">
+            </div>
+          </div>
+
+          <div class="svc" style="flex:1">
+            <!-- S3 icon -->
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <rect x="4" y="6" width="16" height="12" rx="2" stroke="currentColor" stroke-width="1.4"/>
+              <path d="M4 10h16" stroke="currentColor" stroke-width="1.2"/>
+            </svg>
+            <div style="flex:1">
+              <div class="tiny muted">S3 Storage (GB)</div>
+              <input id="s3-gb" type="number" min="0" step="0.1" value="1" style="width:100%;background:#0a0e18;border:1px solid rgba(255,255,255,.12);color:var(--text);padding:8px 10px;border-radius:10px;">
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="svc" style="flex:1">
+            <!-- Requests icon -->
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <rect x="4" y="5" width="16" height="14" rx="2" stroke="currentColor" stroke-width="1.4"/>
+              <path d="M7 9h10M7 13h6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+            </svg>
+            <div style="flex:1">
+              <div class="tiny muted">Requests (K/mo)</div>
+              <input id="req-total-k" type="number" min="0" step="10" value="100" style="width:100%;background:#0a0e18;border:1px solid rgba(255,255,255,.12);color:var(--text);padding:8px 10px;border-radius:10px;">
+            </div>
+          </div>
+
+          <div class="svc" style="flex:1">
+            <!-- Lambda icon -->
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M7 18l5-12h2l3 12h-2l-2-8-3.5 8H7Z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/>
+            </svg>
+            <div style="flex:1">
+              <div class="tiny muted">Lambda Invocations (K)</div>
+              <input id="lambda-k" type="number" min="0" step="1" value="2" style="width:100%;background:#0a0e18;border:1px solid rgba(255,255,255,.12);color:var(--text);padding:8px 10px;border-radius:10px;">
+            </div>
+          </div>
+        </div>
+
+        <div class="card panel" style="margin-top:14px">
+          <div class="kv"><div class="key">Tier Status</div><div id="tier-badge" class="val"><span class="badge ok"><span class="dot ok"></span> Free Tier</span></div></div>
+          <div class="kv"><div class="key">Est. Monthly Cost</div><div id="cost-est" class="val">$0.00</div></div>
+          <p class="help">Rule-of-thumb check only (dev traffic). For exacts, use AWS Billing & Cost Explorer. Free Tier varies by service and time.</p>
         </div>
       </div>
     </section>
 
-    <hr class="divider" />
-
+    <!-- ===== CONTACT / OTHER SECTIONS (unchanged) ===== -->
     <section id="contact" class="grid cols-2">
       <div class="glass panel">
         <h2>Get In Touch</h2>
@@ -347,73 +534,111 @@
     </footer>
   </main>
 
-  <!-- === Visitor Edge Map === -->
   <script>
-    (function(){
-      const whereEl = document.getElementById('edgeWhere');
-      const canvas = document.getElementById('edgeMap');
-      if (!canvas) return;
-      const ctx = canvas.getContext('2d');
+    /* =========================
+       Carbon Footprint Estimator
+       =========================
+       Super simple model:
+       - Base intensity ~ 0.5 kg CO2e / GB data egress (illustrative)
+       - AWS efficiency factor baked in
+       - Legacy factor applied via select
+       - Trees equivalent ~ 21 kg CO2e / tree / year (~1.75 kg/mo)
+    */
+    const el = (id)=>document.getElementById(id);
+    const $ = {
+      cfGB: el('cf-gb'),
+      visitors: el('visitors'),
+      reqK: el('req-k'),
+      legacy: el('legacy'),
+      co2Aws: el('co2-aws'),
+      co2Legacy: el('co2-legacy'),
+      trees: el('trees'),
+    };
 
-      // helpers
-      const W = canvas.width, H = canvas.height;
-      function drawGrid(){
-        ctx.clearRect(0,0,W,H);
-        // background already via CSS; add grid lines
-        ctx.strokeStyle = 'rgba(167,183,255,0.10)';
-        ctx.lineWidth = 1;
-        for(let x=0;x<=W;x+=40){ ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,H); ctx.stroke(); }
-        for(let y=0;y<=H;y+=40){ ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(W,y); ctx.stroke(); }
-        // subtle outer glow
-        const g = ctx.createRadialGradient(W*0.1,H*0.1,0, W*0.1,H*0.1, W*0.6);
-        g.addColorStop(0,'rgba(0,224,184,0.09)');
-        g.addColorStop(1,'rgba(0,0,0,0)');
-        ctx.fillStyle=g; ctx.fillRect(0,0,W,H);
-      }
-      function plot(lat, lon){
-        // simple equirectangular projection
-        const x = (lon + 180) * (W / 360);
-        const y = (90 - lat) * (H / 180);
-        // glow
-        for(let r=30;r>0;r-=2){
-          ctx.beginPath();
-          ctx.fillStyle = `rgba(91,138,255,${0.012*r})`;
-          ctx.arc(x,y,r,0,Math.PI*2); ctx.fill();
-        }
-        ctx.beginPath();
-        ctx.fillStyle = '#5b8aff';
-        ctx.shadowColor = 'rgba(91,138,255,.9)';
-        ctx.shadowBlur = 16;
-        ctx.arc(x,y,5,0,Math.PI*2); ctx.fill();
-        ctx.shadowBlur = 0;
+    function calcCarbon(){
+      const gb = Math.max(0, parseFloat($.cfGB.value)||0);
+      const reqK = Math.max(0, parseFloat($.reqK.value)||0);
+      const legacyFactor = parseFloat($.legacy.value)||1;
+
+      // Simple intensity: 0.5 kg/GB (illustrative), add a tiny request overhead
+      const requestOverheadKg = reqK * 0.00002; // 0.02 kg per 1k requests (tiny)
+      const awsKg = (gb * 0.5 * 0.75) + requestOverheadKg;     // assume AWS infra ~25% more efficient
+      const legacyKg = awsKg * legacyFactor;
+
+      const treesPerMonthKg = 21/12; // ~1.75 kg per month per tree
+      const treesEq = awsKg > 0 ? (awsKg / treesPerMonthKg) : 0;
+
+      $.co2Aws.textContent = awsKg.toFixed(2);
+      $.co2Legacy.textContent = legacyKg.toFixed(2);
+      $.trees.textContent = (treesEq).toFixed(1) + ' trees/mo';
+    }
+
+    ['input','change'].forEach(evt=>{
+      $.cfGB.addEventListener(evt, calcCarbon);
+      $.visitors.addEventListener(evt, calcCarbon);
+      $.reqK.addEventListener(evt, calcCarbon);
+      $.legacy.addEventListener(evt, calcCarbon);
+    });
+    calcCarbon();
+
+    /* =========================
+       Usage & Cost Tier Checker
+       =========================
+       We avoid hard pricing. We just flag "likely Free Tier" vs "billable"
+       using conservative thresholds appropriate for a small personal site.
+       You can tune thresholds below without changing UI.
+    */
+    const U = {
+      cfGB: el('cf-usage-gb'),
+      s3GB: el('s3-gb'),
+      reqK: el('req-total-k'),
+      lambdaK: el('lambda-k'),
+      tierBadge: el('tier-badge'),
+      costEst: el('cost-est'),
+    };
+
+    const thresholds = {
+      cloudfrontGB: 50,   // dev-sized comfort threshold
+      s3GB: 5,            // S3 Free Tier storage (illustrative)
+      requestsK: 500,     // combined requests
+      lambdaK: 1000       // free-tier scale for invocations (illustrative)
+    };
+
+    function evaluateTier(){
+      const cf = Math.max(0, parseFloat(U.cfGB.value)||0);
+      const s3 = Math.max(0, parseFloat(U.s3GB.value)||0);
+      const req = Math.max(0, parseFloat(U.reqK.value)||0);
+      const lam = Math.max(0, parseFloat(U.lambdaK.value)||0);
+
+      let flags = 0;
+      if (cf > thresholds.cloudfrontGB) flags++;
+      if (s3 > thresholds.s3GB) flags++;
+      if (req > thresholds.requestsK) flags++;
+      if (lam > thresholds.lambdaK) flags++;
+
+      let statusHTML, estCost;
+      if (flags === 0){
+        statusHTML = '<span class="badge ok"><span class="dot ok"></span> Free Tier</span>';
+        estCost = '$0.00';
+      } else if (flags === 1){
+        statusHTML = '<span class="badge warn"><span class="dot warn"></span> Likely Small Bill</span>';
+        estCost = 'Check Console';
+      } else {
+        statusHTML = '<span class="badge warn"><span class="dot warn"></span> Above Free Tier</span>';
+        estCost = 'Check Console';
       }
 
-      async function locate(){
-        drawGrid();
-        try {
-          // primary: ipapi.co (free, CORS ok)
-          const res = await fetch('https://ipapi.co/json/');
-          if (!res.ok) throw new Error('geo api error');
-          const j = await res.json();
-          const { latitude:lat, longitude:lon, city, country_name, country } = j;
-          plot(lat, lon);
-          whereEl.textContent = `You appear to be near ${city || 'your region'}, ${country_name || country || ''}`;
-        } catch (e){
-          // fallback: browser geolocation (permission)
-          if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(
-              (pos)=>{ drawGrid(); const {latitude:lat, longitude:lon} = pos.coords; plot(lat,lon); whereEl.textContent = 'Location from device (approx.)'; },
-              ()=>{ drawGrid(); whereEl.textContent = 'Location unavailable.'; },
-              { enableHighAccuracy:false, timeout:4000, maximumAge:600000 }
-            );
-          } else {
-            drawGrid();
-            whereEl.textContent = 'Location unavailable.';
-          }
-        }
-      }
-      locate();
-    })();
+      U.tierBadge.innerHTML = statusHTML;
+      U.costEst.textContent = estCost;
+    }
+
+    ['input','change'].forEach(evt=>{
+      U.cfGB.addEventListener(evt, evaluateTier);
+      U.s3GB.addEventListener(evt, evaluateTier);
+      U.reqK.addEventListener(evt, evaluateTier);
+      U.lambdaK.addEventListener(evt, evaluateTier);
+    });
+    evaluateTier();
   </script>
 </body>
 </html>
