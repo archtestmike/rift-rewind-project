@@ -55,7 +55,6 @@
       border-radius:var(--radius);
       backdrop-filter: blur(8px);
     }
-    /* --- hero --- */
     header.hero{ padding:88px 0 56px; position:relative; }
     .neon-title{
       font-size:clamp(32px,6vw,56px);
@@ -154,8 +153,7 @@
 
     /* === LinkedIn button theme === */
     .btn.linkedin{
-      background:#0a66c2;                 /* LinkedIn blue */
-      color:#ffffff;
+      background:#0a66c2; color:#ffffff;
       border:1px solid rgba(255,255,255,.18);
       box-shadow:0 0 18px rgba(0,229,255,.18), 0 0 28px rgba(255,45,223,.14);
     }
@@ -175,7 +173,6 @@
 <body>
   <header class="hero">
     <div class="wrap grid cols-2">
-      <!-- LEFT: avatar ABOVE name/title -->
       <div class="hero-stack">
         <div class="avatar-wrap">
           <img src="profile.png" alt="Michael Ramirez headshot" loading="lazy">
@@ -188,8 +185,8 @@
           <div class="cta">
             <a class="btn" href="https://builder.aws.com/" target="_blank" rel="noopener">AWS Builder Center</a>
 
-            <!-- LinkedIn button (replaces the old Contact button) -->
-            <a class="btn linkedin" href="www.linkedin.com/in/ramirezmichael1" target="_blank" rel="noopener" aria-label="LinkedIn profile">
+            <!-- LinkedIn button with full https URL -->
+            <a class="btn linkedin" href="https://www.linkedin.com/in/ramirezmichael1/" target="_blank" rel="noopener" aria-label="LinkedIn profile">
               <svg viewBox="0 0 24 24" class="li-icon" aria-hidden="true">
                 <path fill="currentColor" d="M4.98 3.5A2.48 2.48 0 0 1 2.5 6 2.48 2.48 0 0 1 0 3.5 2.48 2.48 0 0 1 2.5 1 2.48 2.48 0 0 1 4.98 3.5zM0 8h5v16H0V8zm7.5 0H12v2.2h.06c.63-1.12 2.17-2.3 4.47-2.3 4.77 0 5.64 3.14 5.64 7.22V24h-5V16.4c0-1.81-.03-4.14-2.52-4.14-2.52 0-2.91 1.97-2.91 4V24h-5V8z"/>
               </svg>
@@ -206,7 +203,6 @@
         </div>
       </div>
 
-      <!-- RIGHT: quick facts -->
       <div class="card panel">
         <h3>Quick Facts</h3>
         <ul class="list">
@@ -222,70 +218,23 @@
     <section class="grid cols-3">
       <div class="glass panel">
         <h2>Cloud & DevOps</h2>
-
-        <!-- ===== SKILL LIST WITH BRAND-COLORED ICONS ===== -->
         <ul class="list">
-          <!-- AWS -->
-          <li class="pill aws">
-            <span class="ic" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="none">
-                <path d="M4 16c4-2.2 12-2.2 16 0" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>
-              </svg>
-            </span>
-            AWS
-          </li>
-
-          <!-- Linux -->
-          <li class="pill linux">
-            <span class="ic" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="none">
-                <circle cx="12" cy="10.5" r="4.5" stroke="black" stroke-width="1.4" fill="none"/>
-                <path d="M10 11.5l2-1 2 1-2 1-2-1z" fill="currentColor"/>
-                <path d="M8.2 19c1-1.8 6.6-1.8 7.6 0" stroke="black" stroke-width="1.4" stroke-linecap="round"/>
-              </svg>
-            </span>
-            Linux
-          </li>
-
-          <!-- Docker -->
-          <li class="pill docker">
-            <span class="ic" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="none">
-                <path d="M4 13h8M5 10h3v3H5v-3Zm4 0h3v3H9v-3Zm4 0h3v3h-3v-3Z"
-                      stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
-                <path d="M4 13c0 4 3 6 8 6 5.5 0 8-2.5 8-5.5 0-.7-.1-1.2-.3-1.5-.2-.3-.5-.5-.9-.5h-2"
-                      stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
-                <circle cx="18.5" cy="14.2" r="0.8" fill="currentColor"/>
-              </svg>
-            </span>
-            Docker
-          </li>
-
-          <!-- Terraform -->
-          <li class="pill terraform">
-            <span class="ic" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="none">
-                <path d="M6 7l5 3v5L6 12V7Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
-                <path d="M13 5l5 3v5l-5-3V5Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
-                <path d="M13 13l5 3v3l-5-3v-3Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
-              </svg>
-            </span>
-            Terraform
-          </li>
-
-          <!-- CI/CD -->
-          <li class="pill cicd">
-            <span class="ic" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="none">
-                <path d="M12 8a4 4 0 1 1 0 8 4 4 0 0 1 0-8Z" stroke="currentColor" stroke-width="1.7"/>
-                <path d="M8 12h3l-1 1.5M16 12h-3l1-1.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
-                <path d="M12 3v2M12 19v2M3 12h2M19 12h2" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
-              </svg>
-            </span>
-            CI/CD
-          </li>
+          <li class="pill aws"><span class="ic" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M4 16c4-2.2 12-2.2 16 0" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
+          </span>AWS</li>
+          <li class="pill linux"><span class="ic" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="10.5" r="4.5" stroke="black" stroke-width="1.4" fill="none"/><path d="M10 11.5l2-1 2 1-2 1-2-1z" fill="currentColor"/><path d="M8.2 19c1-1.8 6.6-1.8 7.6 0" stroke="black" stroke-width="1.4" stroke-linecap="round"/></svg>
+          </span>Linux</li>
+          <li class="pill docker"><span class="ic" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M4 13h8M5 10h3v3H5v-3Zm4 0h3v3H9v-3Zm4 0h3v3h-3v-3Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M4 13c0 4 3 6 8 6 5.5 0 8-2.5 8-5.5 0-.7-.1-1.2-.3-1.5-.2-.3-.5-.5-.9-.5h-2" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><circle cx="18.5" cy="14.2" r="0.8" fill="currentColor"/></svg>
+          </span>Docker</li>
+          <li class="pill terraform"><span class="ic" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M6 7l5 3v5L6 12V7Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M13 5l5 3v5l-5-3V5Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M13 13l5 3v3l-5-3v-3Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>
+          </span>Terraform</li>
+          <li class="pill cicd"><span class="ic" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M12 8a4 4 0 1 1 0 8 4 4 0 0 1 0-8Z" stroke="currentColor" stroke-width="1.7"/><path d="M8 12h3l-1 1.5M16 12h-3l1-1.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 3v2M12 19v2M3 12h2M19 12h2" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+          </span>CI/CD</li>
         </ul>
-        <!-- ===== end skill list ===== -->
       </div>
 
       <div class="glass panel">
@@ -315,7 +264,7 @@
     <section id="contact" class="grid cols-2">
       <div class="glass panel">
         <h2>Get In Touch</h2>
-        <form action="https://formsubmit.co/" method="POST">
+      <form action="https://formsubmit.co/" method="POST">
           <input type="hidden" name="_subject" value="New message from michaelramirez.dev">
           <label for="name">Name</label>
           <input id="name" name="name" placeholder="Your name" required>
