@@ -1,238 +1,340 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Michael Ramirez - Personal Website</title>
-    <link rel="stylesheet" href="styles.css">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Michael Ramirez — Cloud Builder</title>
+  <meta name="description" content="Michael Ramirez • Cloud Builder & AWS Enthusiast" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#06070c;
+      --panel:#0b0e18;
+      --text:#dfe7ff;
+      --muted:#9bb0ff;
+      --brand1:#00e5ff;   /* neon cyan */
+      --brand2:#ff2ddf;   /* neon magenta */
+      --brand3:#7c4dff;   /* neon violet  */
+      --glass:rgba(255,255,255,.06);
+      --max:1100px;
+      --radius:18px;
+      --shadow:0 0 40px rgba(0,229,255,.25), 0 0 60px rgba(255,45,223,.15);
+      /* brand colors */
+      --aws:#ff9900;
+      --docker:#2496ED;
+      --terraform:#844FBA;
+      --linux:#FCC624;
+      --cicd:#00e5ff;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      background:
+        radial-gradient(1200px 600px at 10% 0%, rgba(0,229,255,.14), transparent 60%),
+        radial-gradient(900px 500px at 100% 10%, rgba(255,45,223,.12), transparent 70%),
+        linear-gradient(#05060a,#070915 30%,#06070c 100%);
+      color:var(--text);
+      font:400 16px/1.6 Inter,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,"Apple Color Emoji","Segoe UI Emoji";
+      letter-spacing:.2px;
+    }
+    a{color:var(--brand1); text-decoration:none}
+    a:hover{filter:brightness(1.2)}
+    .wrap{max-width:var(--max); margin:0 auto; padding:24px}
+    .card{
+      background:linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
+      border:1px solid rgba(255,255,255,.08);
+      box-shadow:var(--shadow);
+      border-radius:var(--radius);
+      overflow:hidden;
+    }
+    .glass{
+      background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+      border:1px solid rgba(255,255,255,.12);
+      border-radius:var(--radius);
+      backdrop-filter: blur(8px);
+    }
+    /* --- hero --- */
+    header.hero{ padding:88px 0 56px; position:relative; }
+    .neon-title{
+      font-size:clamp(32px,6vw,56px);
+      font-weight:800;
+      line-height:1.1;
+      margin:0 0 8px;
+      text-shadow:
+        0 0 12px rgba(0,229,255,.8),
+        0 0 24px rgba(124,77,255,.4),
+        0 0 48px rgba(255,45,223,.25);
+      background:linear-gradient(90deg,var(--brand1),var(--brand2) 50%,var(--brand3));
+      -webkit-background-clip:text; background-clip:text; color:transparent;
+    }
+    .subtitle{ color:var(--muted); font-weight:600; margin:0 0 24px; font-size:clamp(16px,2.5vw,20px); }
+    .cta{ display:flex; gap:12px; flex-wrap:wrap; }
+    .btn{
+      position:relative; display:inline-flex; align-items:center; gap:10px;
+      padding:12px 18px; font-weight:700; color:#031218;
+      background:linear-gradient(90deg,var(--brand1),var(--brand2));
+      border-radius:12px; border:0;
+      box-shadow:0 0 24px rgba(0,229,255,.35), 0 0 36px rgba(255,45,223,.25);
+    }
+    .btn.ghost{ background:transparent; color:var(--text); border:1px solid rgba(255,255,255,.18); }
+    .grid{display:grid; gap:18px}
+    @media(min-width:880px){
+      .grid.cols-2{grid-template-columns: 1.1fr 1fr}
+      .grid.cols-3{grid-template-columns: repeat(3,1fr)}
+    }
+    section{margin:28px 0}
+    h2{ margin:6px 0 16px; font-size:clamp(22px,3vw,28px); font-weight:800; letter-spacing:.4px; }
+    h3{margin:0 0 6px; font-size:18px}
+    .list{display:grid; gap:10px; padding:0; margin:0; list-style:none}
+    .pill{
+      display:flex; align-items:center; gap:10px;
+      padding:10px 14px; border-radius:999px;
+      background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.12);
+    }
+    .panel{padding:22px}
+    .project{padding:18px; border-left:3px solid var(--brand1)}
+    .muted{color:var(--muted)}
+    form input, form textarea, select{
+      width:100%; padding:12px 14px; margin:8px 0 14px;
+      border-radius:12px; border:1px solid rgba(255,255,255,.12);
+      background:#0a0e18; color:var(--text);
+      outline:none; box-shadow:inset 0 0 0 9999px rgba(255,255,255,.02);
+    }
+    form button{cursor:pointer}
+    footer{padding:36px 0 64px; color:var(--muted)}
+    .tiny{font-size:12px}
+    .divider{
+      height:1px; border:0; margin:24px 0;
+      background:linear-gradient(90deg, transparent, rgba(0,229,255,.7), rgba(255,45,223,.7), transparent);
+      filter:drop-shadow(0 0 6px rgba(0,229,255,.7));
+    }
+
+    /* ===== avatar above name ===== */
+    .hero-stack{ display:flex; flex-direction:column; align-items:flex-start; gap:clamp(12px,2.5vw,20px); }
+    @media (max-width:680px){
+      .hero-stack{ align-items:center; text-align:center; }
+      .cta{ justify-content:center; }
+    }
+    .avatar-wrap{
+      --size:clamp(110px,16vw,160px);
+      width:var(--size); height:var(--size);
+      border-radius:9999px; padding:5px;
+      background:
+        radial-gradient(140% 140% at 12% 10%, rgba(0,229,255,.55), transparent 55%),
+        radial-gradient(120% 120% at 85% 85%, rgba(255,45,223,.45), transparent 60%),
+        radial-gradient(120% 120% at 50% 50%, rgba(124,77,255,.40), transparent 65%);
+      box-shadow:
+        0 0 28px rgba(0,229,255,.35),
+        0 0 42px rgba(255,45,223,.25),
+        inset 0 0 14px rgba(255,255,255,.08);
+    }
+    .avatar-wrap img{
+      width:100%; height:100%; display:block; border-radius:9999px; object-fit:cover;
+      background:#0a0e18; box-shadow:0 2px 10px rgba(0,0,0,.35); filter:saturate(1.04) contrast(1.02);
+    }
+    @media (prefers-reduced-motion:no-preference){
+      .avatar-wrap{ animation:avatarGlow 5s ease-in-out infinite alternate; }
+      @keyframes avatarGlow{
+        from{ box-shadow:0 0 20px rgba(0,229,255,.30),0 0 30px rgba(255,45,223,.18),inset 0 0 10px rgba(255,255,255,.06); }
+        to  { box-shadow:0 0 36px rgba(0,229,255,.50),0 0 52px rgba(255,45,223,.28),inset 0 0 16px rgba(255,255,255,.10); }
+      }
+    }
+    .hero-text{ min-width:0; max-width:60ch; }
+
+    /* === GitHub button theme === */
+    .btn.github{
+      background:#0d1117; color:#c9d1d9; border:1px solid rgba(255,255,255,.18);
+      box-shadow:0 0 18px rgba(0,229,255,.18), 0 0 28px rgba(255,45,223,.14);
+    }
+    .btn.github:hover{ filter:brightness(1.1); transform:translateY(-1px); }
+    .btn.github .gh-icon{ width:20px; height:20px; display:inline-block; flex-shrink:0; color:#c9d1d9; }
+    .btn.github span{white-space:nowrap;}
+
+    /* === pill icons === */
+    .pill .ic{ width:18px; height:18px; flex:0 0 18px; }
+    .pill.aws .ic{ color:var(--aws); }
+    .pill.linux .ic{ color:var(--linux); }
+    .pill.docker .ic{ color:var(--docker); }
+    .pill.terraform .ic{ color:var(--terraform); }
+    .pill.cicd .ic{ color:var(--cicd); }
+    .pill .ic svg{ width:100%; height:100%; display:block; filter:drop-shadow(0 0 6px rgba(0,229,255,.25)); }
+  </style>
 </head>
 <body>
-    <main>
-        <section class="hero">
-            <img src="profile.PNG" alt="Your Name" class="profile-photo">
-            <h1>Michael Ramirez</h1>
-            <p class="tagline">Cloud Builder & AWS Enthusiast</p>
-            <a href="https://builder.aws.com/community/@youralias" target="_blank" class="aws-link">AWS Builder Center Profile</a>
-        </section>
-
-        <section class="fun-facts">
-            <h3>Fun Facts About Me</h3>
-            <div class="facts-grid">
-                <div class="fact-card">
-                    <h4>🚀 Challenge In Progress</h4>
-                    <p>Currently working on <a href="https://builder.aws.com/content/31C2WxIDSQive7q2Dv5xNFCmYJj/aws-builder-challenge-2-build-a-website-on-the-cloud?trk=86c76c09-e8f4-4138-badc-604ce7bc5d77&sc_channel=el" target="_blank">AWS Builder Challenge #2: Build a website on the cloud!</a></p>
-                </div>
-                <div class="fact-card">
-                    <h4>🎯 Learning Goal</h4>
-                    <p>Building my skills one AWS service at a time - S3, CloudFront, and beyond!</p>
-                </div>
-                <div class="fact-card">
-                    <h4>💡 Fun Project</h4>
-                    <p>This website is hosted on Amazon S3 with CloudFront for global delivery!</p>
-                </div>
-            </div>
-        </section>
-
-        <section class="aws-journey">
-            <h3>AWS Rift Rewind Challenge</h3>
-            <p>I'm currently working on the "Build a website on the cloud" challenge, learning to deploy websites using AWS S3 and CloudFront. This site is part of my challenge progress!</p>
-            <a href="https://builder.aws.com/content/31C2WxIDSQive7q2Dv5xNFCmYJj/aws-builder-challenge-2-build-a-website-on-the-cloud?trk=86c76c09-e8f4-4138-badc-604ce7bc5d77&sc_channel=el" target="_blank" class="cta-button">View Challenge Details</a>
-        </section>
-
-        <!-- CONTACT FORM SECTION - Added for user contact functionality -->
-        <section class="contact-form">
-            <h3>Get In Touch</h3>
-            <p>Have a question or want to connect? Send me a message!</p>
-            <!-- Form message container for success/error messages -->
-            <div id="form-message" class="form-message" style="display: none;"></div>
-            <form class="contact-form-container">
-                <!-- Contact form input fields -->
-                <div class="form-group">
-                    <label for="name">Name</label>
-                    <input type="text" id="name" name="name" required>
-                </div>
-                <div class="form-group">
-                    <label for="email">Email</label>
-                    <input type="email" id="email" name="email" required>
-                </div>
-                <div class="form-group">
-                    <label for="message">Message</label>
-                    <textarea id="message" name="message" rows="5" required></textarea>
-                </div>
-                <!-- Contact form submit button -->
-                <button type="submit" class="contact-submit-btn">Send Message</button>
-            </form>
-        </section>
-        <!-- END CONTACT FORM SECTION -->
-         <!-- LEAGUE DATA LOOKUP SECTION -->
-<section class="league-lookup">
-    <h3>League Data Lookup</h3>
-    <p>Enter a Riot ID to see their level and top champions!</p>
-    
-    <!-- Lookup message container for success/error messages -->
-    <div id="lookup-message" class="lookup-message" style="display: none;"></div>
-    
-    <div class="lookup-form-container">
-        <!-- Riot ID lookup form -->
-        <div class="form-group">
-            <label for="summoner-name">Riot ID</label>
-            <input type="text" id="summoner-name" name="summoner-name" placeholder="GameName#TAG (e.g., Hide on bush#KR1)" required>
-            <small style="color: #687078; display: block; margin-top: 4px;">Format: GameName#TAG</small>
+  <header class="hero">
+    <div class="wrap grid cols-2">
+      <!-- LEFT: avatar ABOVE name/title -->
+      <div class="hero-stack">
+        <div class="avatar-wrap">
+          <img src="assets/profile.jpg" alt="Michael Ramirez headshot" loading="lazy">
         </div>
-        <div class="form-group">
-            <label for="region">Region</label>
-            <select id="region" name="region">
-                <option value="na1">North America</option>
-                <option value="euw1">Europe West</option>
-                <option value="eun1">Europe Nordic & East</option>
-                <option value="kr">Korea</option>
-                <option value="br1">Brazil</option>
-                <option value="la1">Latin America North</option>
-                <option value="la2">Latin America South</option>
-                <option value="oc1">Oceania</option>
-                <option value="tr1">Turkey</option>
-                <option value="ru">Russia</option>
-                <option value="jp1">Japan</option>
-            </select>
+
+        <div class="hero-text">
+          <h1 class="neon-title">Michael Ramirez</h1>
+          <p class="subtitle">Cloud Builder & AWS Enthusiast</p>
+          <p class="muted">Currently working on the AWS Builder Challenge and learning to deploy with S3 + CloudFront. This site runs on AWS Amplify/CloudFront. </p>
+          <div class="cta">
+            <a class="btn" href="https://builder.aws.com/" target="_blank" rel="noopener">AWS Builder Center</a>
+            <a class="btn ghost" href="#contact">Contact</a>
+            <a class="btn github" href="https://github.com/YOUR_GITHUB_USERNAME" target="_blank" rel="noopener" aria-label="GitHub profile">
+              <svg viewBox="0 0 16 16" aria-hidden="true" class="gh-icon">
+                <path fill="currentColor" d="M8 .198a8 8 0 0 0-2.53 15.6c.4.074.55-.174.55-.386 0-.19-.007-.693-.01-1.36-2.24.487-2.71-1.08-2.71-1.08-.364-.924-.89-1.17-.89-1.17-.727-.497.055-.487.055-.487.804.057 1.226.826 1.226.826.715 1.225 1.876.871 2.334.666.073-.518.28-.872.508-1.073-1.788-.204-3.667-.894-3.667-3.98 0-.88.314-1.598.826-2.162-.083-.203-.358-1.022.078-2.13 0 0 .673-.215 2.205.825a7.67 7.67 0 0 1 2.006-.27c.68.003 1.366.092 2.006.27 1.53-1.04 2.203-.825 2.203-.825.438 1.108.163 1.927.08 2.13.514.564.825 1.282.825 2.162 0 3.095-1.882 3.774-3.674 3.975.287.247.543.735.543 1.482 0 1.07-.01 1.933-.01 2.197 0 .214.146.463.553.385A8.002 8.002 0 0 0 8 .198z"/>
+              </svg>
+              <span>GitHub</span>
+            </a>
+          </div>
         </div>
-        <!-- Lookup submit button -->
-        <button type="button" id="lookup-btn" class="lookup-submit-btn">Look Up Summoner</button>
+      </div>
+
+      <!-- RIGHT: quick facts -->
+      <div class="card panel">
+        <h3>Quick Facts</h3>
+        <ul class="list">
+          <li>Learning goal: build cloud skills one service at a time (S3, CloudFront, and beyond).</li>
+          <li>Fun project: this site is served globally via AWS.</li>
+          <li>Challenge: AWS Builder Challenge #2.</li>
+        </ul>
+      </div>
     </div>
+  </header>
 
-    <!-- Results display area -->
-    <div id="summoner-results" class="summoner-results" style="display: none;">
-        <h4>Summoner Info</h4>
-        <div id="summoner-info"></div>
-        <div id="champion-mastery"></div>
-    </div>
-</section>
-<!-- END LEAGUE DATA LOOKUP SECTION -->
+  <main class="wrap">
+    <section class="grid cols-3">
+      <div class="glass panel">
+        <h2>Cloud & DevOps</h2>
 
-    </main>
+        <!-- ===== SKILL LIST WITH BRAND-COLORED ICONS ===== -->
+        <ul class="list">
+          <!-- AWS (smile) -->
+          <li class="pill aws">
+            <span class="ic" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none">
+                <path d="M4 16c4-2.2 12-2.2 16 0" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>
+              </svg>
+            </span>
+            AWS
+          </li>
 
-    <footer>
-        <p>&copy; 2025 Michael Ramirez. Built with ❤️‍🔥 on AWS</p>
+          <!-- Linux (Tux-inspired beak/face) -->
+          <li class="pill linux">
+            <span class="ic" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none">
+                <circle cx="12" cy="10.5" r="4.5" stroke="black" stroke-width="1.4" fill="none"/>
+                <path d="M10 11.5l2-1 2 1-2 1-2-1z" fill="currentColor"/>
+                <path d="M8.2 19c1-1.8 6.6-1.8 7.6 0" stroke="black" stroke-width="1.4" stroke-linecap="round"/>
+              </svg>
+            </span>
+            Linux
+          </li>
+
+          <!-- Docker (whale + boxes) -->
+          <li class="pill docker">
+            <span class="ic" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none">
+                <path d="M4 13h8M5 10h3v3H5v-3Zm4 0h3v3H9v-3Zm4 0h3v3h-3v-3Z"
+                      stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+                <path d="M4 13c0 4 3 6 8 6 5.5 0 8-2.5 8-5.5 0-.7-.1-1.2-.3-1.5-.2-.3-.5-.5-.9-.5h-2"
+                      stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+                <circle cx="18.5" cy="14.2" r="0.8" fill="currentColor"/>
+              </svg>
+            </span>
+            Docker
+          </li>
+
+          <!-- Terraform (three modules) -->
+          <li class="pill terraform">
+            <span class="ic" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none">
+                <path d="M6 7l5 3v5L6 12V7Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+                <path d="M13 5l5 3v5l-5-3V5Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+                <path d="M13 13l5 3v3l-5-3v-3Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+              </svg>
+            </span>
+            Terraform
+          </li>
+
+          <!-- CI/CD (loop+gear vibe) -->
+          <li class="pill cicd">
+            <span class="ic" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none">
+                <path d="M12 8a4 4 0 1 1 0 8 4 4 0 0 1 0-8Z" stroke="currentColor" stroke-width="1.7"/>
+                <path d="M8 12h3l-1 1.5M16 12h-3l1-1.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M12 3v2M12 19v2M3 12h2M19 12h2" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+              </svg>
+            </span>
+            CI/CD
+          </li>
+        </ul>
+        <!-- ===== end skill list ===== -->
+      </div>
+
+      <div class="glass panel">
+        <h2>Projects</h2>
+        <div class="project">
+          <h3>Personal Site on AWS</h3>
+          <p class="muted">Static hosting + CDN via S3 & CloudFront. Automated deploys with Amplify.</p>
+        </div>
+        <div class="project">
+          <h3>Rift Rewind (Learning)</h3>
+          <p class="muted">Exploring Riot API integrations and serverless patterns.</p>
+        </div>
+      </div>
+
+      <div class="glass panel">
+        <h2>Highlights</h2>
+        <ul class="list">
+          <li>Fast, secure, globally distributed site.</li>
+          <li>Neon cyber style with accessible, semantic HTML.</li>
+          <li>No JS build step—easy to maintain.</li>
+        </ul>
+      </div>
+    </section>
+
+    <hr class="divider" />
+
+    <section id="contact" class="grid cols-2">
+      <div class="glass panel">
+        <h2>Get In Touch</h2>
+        <form action="https://formsubmit.co/" method="POST">
+          <input type="hidden" name="_subject" value="New message from michaelramirez.dev">
+          <label for="name">Name</label>
+          <input id="name" name="name" placeholder="Your name" required>
+          <label for="email">Email</label>
+          <input id="email" type="email" name="email" placeholder="name@example.com" required>
+          <label for="msg">Message</label>
+          <textarea id="msg" name="message" rows="5" placeholder="Say hello 👋" required></textarea>
+          <button class="btn" type="submit">Send Message</button>
+        </form>
+        <p class="tiny muted">Tip: swap the form action for your preferred service (SES, Lambda, etc.).</p>
+      </div>
+
+      <div class="glass panel">
+        <h2>League Data Lookup</h2>
+        <p class="muted tiny">Riot ID format: <b>GameName#TAG</b></p>
+        <form onsubmit="event.preventDefault(); alert('Wire this to your Riot API Lambda when ready ✨');">
+          <label for="region">Region</label>
+          <select id="region">
+            <option>North America</option><option>Europe West</option><option>Europe Nordic & East</option>
+            <option>Korea</option><option>Brazil</option><option>Latin America North</option>
+            <option>Latin America South</option><option>Oceania</option><option>Turkey</option>
+            <option>Russia</option><option>Japan</option>
+          </select>
+          <label for="riot">Riot ID</label>
+          <input id="riot" placeholder="GameName#TAG" />
+          <button class="btn" type="submit">Look Up Summoner</button>
+        </form>
+        <div class="panel" style="margin-top:10px;background:var(--glass)">
+          <h3 class="muted">Summoner Info</h3>
+          <p class="tiny muted">Results appear here once you hook up the API.</p>
+        </div>
+      </div>
+    </section>
+
+    <footer class="wrap">
+      <p class="tiny">© 2025 Michael Ramirez • Built with ❤️‍🔥 on AWS</p>
     </footer>
-    
-    <!-- Contact form JavaScript -->
-    <script src="script.js"></script>
-    <script>
-    // League Data Lookup - Calls Riot API via Lambda
-    const RIOT_API_URL = 'https://qhn53vmz4dsaf34lowcbnao3ya0ncvem.lambda-url.us-east-1.on.aws/'; // Replace with your Function URL
-    
-    document.addEventListener('DOMContentLoaded', function() {
-        const lookupBtn = document.getElementById('lookup-btn');
-        const summonerNameInput = document.getElementById('summoner-name');
-        const regionSelect = document.getElementById('region');
-        
-        lookupBtn.addEventListener('click', async function() {
-            const summonerName = summonerNameInput.value.trim();
-            const region = regionSelect.value;
-            const messageDiv = document.getElementById('lookup-message');
-            const resultsDiv = document.getElementById('summoner-results');
-            
-            if (!summonerName) {
-                showMessage('Please enter a Riot ID', 'error');
-                return;
-            }
-            
-            if (!summonerName.includes('#')) {
-                showMessage('Please use Riot ID format: GameName#TAG', 'error');
-                return;
-            }
-            
-            // Show loading state
-            lookupBtn.textContent = 'Looking up...';
-            lookupBtn.disabled = true;
-            messageDiv.style.display = 'none';
-            resultsDiv.style.display = 'none';
-            
-            try {
-                const response = await fetch(RIOT_API_URL, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        summonerName: summonerName,
-                        region: region
-                    })
-                });
-                
-                const data = await response.json();
-                
-                if (response.ok) {
-                    displaySummonerData(data);
-                    showMessage('Summoner found!', 'success');
-                } else {
-                    showMessage(data.error || 'Failed to fetch summoner data', 'error');
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                showMessage('Network error. Please try again.', 'error');
-            }
-            
-            // Reset button
-            lookupBtn.textContent = 'Look Up Summoner';
-            lookupBtn.disabled = false;
-        });
-        
-        // Enter key support
-        summonerNameInput.addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                lookupBtn.click();
-            }
-        });
-    });
-    
-    function displaySummonerData(data) {
-        const resultsDiv = document.getElementById('summoner-results');
-        const summonerInfo = document.getElementById('summoner-info');
-        const championMastery = document.getElementById('champion-mastery');
-        
-        // Display summoner info
-        summonerInfo.innerHTML = `
-            <div class="summoner-card">
-                <h5>${data.summoner.name}</h5>
-                <p>Level: ${data.summoner.level}</p>
-            </div>
-        `;
-        
-        // Display top champions
-        if (data.topChampions && data.topChampions.length > 0) {
-            const championsHtml = data.topChampions.map(champ => `
-                <div class="champion-card">
-                    <p><strong>Champion ID:</strong> ${champ.championId}</p>
-                    <p><strong>Mastery Level:</strong> ${champ.championLevel}</p>
-                    <p><strong>Mastery Points:</strong> ${champ.championPoints.toLocaleString()}</p>
-                </div>
-            `).join('');
-            
-            championMastery.innerHTML = `
-                <h5>Top Champions</h5>
-                <div class="champions-grid">
-                    ${championsHtml}
-                </div>
-            `;
-        } else {
-            championMastery.innerHTML = '<p>No champion mastery data found.</p>';
-        }
-        
-        resultsDiv.style.display = 'block';
-    }
-    
-    function showMessage(text, type) {
-        const messageDiv = document.getElementById('lookup-message');
-        messageDiv.textContent = text;
-        messageDiv.className = `lookup-message ${type}`;
-        messageDiv.style.display = 'block';
-        
-        // Auto-hide after 10 seconds
-        setTimeout(() => {
-            messageDiv.style.display = 'none';
-        }, 10000);
-    }
-</script>
-
+  </main>
 </body>
 </html>
