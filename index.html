@@ -7,225 +7,7 @@
   <meta name="description" content="Michael Ramirez • Cloud Builder & AWS Enthusiast" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
-  <style>
-    :root{
-      --bg:#06070c;
-      --panel:#0b0e18;
-      --text:#dfe7ff;
-      --muted:#9bb0ff;
-
-      /* REFINED BRAND PALETTE (teal → azure) */
-      --brand1:#00e0b8;  /* teal */
-      --brand2:#5b8aff;  /* azure */
-      --brand3:#a7b7ff;  /* soft periwinkle accent */
-
-      --glass:rgba(255,255,255,.06);
-      --max:1100px;
-      --radius:18px;
-
-      /* softer, professional glow using brand tones */
-      --shadow:
-        0 0 32px rgba(0,224,184,.22),
-        0 0 48px rgba(91,138,255,.16);
-
-      /* skill pill brand colors */
-      --aws:#ff9900;
-      --docker:#2496ED;
-      --terraform:#844FBA;
-      --linux:#FCC624;
-      --cicd:#00e5ff;
-    }
-
-    *{box-sizing:border-box}
-    html,body{height:100%}
-    body{
-      margin:0;
-      background:
-        radial-gradient(1200px 600px at 10% 0%, rgba(0,224,184,.14), transparent 60%),
-        radial-gradient(900px 500px at 100% 10%, rgba(91,138,255,.12), transparent 70%),
-        linear-gradient(#05060a,#070915 30%,#06070c 100%);
-      color:var(--text);
-      font:400 16px/1.6 Inter,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,"Apple Color Emoji","Segoe UI Emoji";
-      letter-spacing:.2px;
-    }
-    a{color:var(--brand2); text-decoration:none}
-    a:hover{filter:brightness(1.12); text-decoration:underline}
-
-    .wrap{max-width:var(--max); margin:0 auto; padding:24px}
-    .card{
-      background:linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
-      border:1px solid rgba(255,255,255,.08);
-      box-shadow:var(--shadow);
-      border-radius:var(--radius);
-      overflow:hidden;
-    }
-    .glass{
-      background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
-      border:1px solid rgba(255,255,255,.12);
-      border-radius:var(--radius);
-      backdrop-filter: blur(8px);
-    }
-
-    /* --- hero --- */
-    header.hero{ padding:88px 0 56px; position:relative; }
-
-    .neon-title{
-      font-size:clamp(32px,6vw,56px);
-      font-weight:800;
-      line-height:1.1;
-      margin:0 0 8px;
-      text-shadow:
-        0 0 10px rgba(0,224,184,.55),
-        0 0 22px rgba(91,138,255,.35);
-      background:linear-gradient(90deg,var(--brand1),var(--brand2) 60%,var(--brand3));
-      -webkit-background-clip:text; background-clip:text; color:transparent;
-    }
-    .subtitle{ color:var(--muted); font-weight:600; margin:0 0 24px; font-size:clamp(16px,2.5vw,20px); }
-
-    .cta{ display:flex; gap:12px; flex-wrap:wrap; }
-
-    .btn{
-      position:relative; display:inline-flex; align-items:center; gap:10px;
-      padding:12px 18px; font-weight:700; color:#031218;
-      background:linear-gradient(90deg,var(--brand1),var(--brand2));
-      border-radius:12px; border:0;
-      box-shadow:
-        0 0 22px rgba(0,224,184,.28),
-        0 0 34px rgba(91,138,255,.20);
-      transition:transform .15s ease, filter .15s ease;
-    }
-    .btn:hover{ transform:translateY(-1px); filter:brightness(1.03); }
-
-    .btn.ghost{
-      background:transparent; color:var(--text);
-      border:1px solid rgba(255,255,255,.18);
-      box-shadow:none;
-    }
-
-    .grid{display:grid; gap:18px}
-    @media(min-width:880px){
-      .grid.cols-2{grid-template-columns: 1.1fr 1fr}
-      .grid.cols-3{grid-template-columns: repeat(3,1fr)}
-    }
-
-    section{margin:28px 0}
-    h2{ margin:6px 0 16px; font-size:clamp(22px,3vw,28px); font-weight:800; letter-spacing:.4px; }
-    h3{margin:0 0 6px; font-size:18px}
-    .list{display:grid; gap:10px; padding:0; margin:0; list-style:none}
-
-    .pill{
-      display:flex; align-items:center; gap:10px;
-      padding:10px 14px; border-radius:999px;
-      background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.12);
-    }
-
-    .panel{padding:22px}
-    .project{padding:18px; border-left:3px solid var(--brand1)}
-    .muted{color:var(--muted)}
-
-    form input, form textarea, select{
-      width:100%; padding:12px 14px; margin:8px 0 14px;
-      border-radius:12px; border:1px solid rgba(255,255,255,.12);
-      background:#0a0e18; color:var(--text);
-      outline:none; box-shadow:inset 0 0 0 9999px rgba(255,255,255,.02);
-    }
-    form button{cursor:pointer}
-    footer{padding:36px 0 64px; color:var(--muted)}
-    .tiny{font-size:12px}
-
-    .divider{
-      height:1px; border:0; margin:24px 0;
-      background:linear-gradient(90deg, transparent, rgba(0,224,184,.70), rgba(91,138,255,.70), transparent);
-      filter:drop-shadow(0 0 6px rgba(0,224,184,.55));
-    }
-
-    /* ===== avatar above name ===== */
-    .hero-stack{ display:flex; flex-direction:column; align-items:flex-start; gap:clamp(12px,2.5vw,20px); }
-    @media (max-width:680px){
-      .hero-stack{ align-items:center; text-align:center; }
-      .cta{ justify-content:center; }
-    }
-    .avatar-wrap{
-      --size:clamp(110px,16vw,160px);
-      width:var(--size); height:var(--size);
-      border-radius:9999px; padding:5px;
-      background:
-        radial-gradient(140% 140% at 12% 10%, rgba(0,224,184,.55), transparent 55%),
-        radial-gradient(120% 120% at 85% 85%, rgba(91,138,255,.45), transparent 60%),
-        radial-gradient(120% 120% at 50% 50%, rgba(167,183,255,.35), transparent 65%);
-      box-shadow:
-        0 0 26px rgba(0,224,184,.28),
-        0 0 40px rgba(91,138,255,.22),
-        inset 0 0 14px rgba(255,255,255,.08);
-    }
-    .avatar-wrap img{
-      width:100%; height:100%; display:block; border-radius:9999px; object-fit:cover;
-      background:#0a0e18; box-shadow:0 2px 10px rgba(0,0,0,.35); filter:saturate(1.04) contrast(1.02);
-    }
-    @media (prefers-reduced-motion:no-preference){
-      .avatar-wrap{ animation:avatarGlow 5s ease-in-out infinite alternate; }
-      @keyframes avatarGlow{
-        from{ box-shadow:
-          0 0 18px rgba(0,224,184,.25),
-          0 0 28px rgba(91,138,255,.18),
-          inset 0 0 10px rgba(255,255,255,.06); }
-        to{ box-shadow:
-          0 0 34px rgba(0,224,184,.45),
-          0 0 48px rgba(91,138,255,.26),
-          inset 0 0 16px rgba(255,255,255,.10); }
-      }
-    }
-    .hero-text{ min-width:0; max-width:60ch; }
-
-    /* === GitHub button theme === */
-    .btn.github{
-      background:#0d1117; color:#c9d1d9; border:1px solid rgba(255,255,255,.18);
-      box-shadow:0 0 18px rgba(0,224,184,.18), 0 0 28px rgba(91,138,255,.14);
-    }
-    .btn.github:hover{ filter:brightness(1.1); transform:translateY(-1px); }
-    .btn.github .gh-icon{ width:20px; height:20px; display:inline-block; flex-shrink:0; color:#c9d1d9; }
-    .btn.github span{white-space:nowrap;}
-
-    /* === LinkedIn button theme === */
-    .btn.linkedin{
-      background:#0a66c2; color:#ffffff;
-      border:1px solid rgba(255,255,255,.18);
-      box-shadow:0 0 18px rgba(0,224,184,.18), 0 0 28px rgba(91,138,255,.14);
-    }
-    .btn.linkedin:hover{ filter:brightness(1.08); transform:translateY(-1px); }
-    .btn.linkedin .li-icon{ width:20px; height:20px; display:inline-block; flex-shrink:0; color:#ffffff; }
-
-    /* === pill icons === */
-    .pill .ic{ width:18px; height:18px; flex:0 0 18px; }
-    .pill.aws .ic{ color:var(--aws); }
-    .pill.linux .ic{ color:var(--linux); }
-    .pill.docker .ic{ color:var(--docker); }
-    .pill.terraform .ic{ color:var(--terraform); }
-    .pill.cicd .ic{ color:var(--cicd); }
-    .pill .ic svg{ width:100%; height:100%; display:block; filter:drop-shadow(0 0 6px rgba(0,224,184,.25)); }
-
-    /* === refined Quick Facts list with glass icons === */
-    .fact-list{ list-style:none; margin:0; padding:0; display:grid; gap:16px; }
-    .fact{
-      display:flex; align-items:center; gap:16px;
-      padding:18px;
-      border-radius:14px;
-      background:linear-gradient(180deg, rgba(255,255,255,.035), rgba(255,255,255,.02));
-      border:1px solid rgba(255,255,255,.08);
-    }
-    .icon-wrap{
-      width:48px; height:48px; border-radius:12px;
-      display:grid; place-items:center; flex:0 0 48px;
-      background:
-        linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
-      border:1px solid rgba(255,255,255,.14);
-      box-shadow:inset 0 0 18px rgba(91,138,255,.08), 0 0 18px rgba(0,224,184,.12);
-    }
-    .icon{ width:26px; height:26px; color:#a9c8ff; opacity:.95; }
-    .fact strong{ color:#e9efff; }
-    .fact a{ color:var(--brand3); text-decoration:underline; text-underline-offset:2px; }
-    .fact a:hover{ color:#c9d6ff; }
-  </style>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <header class="hero">
@@ -239,7 +21,8 @@
         <div class="hero-text">
           <h1 class="neon-title">Michael Ramirez</h1>
           <p class="subtitle">Cloud Builder & AWS Enthusiast</p>
-          <p class="muted">Currently working on the AWS Builder Challenge and learning to deploy with S3 + CloudFront. This site runs on AWS Amplify/CloudFront. </p>
+          <p class="muted">Currently working on the AWS Builder Challenge and learning to deploy with S3 + CloudFront. This site runs on AWS Amplify/CloudFront.</p>
+
           <div class="cta">
             <a class="btn" href="https://builder.aws.com/" target="_blank" rel="noopener">AWS Builder Center</a>
 
@@ -262,13 +45,12 @@
         </div>
       </div>
 
-      <!-- RIGHT: quick facts -->
+      <!-- RIGHT: quick facts (SVG icons; no GIFs) -->
       <div class="card panel">
         <h3>Quick Facts</h3>
         <ul class="fact-list">
           <li class="fact">
             <span class="icon-wrap">
-              <!-- Target/bullseye -->
               <svg class="icon" viewBox="0 0 24 24" fill="none">
                 <circle cx="12" cy="12" r="8.5" stroke="currentColor" stroke-width="1.6"/>
                 <circle cx="12" cy="12" r="4.5" stroke="currentColor" stroke-width="1.6"/>
@@ -280,7 +62,6 @@
 
           <li class="fact">
             <span class="icon-wrap">
-              <!-- Cloud/user -->
               <svg class="icon" viewBox="0 0 24 24" fill="none">
                 <path d="M6.5 15.5a3.5 3.5 0 1 0 0 7h10a4 4 0 0 0 0-8 5 5 0 0 0-9.6-1.6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
                 <circle cx="17.5" cy="8" r="3.2" stroke="currentColor" stroke-width="1.6"/>
@@ -291,7 +72,6 @@
 
           <li class="fact">
             <span class="icon-wrap">
-              <!-- Star/award -->
               <svg class="icon" viewBox="0 0 24 24" fill="none">
                 <path d="M12 3l2.3 4.7 5.2.8-3.8 3.7.9 5.2L12 15.7 7.4 17.4l.9-5.2L4.5 8.5l5.2-.8L12 3Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
               </svg>
@@ -299,10 +79,8 @@
             <span><strong>Challenge:</strong> AWS Builder Challenge #2.</span>
           </li>
 
-          <!-- NEW art portfolio link (subtle inline) -->
           <li class="fact">
             <span class="icon-wrap">
-              <!-- Palette/brush -->
               <svg class="icon" viewBox="0 0 24 24" fill="none">
                 <path d="M12 3a9 9 0 1 0 8.5 12.5c.6-1.4-.2-3-1.7-3.4-1.4-.4-2.8.6-2.8 2v.3a1.8 1.8 0 0 1-2.1 1.8c-2.4-.4-4.4-2.5-4.8-4.9a1.8 1.8 0 0 1 1.8-2.1h.3c1.4 0 2.4-1.4 2-2.8-.4-1.5-2-2.3-3.4-1.7A9 9 0 0 0 12 3Z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
               </svg>
@@ -321,8 +99,6 @@
     <section class="grid cols-3">
       <div class="glass panel">
         <h2>Cloud & DevOps</h2>
-
-        <!-- ===== SKILL LIST WITH BRAND-COLORED ICONS ===== -->
         <ul class="list">
           <li class="pill aws">
             <span class="ic" aria-hidden="true">
@@ -375,7 +151,6 @@
             CI/CD
           </li>
         </ul>
-        <!-- ===== end skill list ===== -->
       </div>
 
       <div class="glass panel">
@@ -405,6 +180,7 @@
     <section id="contact" class="grid cols-2">
       <div class="glass panel">
         <h2>Get In Touch</h2>
+        <!-- Contact form uses formsubmit.co (kept; not connected to your Lambda) -->
         <form action="https://formsubmit.co/" method="POST">
           <input type="hidden" name="_subject" value="New message from michaelramirez.dev">
           <label for="name">Name</label>
@@ -418,24 +194,35 @@
         <p class="tiny muted">Tip: swap the form action for your preferred service (SES, Lambda, etc.).</p>
       </div>
 
+      <!-- League Data Lookup wired to your Lambda via script.js -->
       <div class="glass panel">
         <h2>League Data Lookup</h2>
         <p class="muted tiny">Riot ID format: <b>GameName#TAG</b></p>
-        <form onsubmit="event.preventDefault(); alert('Wire this to your Riot API Lambda when ready ✨');">
+
+        <form id="riot-form">
           <label for="region">Region</label>
-          <select id="region">
-            <option>North America</option><option>Europe West</option><option>Europe Nordic & East</option>
-            <option>Korea</option><option>Brazil</option><option>Latin America North</option>
-            <option>Latin America South</option><option>Oceania</option><option>Turkey</option>
-            <option>Russia</option><option>Japan</option>
+          <select id="region" name="region">
+            <option value="na1">North America (NA1)</option>
+            <option value="euw1">Europe West (EUW1)</option>
+            <option value="eun1">Europe Nordic &amp; East (EUN1)</option>
+            <option value="kr">Korea (KR)</option>
+            <option value="br1">Brazil (BR1)</option>
+            <option value="la1">Latin America North (LA1)</option>
+            <option value="la2">Latin America South (LA2)</option>
+            <option value="oc1">Oceania (OC1)</option>
+            <option value="tr1">Turkey (TR1)</option>
+            <option value="ru">Russia (RU)</option>
+            <option value="jp1">Japan (JP1)</option>
           </select>
-          <label for="riot">Riot ID</label>
-          <input id="riot" placeholder="GameName#TAG" />
+
+          <label for="riotId">Riot ID</label>
+          <input id="riotId" name="riotId" placeholder="GameName#TAG" required />
           <button class="btn" type="submit">Look Up Summoner</button>
         </form>
-        <div class="panel" style="margin-top:10px;background:var(--glass)">
+
+        <div id="riot-results" class="panel" style="margin-top:10px;background:var(--glass)">
           <h3 class="muted">Summoner Info</h3>
-          <p class="tiny muted">Results appear here once you hook up the API.</p>
+          <p class="tiny muted">Results appear here after the lookup.</p>
         </div>
       </div>
     </section>
@@ -444,5 +231,7 @@
       <p class="tiny">© 2025 Michael Ramirez • Built with ❤️‍🔥 on AWS</p>
     </footer>
   </main>
+
+  <script src="script.js"></script>
 </body>
 </html>

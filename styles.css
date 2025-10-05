@@ -37,7 +37,7 @@ body{
 }
 
 a{color:var(--brand2); text-decoration:none}
-a:hover{filter:brightness(1.12)}
+a:hover{filter:brightness(1.12); text-decoration:underline}
 
 .wrap{max-width:var(--max); margin:0 auto; padding:24px}
 .card{
@@ -164,26 +164,28 @@ h3{margin:0 0 6px; font-size:18px}
 .pill.terraform .ic{ color:var(--terraform); }
 .pill.cicd .ic{ color:var(--cicd); }
 
-/* Quick Facts GIF layout */
-.fact-list{ list-style:none; padding:0; margin:0; display:grid; gap:14px; }
+/* ✅ Quick Facts (SVG/glass icons) — GIF version removed */
+.fact-list{ list-style:none; padding:0; margin:0; display:grid; gap:16px; }
 .fact{
-  display:grid;
-  grid-template-columns: 28px 1fr;
-  gap:12px;
-  align-items:start;
+  display:flex; align-items:center; gap:16px;
+  padding:18px;
+  border-radius:14px;
+  background:linear-gradient(180deg, rgba(255,255,255,.035), rgba(255,255,255,.02));
+  border:1px solid rgba(255,255,255,.08);
 }
-.fact .gif{
-  width:28px; height:28px;
-  border-radius:6px;
-  object-fit:cover;
-  background:#0b0e18;
-  box-shadow:0 0 8px rgba(0,224,184,.25), 0 0 14px rgba(91,138,255,.18);
+.icon-wrap{
+  width:48px; height:48px; border-radius:12px;
+  display:grid; place-items:center; flex:0 0 48px;
+  background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+  border:1px solid rgba(255,255,255,.14);
+  box-shadow:inset 0 0 18px rgba(91,138,255,.08), 0 0 18px rgba(0,224,184,.12);
 }
-@media (prefers-reduced-motion: reduce){
-  .fact .gif{ animation: none !important; }
-}
+.icon{ width:26px; height:26px; color:#a9c8ff; opacity:.95; }
+.fact strong{ color:#e9efff; }
+.fact a{ color:var(--brand3); text-decoration:underline; text-underline-offset:2px; }
+.fact a:hover{ color:#c9d6ff; }
 
-/* forms / footer (unchanged) */
+/* forms / footer */
 form input, form textarea, select{
   width:100%; padding:12px 14px; margin:8px 0 14px;
   border-radius:12px; border:1px solid rgba(255,255,255,.12);
