@@ -30,7 +30,6 @@ document.addEventListener('DOMContentLoaded', () => {
       const resp = await fetch(RIOT_LAMBDA_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        // ⬇️ send the FULL riotId in "summonerName" exactly as Lambda expects
         body: JSON.stringify({ summonerName: riotId, region: platform })
       });
 
@@ -41,20 +40,69 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       const data = await resp.json();
-      resultsEl.innerHTML = `
-        <pre style="white-space:pre-wrap; background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.08); padding:12px; border-radius:12px; max-height:260px; overflow:auto;">
-${escapeHtml(JSON.stringify(data, null, 2))}
-        </pre>
-      `;
+      resultsEl.innerHTML = renderResult(data);
+      // animate bars after paint
+      requestAnimationFrame(() => {
+        document.querySelectorAll('.bar > i').forEach(el => {
+          const w = el.getAttribute('data-w') || '0';
+          el.style.width = w + '%';
+        });
+      });
     } catch (err) {
       resultsEl.innerHTML = `<p class="tiny" style="color:#ff9b9b">Network error: ${escapeHtml(err.message)}</p>`;
     }
   });
 });
 
-// Simple HTML escape for <pre> output
+function renderResult(data){
+  const name = (data?.summoner?.name ?? 'Unknown');
+  const level = (data?.summoner?.level ?? '—');
+  const champs = Array.isArray(data?.topChampions) ? data.topChampions.slice(0,3) : [];
+
+  // compute a relative max for progress bars
+  const maxPts = Math.max(1, ...champs.map(c => Number(c.championPoints||0)));
+
+  const champRows = champs.map(c => {
+    const id = c.championId ?? '—';
+    const pts = Number(c.championPoints||0);
+    const lvl = c.championLevel ?? '—';
+    const pct = Math.max(6, Math.round((pts / maxPts) * 100)); // min 6% so tiny values still visible
+    return `
+      <div class="champ">
+        <div>
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;">
+            <strong>Champion ID ${id}</strong>
+            <span class="badge">Mastery Lv ${lvl}</span>
+          </div>
+          <div class="bar" aria-label="mastery progress">
+            <i data-w="${pct}"></i>
+          </div>
+        </div>
+        <div class="meta">${formatNumber(pts)} pts</div>
+      </div>
+    `;
+  }).join('') || `<p class="tiny muted">No champion mastery data found.</p>`;
+
+  return `
+    <div class="result-card">
+      <div class="result-header">
+        <div class="result-title">Summoner: <strong>${escapeHtml(name)}</strong></div>
+        <span class="badge">Level ${escapeHtml(String(level))}</span>
+      </div>
+      <div class="champ-list">
+        ${champRows}
+      </div>
+    </div>
+  `;
+}
+
+// helpers
+function formatNumber(n){
+  const x = Number(n)||0;
+  return x.toLocaleString();
+}
 function escapeHtml(s) {
-  return s.replace(/[&<>"'`=\/]/g, (c) => ({
+  return String(s).replace(/[&<>"'`=\/]/g, (c) => ({
     '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;',
     "'": '&#39;', '`': '&#96;', '=': '&#61;', '/': '&#47;'
   }[c]));
