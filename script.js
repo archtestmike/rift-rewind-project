@@ -8,22 +8,49 @@ const REGION_CODE = {
   'tr1': 'tr1', 'ru': 'ru', 'jp1': 'jp1'
 };
 
+// Tagline → platform auto-detect (uppercased keys)
+const TAG_TO_PLATFORM = {
+  'NA1': 'na1', 'EUW': 'euw1', 'EUN': 'eun1', 'KR1': 'kr',
+  'BR1': 'br1', 'LA1': 'la1', 'LA2': 'la2', 'OC1': 'oc1',
+  'TR1': 'tr1', 'RU': 'ru', 'JP1': 'jp1'
+};
+
 document.addEventListener('DOMContentLoaded', () => {
   const form = document.getElementById('riot-form');
   const resultsEl = document.getElementById('riot-results');
+  const regionSel = document.getElementById('region');
+  const riotInput = document.getElementById('riotId');
   if (!form || !resultsEl) return;
+
+  // If user types a tag that implies a shard, nudge the selector
+  riotInput.addEventListener('blur', () => {
+    const tag = getTagLine(riotInput.value);
+    const auto = tag && TAG_TO_PLATFORM[tag.toUpperCase()];
+    if (auto && regionSel.value !== auto) {
+      regionSel.value = auto;
+      showNote(resultsEl, `Detected region from tag <b>#${escapeHtml(tag)}</b> → set to <b>${auto.toUpperCase()}</b>.`);
+    }
+  });
 
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
     resultsEl.innerHTML = '<p class="tiny muted">Fetching…</p>';
 
-    const riotId = (form.riotId.value || '').trim();
-    const platform = REGION_CODE[form.region.value];
+    const riotId = (riotInput.value || '').trim();
+    let platform = REGION_CODE[regionSel.value];
 
     // Expect Riot ID as GameName#TAG (send EXACTLY this to Lambda)
     if (!riotId.includes('#')) {
       resultsEl.innerHTML = '<p class="tiny" style="color:#ff9b9b">Invalid Riot ID. Use <b>GameName#TAG</b>.</p>';
       return;
+    }
+
+    // Auto-correct platform from tag if available
+    const tag = getTagLine(riotId);
+    const inferred = tag && TAG_TO_PLATFORM[tag.toUpperCase()];
+    if (inferred && inferred !== platform) {
+      platform = inferred;
+      showNote(resultsEl, `Using region inferred from tag <b>#${escapeHtml(tag)}</b> → <b>${inferred.toUpperCase()}</b>.`);
     }
 
     try {
@@ -41,7 +68,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const data = await resp.json();
       resultsEl.innerHTML = renderResult(data);
-      // animate bars after paint
       requestAnimationFrame(() => {
         document.querySelectorAll('.bar > i').forEach(el => {
           const w = el.getAttribute('data-w') || '0';
@@ -54,19 +80,27 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 
+function getTagLine(riotId){
+  const idx = String(riotId).indexOf('#');
+  return idx > -1 ? riotId.slice(idx+1).trim() : '';
+}
+
+function showNote(container, html){
+  container.innerHTML = `<p class="note">${html}</p>`;
+}
+
 function renderResult(data){
   const name = (data?.summoner?.name ?? 'Unknown');
   const level = (data?.summoner?.level ?? '—');
   const champs = Array.isArray(data?.topChampions) ? data.topChampions.slice(0,3) : [];
 
-  // compute a relative max for progress bars
   const maxPts = Math.max(1, ...champs.map(c => Number(c.championPoints||0)));
 
   const champRows = champs.map(c => {
     const id = c.championId ?? '—';
     const pts = Number(c.championPoints||0);
     const lvl = c.championLevel ?? '—';
-    const pct = Math.max(6, Math.round((pts / maxPts) * 100)); // min 6% so tiny values still visible
+    const pct = Math.max(6, Math.round((pts / maxPts) * 100));
     return `
       <div class="champ">
         <div>
@@ -97,10 +131,7 @@ function renderResult(data){
 }
 
 // helpers
-function formatNumber(n){
-  const x = Number(n)||0;
-  return x.toLocaleString();
-}
+function formatNumber(n){ return (Number(n)||0).toLocaleString(); }
 function escapeHtml(s) {
   return String(s).replace(/[&<>"'`=\/]/g, (c) => ({
     '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;',
