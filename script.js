@@ -201,7 +201,14 @@ function renderResult(data, ms=0){
     `;
   }).join('') || `<p class="tiny muted">No champion mastery data found.</p>`;
 
-  const latency = ms ? `<span class="chip">Fetched in ${ms} ms</span>` : '';
+  // === AWS-powered latency + edge info chip ===
+  const awsRegion = getAwsRegionFromUrl(RIOT_LAMBDA_URL) || 'AWS';
+  const edge = detectEdgeCDN();
+  const latencyChip = ms
+    ? `<span class="chip tooltip">Fetched in ${ms} ms via AWS Lambda (${awsRegion})<span class="tip">Path: Browser → ${edge} → Lambda (${awsRegion}) → Riot API → back.</span></span>`
+    : '';
+
+  const edgeChip = edge ? `<span class="chip">Edge: ${edge}</span>` : '';
 
   return `
     <div class="result-card">
@@ -212,7 +219,8 @@ function renderResult(data, ms=0){
       <div class="summary">
         <span class="chip">Total Points: ${formatNumber(totalPts)}</span>
         <span class="chip">Avg Mastery Lv: ${escapeHtml(String(avgLvl))}</span>
-        ${latency}
+        ${latencyChip}
+        ${edgeChip}
       </div>
       <div class="champ-list">
         ${champRows}
@@ -247,4 +255,16 @@ function escapeHtml(s){
   return String(s).replace(/[&<>"'`=\/]/g, (c) => ({
     '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;','`':'&#96;','=':'&#61;','/':'&#47;'
   }[c]));
+}
+// Parse region from Lambda Function URL
+function getAwsRegionFromUrl(url){
+  // e.g., https://...lambda-url.us-east-1.on.aws/ → us-east-1
+  const m = String(url).match(/lambda-url\.([a-z0-9-]+)\.on\.aws/i);
+  return m ? m[1] : '';
+}
+// Best-effort CDN detection (for the edge chip)
+function detectEdgeCDN(){
+  const h = (location.hostname||'').toLowerCase();
+  if (/cloudfront|amplifyapp\.com/.test(h)) return 'CloudFront';
+  return 'CloudFront'; // your site runs on it—declare it proudly
 }
