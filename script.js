@@ -15,12 +15,18 @@ const TAG_TO_PLATFORM = {
   'TR1': 'tr1', 'RU': 'ru', 'JP1': 'jp1'
 };
 
+// Champion metadata cache (in-memory)
+let CHAMP_META = { version: '', byKey: {} };
+
 document.addEventListener('DOMContentLoaded', () => {
   const form = document.getElementById('riot-form');
   const resultsEl = document.getElementById('riot-results');
   const regionSel = document.getElementById('region');
   const riotInput = document.getElementById('riotId');
   if (!form || !resultsEl) return;
+
+  // Preload champion meta in the background (non-blocking)
+  loadChampionMeta().catch(()=>{});
 
   // If user types a tag that implies a shard, nudge the selector
   riotInput.addEventListener('blur', () => {
@@ -39,7 +45,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const riotId = (riotInput.value || '').trim();
     let platform = REGION_CODE[regionSel.value];
 
-    // Expect Riot ID as GameName#TAG (send EXACTLY this to Lambda)
     if (!riotId.includes('#')) {
       resultsEl.innerHTML = '<p class="tiny" style="color:#ff9b9b">Invalid Riot ID. Use <b>GameName#TAG</b>.</p>';
       return;
@@ -67,6 +72,10 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       const data = await resp.json();
+
+      // Ensure champ metadata is ready before rendering
+      try { await loadChampionMeta(); } catch {}
+
       resultsEl.innerHTML = renderResult(data);
       requestAnimationFrame(() => {
         document.querySelectorAll('.bar > i').forEach(el => {
@@ -80,15 +89,49 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 
-function getTagLine(riotId){
-  const idx = String(riotId).indexOf('#');
-  return idx > -1 ? riotId.slice(idx+1).trim() : '';
+/* ---------- Champion metadata (Data Dragon) ---------- */
+// Loads and caches champion metadata (version + byKey map) for 24h
+async function loadChampionMeta(){
+  if (CHAMP_META.version && Object.keys(CHAMP_META.byKey).length) return CHAMP_META;
+
+  // localStorage cache
+  try {
+    const cached = JSON.parse(localStorage.getItem('champMeta') || 'null');
+    if (cached && cached.expires && Date.now() < cached.expires) {
+      CHAMP_META = { version: cached.version, byKey: cached.byKey || {} };
+      return CHAMP_META;
+    }
+  } catch {}
+
+  // 1) latest version
+  let version = '14.20.1'; // fallback
+  try {
+    const vr = await fetch('https://ddragon.leagueoflegends.com/api/versions.json', { cache: 'no-store' });
+    const arr = await vr.json();
+    if (Array.isArray(arr) && arr[0]) version = arr[0];
+  } catch {}
+
+  // 2) champion.json for that version
+  let byKey = {};
+  try {
+    const cr = await fetch(`https://ddragon.leagueoflegends.com/cdn/${version}/data/en_US/champion.json`, { cache: 'force-cache' });
+    const data = await cr.json();
+    // Map numeric "key" (string) → { id, name, title, tags[] }
+    Object.values(data.data).forEach(ch => {
+      byKey[ch.key] = { id: ch.id, name: ch.name, title: ch.title, tags: ch.tags || [] };
+    });
+  } catch {}
+
+  CHAMP_META = { version, byKey };
+  try {
+    localStorage.setItem('champMeta', JSON.stringify({
+      version, byKey, expires: Date.now() + 24*60*60*1000
+    }));
+  } catch {}
+  return CHAMP_META;
 }
 
-function showNote(container, html){
-  container.innerHTML = `<p class="note">${html}</p>`;
-}
-
+/* ---------- Rendering ---------- */
 function renderResult(data){
   const name = (data?.summoner?.name ?? 'Unknown');
   const level = (data?.summoner?.level ?? '—');
@@ -97,17 +140,33 @@ function renderResult(data){
   const maxPts = Math.max(1, ...champs.map(c => Number(c.championPoints||0)));
 
   const champRows = champs.map(c => {
-    const id = c.championId ?? '—';
+    const key = String(c.championId ?? '');
+    const meta = CHAMP_META.byKey[key];
+    const displayName = meta?.name || `Champion ID ${key}`;
+    const iconUrl = meta
+      ? `https://ddragon.leagueoflegends.com/cdn/${CHAMP_META.version}/img/champion/${meta.id}.png`
+      : '';
+    const title = meta?.title ? smartTitle(meta.title) : '';
+    const tags = Array.isArray(meta?.tags) ? meta.tags : [];
+
     const pts = Number(c.championPoints||0);
     const lvl = c.championLevel ?? '—';
     const pct = Math.max(6, Math.round((pts / maxPts) * 100));
+
+    const tagChips = tags.map(t => `<span class="tag">${escapeHtml(t)}</span>`).join('');
+
     return `
       <div class="champ">
         <div>
-          <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;">
-            <strong>Champion ID ${id}</strong>
+          <div class="champ-title" style="justify-content:space-between;">
+            <div class="champ-title tooltip" aria-label="${escapeHtml(displayName)} ${title ? `– ${escapeHtml(title)}` : ''}">
+              <span class="champ-icon">${iconUrl ? `<img src="${iconUrl}" alt="${escapeHtml(displayName)} icon" loading="lazy">` : ''}</span>
+              <strong>${escapeHtml(displayName)}</strong>
+              ${title ? `<span class="tip">${escapeHtml(displayName)} — ${escapeHtml(title)}</span>` : ''}
+            </div>
             <span class="badge">Mastery Lv ${lvl}</span>
           </div>
+          <div class="role-tags">${tagChips}</div>
           <div class="bar" aria-label="mastery progress">
             <i data-w="${pct}"></i>
           </div>
@@ -130,7 +189,16 @@ function renderResult(data){
   `;
 }
 
-// helpers
+/* ---------- helpers ---------- */
+function smartTitle(t){ 
+  // Capitalize first letter if Data Dragon gives lowercased titles
+  return String(t || '').slice(0,1).toUpperCase() + String(t || '').slice(1);
+}
+function getTagLine(riotId){
+  const idx = String(riotId).indexOf('#');
+  return idx > -1 ? riotId.slice(idx+1).trim() : '';
+}
+function showNote(container, html){ container.innerHTML = `<p class="note">${html}</p>`; }
 function formatNumber(n){ return (Number(n)||0).toLocaleString(); }
 function escapeHtml(s) {
   return String(s).replace(/[&<>"'`=\/]/g, (c) => ({
