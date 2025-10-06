@@ -35,7 +35,6 @@ body{
   font:400 16px/1.6 Inter,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,"Apple Color Emoji","Segoe UI Emoji";
   letter-spacing:.2px;
 }
-
 a{color:var(--brand2); text-decoration:none}
 a:hover{filter:brightness(1.12); text-decoration:underline}
 
@@ -193,7 +192,7 @@ form input, form textarea, select{
   outline:none; box-shadow:inset 0 0 0 9999px rgba(255,255,255,.02);
 }
 form button{cursor:pointer}
-footer{padding:36px 0 64px; color:var(--muted)}
+footer{padding:36px 0 64px; color:#c9d6ff}
 .tiny{font-size:12px}
 
 /* ===== Riot results visuals ===== */
@@ -213,26 +212,26 @@ footer{padding:36px 0 64px; color:var(--muted)}
   background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.14);
   font-size:12px; color:var(--muted);
 }
-.champ-list{ display:grid; gap:12px; margin-top:8px; }
+.summary{ display:flex; gap:10px; flex-wrap:wrap; margin-bottom:8px; }
+.summary .chip{ padding:6px 10px; border-radius:999px; background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.12); font-size:12px; color:#cfe3ff; }
 
+.champ-list{ display:grid; gap:12px; margin-top:8px; }
 .champ{
   display:grid; grid-template-columns: 1fr auto; gap:12px; align-items:center;
-  padding:10px; border-radius:12px;
+  padding:12px; border-radius:12px;
   background:rgba(255,255,255,.03); border:1px solid rgba(255,255,255,.08);
 }
 .champ-title{ display:flex; align-items:center; gap:10px; }
 .champ-icon{
   width:28px; height:28px; border-radius:8px; overflow:hidden; flex:0 0 28px;
-  background:#0b0e18; border:1px solid rgba(255,255,255,.12);
+  background:#0b0e18; border:2px solid rgba(255,255,255,.14);
   box-shadow:0 0 8px rgba(0,224,184,.18), 0 0 14px rgba(91,138,255,.14);
 }
 .champ-icon img{ width:100%; height:100%; display:block; }
-
 .bar{ height:8px; border-radius:999px; overflow:hidden; background:rgba(255,255,255,.08); }
 .bar > i{ display:block; height:100%; width:0%; background:linear-gradient(90deg,var(--brand1),var(--brand2)); }
 .champ .meta{ font-size:12px; color:var(--muted); text-align:right; white-space:nowrap; }
 
-/* NEW: role tag chips */
 .role-tags{ display:flex; gap:6px; margin-top:6px; flex-wrap:wrap; }
 .tag{
   font-size:11px; color:#cfe3ff; letter-spacing:.2px;
@@ -241,22 +240,31 @@ footer{padding:36px 0 64px; color:var(--muted)}
   padding:4px 8px; border-radius:999px;
 }
 
-/* NEW: simple tooltip */
-.tooltip{
-  position:relative; cursor:help;
-}
-.tooltip:hover .tip, .tooltip:focus-within .tip{
-  opacity:1; transform:translateY(0); pointer-events:auto;
-}
+/* tooltips (for champ title) */
+.tooltip{ position:relative; cursor:help; }
+.tooltip:hover .tip, .tooltip:focus-within .tip{ opacity:1; transform:translateY(0); pointer-events:auto; }
 .tip{
   position:absolute; top:100%; left:0; margin-top:6px;
   background:rgba(12,16,28,.96); color:#e9efff;
   border:1px solid rgba(255,255,255,.14);
   border-radius:10px; padding:8px 10px;
   font-size:12px; white-space:nowrap; box-shadow:0 10px 24px rgba(0,0,0,.35);
-  opacity:0; transform:translateY(4px); transition:.16s ease; pointer-events:none;
-  z-index:10;
+  opacity:0; transform:translateY(4px); transition:.16s ease; pointer-events:none; z-index:10;
 }
 
-/* tiny note when we auto-fix region */
+/* NEW: role-colored borders on champ icon */
+.champ.role-Fighter  .champ-icon{ border-color:#c0392b; }
+.champ.role-Mage     .champ-icon{ border-color:#8e44ad; }
+.champ.role-Assassin .champ-icon{ border-color:#16a085; }
+.champ.role-Tank     .champ-icon{ border-color:#2980b9; }
+.champ.role-Marksman .champ-icon{ border-color:#f39c12; }
+.champ.role-Support  .champ-icon{ border-color:#2ecc71; }
+
+/* recent lookups row */
+.recent{ margin:6px 0 10px; }
+.recent a{ color:#cfe3ff; text-decoration:underline; text-underline-offset:2px; }
+.recent a:hover{ filter:brightness(1.1); }
+
+/* tiny note + flash highlight */
 .note{ margin-top:8px; font-size:12px; color:var(--muted); }
+.flash{ box-shadow:0 0 12px 2px var(--brand1); transition: box-shadow .4s ease; }
