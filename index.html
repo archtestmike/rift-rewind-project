@@ -5,88 +5,35 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Michael Ramirez — Cloud Builder</title>
   <meta name="description" content="Michael Ramirez • Cloud Builder & AWS Enthusiast" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <header class="hero">
     <div class="wrap grid cols-2">
-      <!-- LEFT -->
       <div class="hero-stack">
         <div class="avatar-wrap">
           <img src="profile.png" alt="Michael Ramirez headshot" loading="lazy">
         </div>
-
         <div class="hero-text">
           <h1 class="neon-title">Michael Ramirez</h1>
           <p class="subtitle">Cloud Builder & AWS Enthusiast</p>
-          <p class="muted">Currently working on the AWS Builder Challenge and learning to deploy with S3 + CloudFront. This site runs on AWS Amplify/CloudFront.</p>
-
+          <p class="muted">Currently working on the AWS Builder Challenge and learning to deploy with S3 + CloudFront. This site runs on AWS Amplify + Lambda.</p>
           <div class="cta">
-            <a class="btn" href="https://builder.aws.com/" target="_blank" rel="noopener">AWS Builder Center</a>
-
-            <!-- LinkedIn -->
-            <a class="btn linkedin" href="https://www.linkedin.com/in/ramirezmichael1/" target="_blank" rel="noopener" aria-label="LinkedIn profile">
-              <svg viewBox="0 0 24 24" class="li-icon" aria-hidden="true">
-                <path fill="currentColor" d="M4.98 3.5A2.48 2.48 0 0 1 2.5 6 2.48 2.48 0 0 1 0 3.5 2.48 2.48 0 0 1 2.5 1 2.48 2.48 0 0 1 4.98 3.5zM0 8h5v16H0V8zm7.5 0H12v2.2h.06c.63-1.12 2.17-2.3 4.47-2.3 4.77 0 5.64 3.14 5.64 7.22V24h-5V16.4c0-1.81-.03-4.14-2.52-4.14-2.52 0-2.91 1.97-2.91 4V24h-5V8z"/>
-              </svg>
-              <span>LinkedIn</span>
-            </a>
-
-            <!-- GitHub -->
-            <a class="btn github" href="https://github.com/archtestmike" target="_blank" rel="noopener" aria-label="GitHub profile">
-              <svg viewBox="0 0 16 16" aria-hidden="true" class="gh-icon">
-                <path fill="currentColor" d="M8 .198a8 8 0 0 0-2.53 15.6c.4.074.55-.174.55-.386 0-.19-.007-.693-.01-1.36-2.24.487-2.71-1.08-2.71-1.08-.364-.924-.89-1.17-.89-1.17-.727-.497.055-.487.055-.487.804.057 1.226.826 1.226.826.715 1.225 1.876.871 2.334.666.073-.518.28-.872.508-1.073-1.788-.204-3.667-.894-3.667-3.98 0-.88.314-1.598.826-2.162-.083-.203-.358-1.022.078-2.13 0 0 .673-.215 2.205.825a7.67 7.67 0 0 1 2.006-.27c.68.003 1.366.092 2.006.27 1.53-1.04 2.203-.825 2.203-.825.438 1.108.163 1.927.08 2.13.514.564.825 1.282.825 2.162 0 3.095-1.882 3.774-3.674 3.975.287.247.543.735.543 1.482 0 1.07-.01 1.933-.01 2.197 0 .214.146.463.553.385A8.002 8.002 0 0 0 8 .198z"/>
-              </svg>
-              <span>GitHub</span>
-            </a>
+            <a class="btn" href="https://builder.aws" target="_blank" rel="noopener">AWS Builder Center</a>
+            <a class="btn linkedin" href="https://www.linkedin.com/in/ramirezmichael1/" target="_blank" rel="noopener">LinkedIn</a>
+            <a class="btn github" href="https://github.com/archtestmike" target="_blank" rel="noopener">GitHub</a>
           </div>
         </div>
       </div>
 
-      <!-- RIGHT: quick facts (SVGs are inline so they never break) -->
       <div class="card panel">
         <h3>Quick Facts</h3>
         <ul class="fact-list">
-          <li class="fact">
-            <span class="icon-wrap">
-              <svg class="icon" viewBox="0 0 24 24" fill="none">
-                <circle cx="12" cy="12" r="8.5" stroke="currentColor" stroke-width="1.6"/>
-                <circle cx="12" cy="12" r="4.5" stroke="currentColor" stroke-width="1.6"/>
-                <circle cx="12" cy="12" r="1.6" fill="currentColor"/>
-              </svg>
-            </span>
-            <span><strong>Learning goal:</strong> build cloud skills one service at a time (S3, CloudFront, and beyond).</span>
-          </li>
-
-          <li class="fact">
-            <span class="icon-wrap">
-              <svg class="icon" viewBox="0 0 24 24" fill="none">
-                <path d="M6.5 15.5a3.5 3.5 0 1 0 0 7h10a4 4 0 0 0 0-8 5 5 0 0 0-9.6-1.6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
-                <circle cx="17.5" cy="8" r="3.2" stroke="currentColor" stroke-width="1.6"/>
-              </svg>
-            </span>
-            <span><strong>Fun project:</strong> this site is served globally via AWS.</span>
-          </li>
-
-          <li class="fact">
-            <span class="icon-wrap">
-              <svg class="icon" viewBox="0 0 24 24" fill="none">
-                <path d="M12 3l2.3 4.7 5.2.8-3.8 3.7.9 5.2L12 15.7 7.4 17.4l.9-5.2L4.5 8.5l5.2-.8L12 3Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
-              </svg>
-            </span>
-            <span><strong>Challenge:</strong> AWS Builder Challenge #2.</span>
-          </li>
-
-          <li class="fact">
-            <span class="icon-wrap">
-              <svg class="icon" viewBox="0 0 24 24" fill="none">
-                <path d="M12 3a9 9 0 1 0 8.5 12.5c.6-1.4-.2-3-1.7-3.4-1.4-.4-2.8.6-2.8 2v.3a1.8 1.8 0 0 1-2.1 1.8c-2.4-.4-4.4-2.5-4.8-4.9a1.8 1.8 0 0 1 1.8-2.1h.3c1.4 0 2.4-1.4 2-2.8-.4-1.5-2-2.3-3.4-1.7A9 9 0 0 0 12 3Z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
-              </svg>
-            </span>
-            <span><strong>Explore my art:</strong> <a href="https://main.d1r289f3oq47go.amplifyapp.com/" target="_blank" rel="noopener">view portfolio</a></span>
-          </li>
+          <li class="fact"><span class="icon-wrap">🌩️</span> Building on AWS Free Tier</li>
+          <li class="fact"><span class="icon-wrap">⚡</span> Serverless Lambda-powered APIs</li>
+          <li class="fact"><span class="icon-wrap">🎯</span> AWS Builder Challenge participant</li>
+          <li class="fact"><span class="icon-wrap">🎨</span> <a href="https://main.d1r289f3oq47go.amplifyapp.com/" target="_blank">View Art Portfolio</a></li>
         </ul>
       </div>
     </div>
@@ -97,111 +44,65 @@
       <div class="glass panel">
         <h2>Cloud & DevOps</h2>
         <ul class="list">
-          <li class="pill">
-            <span class="ic"><img class="brand" src="https://raw.githubusercontent.com/simple-icons/simple-icons/develop/icons/amazonaws.svg" alt=""></span>
+          <li class="pill aws">
+            <span class="ic" title="AWS">
+              <!-- AWS colored logo -->
+              <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+                <path fill="#FF9900" d="M25.6 22.2c-2.5 1.2-5.1 2.1-8.1 2.5-3 .4-6 .4-8.8 0v3.1c3.1.4 6.2.4 9.4 0 3.2-.4 6.1-1.4 8.9-2.8v-2.8z"/>
+                <path fill="#FF9900" d="M6.7 20.8v3c3.1.4 6.2.4 9.3 0 3.2-.4 6.1-1.3 8.8-2.7v-3c-2.7 1.4-5.6 2.3-8.8 2.7-3.1.4-6.2.4-9.3 0z"/>
+              </svg>
+            </span>
             AWS
           </li>
-          <li class="pill">
-            <span class="ic"><img class="brand" src="https://raw.githubusercontent.com/simple-icons/simple-icons/develop/icons/linux.svg" alt=""></span>
+          <li class="pill linux">
+            <span class="ic" title="Linux 🐧">
+              <svg viewBox="0 0 64 64"><path fill="#FCC624" d="M32 4a24 24 0 1 0 0 48 24 24 0 0 0 0-48z"/><path d="M25 35s1 5 7 5 7-5 7-5-2 2-7 2-7-2-7-2z" fill="#000"/></svg>
+            </span>
             Linux
           </li>
-          <li class="pill">
-            <span class="ic"><img class="brand" src="https://raw.githubusercontent.com/simple-icons/simple-icons/develop/icons/docker.svg" alt=""></span>
+          <li class="pill docker">
+            <span class="ic" title="Docker 🐳">
+              <svg viewBox="0 0 24 24" fill="none"><path d="M4 13h8M5 10h3v3H5v-3Zm4 0h3v3H9v-3Zm4 0h3v3h-3v-3Z" stroke="#2496ED" stroke-width="1.7" stroke-linejoin="round"/><path d="M4 13c0 4 3 6 8 6 5.5 0 8-2.5 8-5.5" stroke="#2496ED" stroke-width="1.7" stroke-linecap="round"/></svg>
+            </span>
             Docker
           </li>
-          <li class="pill">
-            <span class="ic"><img class="brand" src="https://raw.githubusercontent.com/simple-icons/simple-icons/develop/icons/terraform.svg" alt=""></span>
-            Terraform
-          </li>
-          <li class="pill">
-            <span class="ic"><img class="brand" src="https://raw.githubusercontent.com/simple-icons/simple-icons/develop/icons/githubactions.svg" alt=""></span>
+          <li class="pill cicd">
+            <span class="ic" title="GitHub Actions ⚙️">
+              <svg viewBox="0 0 24 24" fill="none"><path d="M12 2a10 10 0 1 0 0 20" stroke="#2088FF" stroke-width="2"/><circle cx="17" cy="7" r="2" fill="#2088FF"/></svg>
+            </span>
             CI/CD
           </li>
         </ul>
       </div>
 
       <div class="glass panel">
-        <h2>Projects</h2>
-        <div class="project">
-          <h3>Personal Site on AWS</h3>
-          <p class="muted">Static hosting + CDN via S3 & CloudFront. Automated deploys with Amplify.</p>
-        </div>
-        <div class="project">
-          <h3>Rift Rewind (Learning)</h3>
-          <p class="muted">Exploring Riot API integrations and serverless patterns.</p>
-        </div>
-      </div>
-
-      <div class="glass panel">
-        <h2>Highlights</h2>
-        <ul class="list">
-          <li>Fast, secure, globally distributed site.</li>
-          <li>Neon cyber style with accessible, semantic HTML.</li>
-          <li>No JS build step—easy to maintain.</li>
-        </ul>
-      </div>
-    </section>
-
-    <hr class="divider" />
-
-    <section id="contact" class="grid cols-2">
-      <div class="glass panel">
-        <h2>Get In Touch</h2>
-        <form action="https://formsubmit.co/" method="POST">
-          <input type="hidden" name="_subject" value="New message from michaelramirez.dev">
-          <label for="name">Name</label>
-          <input id="name" name="name" placeholder="Your name" required>
-          <label for="email">Email</label>
-          <input id="email" type="email" name="email" placeholder="name@example.com" required>
-          <label for="msg">Message</label>
-          <textarea id="msg" name="message" rows="5" placeholder="Say hello 👋" required></textarea>
-          <button class="btn" type="submit">Send Message</button>
-        </form>
-        <p class="tiny muted">Tip: swap the form action for your preferred service (SES, Lambda, etc.).</p>
-      </div>
-
-      <!-- League Data Lookup -->
-      <div class="glass panel">
         <h2>League Data Lookup</h2>
         <p class="muted tiny">Riot ID format: <b>GameName#TAG</b></p>
-
         <form id="riot-form">
-          <div class="grid cols-2">
-            <div>
-              <label for="region">Region</label>
-              <select id="region" name="region">
-                <option value="na1">North America (NA1)</option>
-                <option value="euw1">Europe West (EUW1)</option>
-                <option value="eun1">Europe Nordic &amp; East (EUN1)</option>
-                <option value="kr">Korea (KR)</option>
-                <option value="br1">Brazil (BR1)</option>
-                <option value="la1">Latin America North (LA1)</option>
-                <option value="la2">Latin America South (LA2)</option>
-                <option value="oc1">Oceania (OC1)</option>
-                <option value="tr1">Turkey (TR1)</option>
-                <option value="ru">Russia (RU)</option>
-                <option value="jp1">Japan (JP1)</option>
-              </select>
-            </div>
-            <div>
-              <label for="riotId">Riot ID</label>
-              <input id="riotId" name="riotId" placeholder="GameName#TAG" required />
-            </div>
-          </div>
-
-          <p class="tiny muted">Recent: <a id="recent-riot" href="#" class="muted tiny"></a></p>
+          <label for="region">Region</label>
+          <select id="region" name="region">
+            <option value="na1">North America (NA1)</option>
+            <option value="euw1">Europe West (EUW1)</option>
+            <option value="kr">Korea (KR)</option>
+          </select>
+          <label for="riotId">Riot ID</label>
+          <input id="riotId" name="riotId" placeholder="Hide on bush#KR1" required />
           <button class="btn" type="submit">Look Up Summoner</button>
         </form>
-
-        <div id="riot-results" class="panel results" aria-live="polite">
+        <div id="riot-results" class="panel" style="margin-top:10px;background:var(--glass)">
           <h3 class="muted">Summoner Info</h3>
           <p class="tiny muted">Results appear here after the lookup.</p>
         </div>
       </div>
+
+      <div class="glass panel" id="insights-panel">
+        <h2>Serverless Insights</h2>
+        <div id="insights-content" class="muted tiny">Fetching live AWS Lambda metrics...</div>
+      </div>
     </section>
 
     <footer class="wrap">
-      <p class="tiny center">© 2025 Michael Ramirez • Built with ❤️‍🔥 on AWS</p>
+      <p class="tiny footer-text">© 2025 Michael Ramirez • Built with ❤️‍🔥 on AWS</p>
     </footer>
   </main>
 
