@@ -12,7 +12,7 @@
 <body>
   <header class="hero">
     <div class="wrap grid cols-2">
-      <!-- LEFT: avatar ABOVE name/title -->
+      <!-- LEFT: avatar + text -->
       <div class="hero-stack">
         <div class="avatar-wrap">
           <img src="profile.png" alt="Michael Ramirez headshot" loading="lazy">
@@ -24,19 +24,26 @@
           <p class="muted">Currently working on the AWS Builder Challenge and learning to deploy with S3 + CloudFront. This site runs on AWS Amplify/CloudFront.</p>
 
           <div class="cta">
-            <a class="btn linkedin" href="https://www.linkedin.com/in/ramirezmichael1/" target="_blank" rel="noopener">LinkedIn</a>
-            <a class="btn github" href="https://github.com/archtestmike" target="_blank" rel="noopener">GitHub</a>
+            <a class="btn" href="https://builder.aws.com/" target="_blank" rel="noopener">AWS Builder Center</a>
+            <a class="btn linkedin" href="https://www.linkedin.com/in/ramirezmichael1/" target="_blank" rel="noopener" aria-label="LinkedIn profile">
+              <svg viewBox="0 0 24 24" class="li-icon" aria-hidden="true"><path fill="currentColor" d="M4.98 3.5A2.48 2.48 0 0 1 2.5 6 2.48 2.48 0 0 1 0 3.5 2.48 2.48 0 0 1 2.5 1 2.48 2.48 0 0 1 4.98 3.5zM0 8h5v16H0V8zm7.5 0H12v2.2h.06c.63-1.12 2.17-2.3 4.47-2.3 4.77 0 5.64 3.14 5.64 7.22V24h-5V16.4c0-1.81-.03-4.14-2.52-4.14-2.52 0-2.91 1.97-2.91 4V24h-5V8z"/></svg>
+              <span>LinkedIn</span>
+            </a>
+            <a class="btn github" href="https://github.com/archtestmike" target="_blank" rel="noopener" aria-label="GitHub profile">
+              <svg viewBox="0 0 16 16" class="gh-icon" aria-hidden="true"><path fill="currentColor" d="M8 .198a8 8 0 0 0-2.53 15.6c.4.074.55-.174.55-.386 0-.19-.007-.693-.01-1.36-2.24.487-2.71-1.08-2.71-1.08-.364-.924-.89-1.17-.89-1.17-.727-.497.055-.487.055-.487.804.057 1.226.826 1.226.826.715 1.225 1.876.871 2.334.666.073-.518.28-.872.508-1.073-1.788-.204-3.667-.894-3.667-3.98 0-.88.314-1.598.826-2.162-.083-.203-.358-1.022.078-2.13 0 0 .673-.215 2.205.825a7.67 7.67 0 0 1 2.006-.27c.68.003 1.366.092 2.006.27 1.53-1.04 2.203-.825 2.203-.825.438 1.108.163 1.927.08 2.13.514.564.825 1.282.825 2.162 0 3.095-1.882 3.774-3.674 3.975.287.247.543.735.543 1.482 0 1.07-.01 1.933-.01 2.197 0 .214.146.463.553.385A8.002 8.002 0 0 0 8 .198z"/></svg>
+              <span>GitHub</span>
+            </a>
           </div>
         </div>
       </div>
 
-      <!-- RIGHT: quick facts -->
+      <!-- RIGHT: Quick facts -->
       <div class="card panel">
         <h3>Quick Facts</h3>
         <ul class="fact-list">
           <li class="fact">
             <span class="icon-wrap">
-              <svg class="icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <svg class="icon" viewBox="0 0 24 24" fill="none">
                 <circle cx="12" cy="12" r="8.5" stroke="currentColor" stroke-width="1.6"/>
                 <circle cx="12" cy="12" r="4.5" stroke="currentColor" stroke-width="1.6"/>
                 <circle cx="12" cy="12" r="1.6" fill="currentColor"/>
@@ -44,36 +51,30 @@
             </span>
             <span><strong>Learning goal:</strong> build cloud skills one service at a time (S3, CloudFront, and beyond).</span>
           </li>
-
           <li class="fact">
             <span class="icon-wrap">
-              <svg class="icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <svg class="icon" viewBox="0 0 24 24" fill="none">
                 <path d="M6.5 15.5a3.5 3.5 0 1 0 0 7h10a4 4 0 0 0 0-8 5 5 0 0 0-9.6-1.6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
                 <circle cx="17.5" cy="8" r="3.2" stroke="currentColor" stroke-width="1.6"/>
               </svg>
             </span>
             <span><strong>Fun project:</strong> this site is served globally via AWS.</span>
           </li>
-
           <li class="fact">
             <span class="icon-wrap">
-              <svg class="icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <svg class="icon" viewBox="0 0 24 24" fill="none">
                 <path d="M12 3l2.3 4.7 5.2.8-3.8 3.7.9 5.2L12 15.7 7.4 17.4l.9-5.2L4.5 8.5l5.2-.8L12 3Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
               </svg>
             </span>
             <span><strong>Challenge:</strong> AWS Builder Challenge #2.</span>
           </li>
-
           <li class="fact">
             <span class="icon-wrap">
-              <svg class="icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <svg class="icon" viewBox="0 0 24 24" fill="none">
                 <path d="M12 3a9 9 0 1 0 8.5 12.5c.6-1.4-.2-3-1.7-3.4-1.4-.4-2.8.6-2.8 2v.3a1.8 1.8 0 0 1-2.1 1.8c-2.4-.4-4.4-2.5-4.8-4.9a1.8 1.8 0 0 1 1.8-2.1h.3c1.4 0 2.4-1.4 2-2.8-.4-1.5-2-2.3-3.4-1.7A9 9 0 0 0 12 3Z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
               </svg>
             </span>
-            <span>
-              <strong>Explore my art:</strong>
-              <a href="https://main.d1r289f3oq47go.amplifyapp.com/" target="_blank" rel="noopener">view portfolio</a>
-            </span>
+            <span><strong>Explore my art:</strong> <a href="https://main.d1r289f3oq47go.amplifyapp.com/" target="_blank" rel="noopener">view portfolio</a></span>
           </li>
         </ul>
       </div>
@@ -82,29 +83,72 @@
 
   <main class="wrap">
     <section class="grid cols-3">
-      <!-- Cloud & DevOps -->
+      <!-- Cloud & DevOps (inline SVG logos) -->
       <div class="glass panel">
         <h2>Cloud & DevOps</h2>
-        <ul class="skill-list">
-          <li class="skill-pill">
-            <span class="skill-icon"><img src="logos/aws.png" alt="AWS logo"></span>
-            <span>AWS</span>
+        <ul class="list pill-list">
+          <li class="pill pill-glass">
+            <span class="logo-badge" aria-hidden="true">
+              <!-- AWS (official smile w/ wordmark simplified) -->
+              <svg viewBox="0 0 64 64" width="28" height="28">
+                <path fill="#232F3E" d="M7 20h50v24H7z" opacity=".001"/>
+                <path fill="#232F3E" d="M23 25h3v14h-3zM29 25h3v14h-3zM35 25h3v14h-3zM41 25h3v14h-3z"/>
+                <path fill="#FF9900" d="M17 45c10.8 3.7 19.2 3.7 30 0 1.2-.4 2.4.2 2.8 1.4.4 1.2-.2 2.4-1.4 2.8-11.6 4-21 4-33 0-1.2-.4-1.8-1.6-1.4-2.8.4-1.2 1.6-1.8 3-.14z"/>
+              </svg>
+            </span>
+            AWS
           </li>
-          <li class="skill-pill">
-            <span class="skill-icon"><img src="logos/linux.png" alt="Linux logo"></span>
-            <span>Linux</span>
+
+          <li class="pill pill-glass">
+            <span class="logo-badge" aria-hidden="true">
+              <!-- Linux Tux -->
+              <svg viewBox="0 0 64 64" width="28" height="28">
+                <path fill="#000" d="M32 8c6 0 9 6 9 12 0 6-3 10-3 14 0 5 3 8 3 12 0 6-6 10-9 10s-9-4-9-10c0-4 3-7 3-12 0-4-3-8-3-14 0-6 3-12 9-12z"/>
+                <circle cx="28" cy="20" r="3.2" fill="#fff"/><circle cx="36" cy="20" r="3.2" fill="#fff"/>
+                <circle cx="27.5" cy="20" r="1.3"/><circle cx="35.5" cy="20" r="1.3"/>
+                <path fill="#FFA726" d="M26 28c2 2 10 2 12 0-1 4-11 4-12 0z"/>
+                <path fill="#fff" d="M20 44c3 0 5 3 5 6-4 2-7 2-10 0 0-3 2-6 5-6zm24 0c3 0 5 3 5 6-4 2-7 2-10 0 0-3 2-6 5-6z"/>
+              </svg>
+            </span>
+            Linux
           </li>
-          <li class="skill-pill">
-            <span class="skill-icon"><img src="logos/docker.png" alt="Docker logo"></span>
-            <span>Docker</span>
+
+          <li class="pill pill-glass">
+            <span class="logo-badge" aria-hidden="true">
+              <!-- Docker -->
+              <svg viewBox="0 0 64 64" width="28" height="28">
+                <rect x="8" y="28" width="10" height="8" rx="1.5" fill="#2496ED"/>
+                <rect x="20" y="28" width="10" height="8" rx="1.5" fill="#2496ED"/>
+                <rect x="32" y="28" width="10" height="8" rx="1.5" fill="#2496ED"/>
+                <rect x="20" y="18" width="10" height="8" rx="1.5" fill="#2496ED"/>
+                <path fill="#2496ED" d="M8 38c0 7 5 11 16 11 11.5 0 17-5.5 17-11.5 0-.9-.1-1.6-.3-2h-8.2c-.8 2.5-2.9 3.5-6.5 3.5H8.3c-.2-.4-.3-1.2-.3-1z"/>
+                <circle cx="50" cy="35" r="1.8" fill="#2496ED"/>
+              </svg>
+            </span>
+            Docker
           </li>
-          <li class="skill-pill">
-            <span class="skill-icon"><img src="logos/terraform.png" alt="Terraform logo"></span>
-            <span>Terraform</span>
+
+          <li class="pill pill-glass">
+            <span class="logo-badge" aria-hidden="true">
+              <!-- Terraform -->
+              <svg viewBox="0 0 64 64" width="28" height="28">
+                <path fill="#844FBA" d="M10 14l18 10v16L10 30V14zM36 10l18 10v16L36 26V10zM36 34l18 10v10L36 44V34z"/>
+              </svg>
+            </span>
+            Terraform
           </li>
-          <li class="skill-pill">
-            <span class="skill-icon"><img src="logos/cicd.png" alt="CI/CD logo"></span>
-            <span>CI/CD</span>
+
+          <li class="pill pill-glass">
+            <span class="logo-badge" aria-hidden="true">
+              <!-- GitHub Actions (workflow nodes) -->
+              <svg viewBox="0 0 64 64" width="28" height="28">
+                <circle cx="18" cy="20" r="6" fill="#2088FF"/>
+                <circle cx="46" cy="20" r="6" fill="#2088FF"/>
+                <circle cx="32" cy="44" r="6" fill="#2088FF"/>
+                <path d="M24 22l14 18M40 22L26 40" stroke="#8EC1FF" stroke-width="3" stroke-linecap="round"/>
+              </svg>
+            </span>
+            CI/CD
           </li>
         </ul>
       </div>
@@ -135,17 +179,17 @@
 
     <hr class="divider" />
 
+    <!-- Lookup + Notes -->
     <section class="grid cols-2">
-      <!-- League Lookup -->
       <div class="glass panel">
         <h2>League Data Lookup</h2>
         <p class="muted tiny">Riot ID format: <b>GameName#TAG</b></p>
 
-        <form id="riot-form" autocomplete="off">
-          <div class="grid cols-2 field-grid">
+        <form id="riot-form">
+          <div class="grid cols-2">
             <div>
               <label for="region">Region</label>
-              <select id="region" name="region">
+              <select id="region" name="region" class="field">
                 <option value="na1">North America (NA1)</option>
                 <option value="euw1">Europe West (EUW1)</option>
                 <option value="eun1">Europe Nordic &amp; East (EUN1)</option>
@@ -159,30 +203,25 @@
                 <option value="jp1">Japan (JP1)</option>
               </select>
             </div>
-
             <div>
               <label for="riotId">Riot ID</label>
-              <input id="riotId" name="riotId" placeholder="GameName#TAG" />
+              <input id="riotId" name="riotId" class="field" placeholder="GameName#TAG" autocomplete="off" required />
             </div>
           </div>
 
-          <p class="tiny muted">Recent: <a id="recent-link" href="#" class="recent-link"></a></p>
-
+          <p id="recent" class="muted tiny" style="margin:8px 0 14px;"></p>
           <button class="btn" type="submit">Look Up Summoner</button>
         </form>
 
-        <div id="riot-results" class="panel result-shell" style="margin-top:12px;background:var(--glass)">
+        <div id="riot-results" class="results card panel" style="margin-top:14px;">
           <h3 class="muted">Summoner Info</h3>
           <p class="tiny muted">Results appear here after the lookup.</p>
         </div>
       </div>
 
-      <!-- Notes panel (kept) -->
       <div class="glass panel">
         <h2>Notes</h2>
-        <p class="muted">
-          Powered by AWS Lambda + CloudFront + S3 (Free Tier friendly).
-        </p>
+        <p class="muted">Powered by AWS Lambda + CloudFront + S3 (Free Tier friendly).</p>
       </div>
     </section>
 
