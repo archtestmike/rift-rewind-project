@@ -29,8 +29,7 @@ body{
 }
 
 a{color:var(--brand2); text-decoration:none}
-a:hover{filter:brightness(1.12); text-decoration:underline}
-
+a:hover{text-decoration:underline}
 .wrap{max-width:var(--max); margin:0 auto; padding:24px}
 .card{
   background:linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
@@ -46,13 +45,10 @@ a:hover{filter:brightness(1.12); text-decoration:underline}
   backdrop-filter: blur(8px);
 }
 
-/* hero */
 header.hero{ padding:88px 0 56px; position:relative; }
 .neon-title{
-  font-size:clamp(28px,4.8vw,44px);
-  font-weight:800;
-  line-height:1.15;
-  margin:0 0 10px;
+  font-size:clamp(32px,6vw,56px);
+  font-weight:800; line-height:1.1; margin:0 0 8px;
   text-shadow:0 0 10px rgba(0,224,184,.55), 0 0 22px rgba(91,138,255,.35);
   background:linear-gradient(90deg,var(--brand1),var(--brand2) 60%,var(--brand3));
   -webkit-background-clip:text; background-clip:text; color:transparent;
@@ -60,26 +56,28 @@ header.hero{ padding:88px 0 56px; position:relative; }
 .subtitle{ color:var(--muted); font-weight:600; margin:0 0 24px; font-size:clamp(16px,2.5vw,20px); }
 
 .cta{ display:flex; gap:12px; flex-wrap:wrap; }
+
 .btn{
-  position:relative; display:inline-flex; align-items:center; gap:10px;
-  padding:12px 18px; font-weight:800; color:#031218;
+  display:inline-flex; align-items:center; gap:10px;
+  padding:12px 18px; font-weight:700; color:#031218;
   background:linear-gradient(90deg,var(--brand1),var(--brand2));
-  border-radius:14px; border:0;
+  border-radius:12px; border:0;
   box-shadow:0 0 22px rgba(0,224,184,.28), 0 0 34px rgba(91,138,255,.20);
   transition:transform .15s ease, filter .15s ease;
 }
 .btn:hover{ transform:translateY(-1px); filter:brightness(1.03); }
 
-/* solid brand buttons */
-.btn.linkedin.solid{
-  background:#0a66c2; color:#fff; box-shadow:none; border:1px solid rgba(255,255,255,.08);
+.btn.github{
+  background:#0d1117; color:#c9d1d9; border:1px solid rgba(255,255,255,.18);
+  box-shadow:0 0 18px rgba(0,224,184,.18), 0 0 28px rgba(91,138,255,.14);
 }
-.btn.github.solid{
-  background:#0d1117; color:#c9d1d9; box-shadow:none; border:1px solid rgba(255,255,255,.12);
+.btn.linkedin{
+  background:#0a66c2; color:#ffffff;
+  border:1px solid rgba(255,255,255,.18);
+  box-shadow:0 0 18px rgba(0,224,184,.18), 0 0 28px rgba(91,138,255,.14);
 }
-.li-solid, .gh-solid{ width:20px; height:20px; }
+.gh-icon,.li-icon{width:20px;height:20px;}
 
-/* layout */
 .grid{display:grid; gap:18px}
 @media(min-width:880px){
   .grid.cols-2{grid-template-columns: 1.1fr 1fr}
@@ -94,87 +92,58 @@ h3{margin:0 0 6px; font-size:18px}
 .muted{color:var(--muted)}
 .center{text-align:center}
 
-/* divider */
+/* Divider */
 .divider{
   height:1px; border:0; margin:24px 0;
   background:linear-gradient(90deg, transparent, rgba(0,224,184,.70), rgba(91,138,255,.70), transparent);
   filter:drop-shadow(0 0 6px rgba(0,224,184,.55));
 }
 
-/* avatar above name — lock size so it never blows up */
+/* Avatar */
 .hero-stack{ display:flex; flex-direction:column; align-items:flex-start; gap:clamp(12px,2.5vw,20px); }
 @media (max-width:680px){ .hero-stack{ align-items:center; text-align:center; } .cta{ justify-content:center; } }
-.avatar-wrap{
-  --size:clamp(110px,16vw,160px);
-  width:var(--size); height:var(--size);
-  border-radius:9999px; padding:5px;
-  background:
-    radial-gradient(140% 140% at 12% 10%, rgba(0,224,184,.55), transparent 55%),
-    radial-gradient(120% 120% at 85% 85%, rgba(91,138,255,.45), transparent 60%),
-    radial-gradient(120% 120% at 50% 50%, rgba(167,183,255,.35), transparent 65%);
+.avatar-wrap{ --size:clamp(110px,16vw,160px); width:var(--size); height:var(--size); border-radius:9999px; padding:5px;
+  background: radial-gradient(140% 140% at 12% 10%, rgba(0,224,184,.55), transparent 55%),
+             radial-gradient(120% 120% at 85% 85%, rgba(91,138,255,.45), transparent 60%),
+             radial-gradient(120% 120% at 50% 50%, rgba(167,183,255,.35), transparent 65%);
   box-shadow:0 0 26px rgba(0,224,184,.28), 0 0 40px rgba(91,138,255,.22), inset 0 0 14px rgba(255,255,255,.08);
 }
-.avatar-wrap img{
-  width:100%; height:100%; display:block; border-radius:9999px; object-fit:cover;
-  max-width:100%; max-height:100%;
-  background:#0a0e18; box-shadow:0 2px 10px rgba(0,0,0,.35); filter:saturate(1.04) contrast(1.02);
-}
+.avatar-wrap img{ width:100%; height:100%; display:block; border-radius:9999px; object-fit:cover; background:#0a0e18; box-shadow:0 2px 10px rgba(0,0,0,.35); }
 
-/* skills */
+/* Skill “pills” + REAL icons */
 .pill{
-  display:flex; align-items:center; gap:12px;
-  padding:14px 16px; border-radius:999px;
-  background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.12);
-}
-.ic.brand{
-  width:44px; height:44px; border-radius:12px; display:grid; place-items:center; flex:0 0 44px;
-  background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
-  border:1px solid rgba(255,255,255,.14);
-  box-shadow:inset 0 0 18px rgba(91,138,255,.08), 0 0 18px rgba(0,224,184,.12);
-}
-.ic.brand svg{ width:28px; height:28px; display:block }
-
-/* Quick Facts */
-.fact-list{ list-style:none; margin:0; padding:0; display:grid; gap:16px; }
-.fact{
-  display:flex; align-items:center; gap:16px;
-  padding:18px;
-  border-radius:14px;
+  display:flex; align-items:center; gap:14px;
+  padding:16px 18px; border-radius:999px;
   background:linear-gradient(180deg, rgba(255,255,255,.035), rgba(255,255,255,.02));
   border:1px solid rgba(255,255,255,.08);
 }
-.icon-wrap{
-  width:48px; height:48px; border-radius:12px;
-  display:grid; place-items:center; flex:0 0 48px;
+.pill .ic{
+  width:44px;height:44px;border-radius:12px;display:grid;place-items:center;flex:0 0 44px;
   background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
   border:1px solid rgba(255,255,255,.14);
   box-shadow:inset 0 0 18px rgba(91,138,255,.08), 0 0 18px rgba(0,224,184,.12);
 }
-.icon{ width:26px; height:26px; color:#a9c8ff; opacity:.95; }
+.pill svg{width:24px;height:24px;display:block;filter:drop-shadow(0 0 3px rgba(0,0,0,.2));}
 
-/* Forms + Riot input fix */
-form input, form textarea, select{
+/* Riot form controls — keep “glass” even on focus/autofill */
+#riot-form select,
+#riot-form input{
   width:100%; padding:12px 14px; margin:8px 0 14px;
   border-radius:12px; border:1px solid rgba(255,255,255,.12);
   background:#0a0e18; color:var(--text);
   outline:none; box-shadow:inset 0 0 0 9999px rgba(255,255,255,.02);
-  transition: box-shadow .14s ease, border-color .14s ease, background .14s ease;
 }
-select{appearance:none; -webkit-appearance:none; -moz-appearance:none;}
-form input:focus, select:focus{
-  border-color:rgba(0,224,184,.35);
-  box-shadow:0 0 0 3px rgba(0,224,184,.15);
-  background:#0b0e18; /* prevent white focus flash */
+#riot-form input:focus,
+#riot-form select:focus{
+  background:#0a0e18; border-color:rgba(91,138,255,.35);
 }
-/* kill iOS/Chrome autofill white */
-input:-webkit-autofill{
-  -webkit-box-shadow: 0 0 0px 1000px #0b0e18 inset;
+/* kill Chrome autofill white */
+#riot-form input:-webkit-autofill,
+#riot-form input:-webkit-autofill:focus{
   -webkit-text-fill-color: var(--text);
+  -webkit-box-shadow: 0 0 0px 1000px #0a0e18 inset !important;
+  transition: background-color 9999s ease-in-out 0s;
 }
 
-/* results shell */
-.result-shell{ background:rgba(0,0,0,.18); border:1px solid rgba(255,255,255,.08); border-radius:16px; }
-
-/* footer */
 footer{padding:36px 0 64px; color:var(--muted)}
 .tiny{font-size:12px}
