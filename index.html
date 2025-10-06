@@ -1,135 +1,55 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Michael Ramirez — Cloud Builder</title>
-  <meta name="description" content="Michael Ramirez • Cloud Builder & AWS Enthusiast" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css" />
+  <meta charset="UTF-8">
+  <title>Riot Summoner Tracker</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-  <header class="hero">
-    <div class="wrap grid cols-2">
-      <div class="hero-stack">
-        <div class="avatar-wrap">
-          <img src="profile.png" alt="Michael Ramirez headshot" />
-        </div>
-        <div class="hero-text">
-          <h1 class="neon-title">Michael Ramirez</h1>
-          <p class="subtitle">Cloud Builder & AWS Enthusiast</p>
-          <p class="muted">
-            Currently working on the AWS Builder Challenge and learning to deploy with
-            S3 + CloudFront. This site runs on AWS Amplify/CloudFront.
-          </p>
+  <div class="wrap">
+    <header class="hero">
+      <h1 class="neon-title">Riot Summoner Stats</h1>
+      <p class="subtitle">Check top champions and mastery for any summoner</p>
+    </header>
 
-          <div class="cta">
-            <a class="btn" href="https://builder.aws" target="_blank">AWS Builder Center</a>
-            <a class="btn linkedin" href="https://linkedin.com/in/ramirezmichael1" target="_blank">LinkedIn</a>
-            <a class="btn github" href="https://github.com/archtestmike" target="_blank">GitHub</a>
-          </div>
-        </div>
-      </div>
+    <section>
+      <form id="riot-form">
+        <label for="riotId">Riot ID</label>
+        <input type="text" id="riotId" name="riotId" class="ui-input" placeholder="GameName#TAG" required>
 
-      <div class="card panel">
-        <h3>Quick Facts</h3>
-        <ul class="fact-list">
-          <li class="fact">
-            <span class="icon-wrap">📘</span>
-            <span><strong>Learning goal:</strong> build cloud skills one service at a time (S3, CloudFront, and beyond).</span>
-          </li>
-          <li class="fact">
-            <span class="icon-wrap">☁️</span>
-            <span><strong>Fun project:</strong> this site is served globally via AWS.</span>
-          </li>
-          <li class="fact">
-            <span class="icon-wrap">⭐</span>
-            <span><strong>Challenge:</strong> AWS Builder Challenge #2.</span>
-          </li>
-          <li class="fact">
-            <span class="icon-wrap">🎨</span>
-            <span><strong>Explore my art:</strong> <a href="https://main.d1r289f3oq47go.amplifyapp.com/" target="_blank">view portfolio</a></span>
-          </li>
-        </ul>
-      </div>
-    </div>
-  </header>
+        <label for="region">Region</label>
+        <select id="region" name="region" class="ui-input">
+          <option value="na1">North America</option>
+          <option value="euw1">Europe West</option>
+          <option value="eun1">Europe Nordic & East</option>
+          <option value="kr">Korea</option>
+        </select>
 
-  <main class="wrap">
-    <!-- Existing Cloud & DevOps Section -->
-    <section class="card panel">
-      <h2>Cloud & DevOps</h2>
-      <div class="stack-list">
-        <div class="stack-item"><img src="aws.png" alt="AWS"><p>AWS</p></div>
-        <div class="stack-item"><img src="linux.png" alt="Linux"><p>Linux</p></div>
-        <div class="stack-item"><img src="docker.png" alt="Docker"><p>Docker</p></div>
-        <div class="stack-item"><img src="terraform.png" alt="Terraform"><p>Terraform</p></div>
-        <div class="stack-item"><img src="actions.png" alt="GitHub Actions"><p>CI/CD</p></div>
+        <button type="submit" class="btn">Fetch Stats</button>
+      </form>
+      <p class="tiny muted">Recent: <a href="#" id="recentId" style="display:none"></a></p>
+    </section>
+
+    <section>
+      <div id="riot-results"></div>
+    </section>
+
+    <!-- 🎯 Metrics Chart Dashboard -->
+    <section id="chart-section" style="display:none">
+      <h2>Champion Mastery Overview</h2>
+      <div class="panel glass">
+        <canvas id="masteryChart" height="220"></canvas>
       </div>
     </section>
 
-    <!-- Riot Lookup Section -->
-    <section class="card panel">
-      <h2>League Data Lookup</h2>
-      <p class="muted">Riot ID format: <strong>GameName#TAG</strong></p>
-      <div class="grid cols-2">
-        <div>
-          <label for="region">Region</label>
-          <select id="region" class="ui-input">
-            <option value="na1">North America (NA1)</option>
-            <option value="kr">Korea (KR)</option>
-            <option value="euw1">Europe West (EUW1)</option>
-          </select>
-        </div>
-        <div>
-          <label for="summoner">Riot ID</label>
-          <input id="summoner" class="ui-input" placeholder="GameName#TAG" />
-        </div>
-      </div>
-      <p class="muted small" id="recent"></p>
-      <button id="lookupBtn" class="btn">Look Up Summoner</button>
-      <div id="result" class="result-box">
-        <h3>Summoner Info</h3>
-        <p class="muted">Results appear here after the lookup.</p>
-      </div>
-    </section>
+    <hr class="divider">
 
-    <!-- Notes Section (restored cleanly) -->
-    <section class="glass panel">
-      <!-- Serverless Insights (powered by your 2nd Lambda) -->
-<div id="serverless-insights" class="insights-badge glass" aria-live="polite">
-  <div class="insights-head muted tiny" style="margin-bottom:8px;">
-    <strong>Serverless Insights</strong> — last 60 minutes
-  </div>
-
-  <div class="insights-grid">
-    <div class="insight-tile">
-      <div class="label tiny muted">Invocations</div>
-      <div class="value" id="ins-inv">—</div>
-    </div>
-    <div class="insight-tile">
-      <div class="label tiny muted">Avg Duration</div>
-      <div class="value" id="ins-dur">—</div>
-    </div>
-  </div>
-
-  <div class="insights-foot tiny muted" id="ins-foot" style="margin-top:6px;">
-    Fetching from AWS Lambda…
-  </div>
-</div>
-      <h2>Notes</h2>
-      <p class="muted">
-        Powered by <strong>AWS Lambda</strong> + <strong>CloudFront</strong> + <strong>S3</strong> (Free Tier friendly).
-      </p>
-      <p class="muted">
-        This space is reserved for insights — can later show Lambda metrics or serverless health badges.
-      </p>
-    </section>
-
-    <footer class="wrap center">
-      <p class="tiny">© 2025 Michael Ramirez • Built with ❤️‍🔥 on AWS</p>
+    <footer class="center">
+      <p class="tiny">Built with ❤️ using Riot API and AWS Lambda</p>
     </footer>
-  </main>
+  </div>
 
   <script src="script.js"></script>
 </body>

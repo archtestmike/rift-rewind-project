@@ -1,122 +1,189 @@
-// ========= Riot API Lookup =========
-const lookupBtn = document.getElementById('lookupBtn');
-const regionSel = document.getElementById('region');
-const summonerInput = document.getElementById('summoner');
-const resultBox = document.getElementById('result');
-const recent = document.getElementById('recent');
+// Riot Lambda Setup
+const RIOT_LAMBDA_URL = 'https://qhn53vmz4dsaf34lowcbnao3ya0ncvem.lambda-url.us-east-1.on.aws/';
+const REGION_CODE = {
+  'na1': 'na1', 'euw1': 'euw1', 'eun1': 'eun1', 'kr': 'kr'
+};
+const CHAMPION_MAP = {
+  7: 'LeBlanc', 268: 'Azir', 517: 'Sylas', 1: 'Annie',
+  103: 'Ahri', 64: 'Lee Sin', 11: 'Master Yi',
+  81: 'Ezreal', 157: 'Yasuo', 84: 'Akali', 222: 'Jinx'
+};
+const DDRAGON_FILE = {
+  'LeBlanc': 'Leblanc', "Cho'Gath": 'Chogath',
+  "Kai'Sa": 'Kaisa', "Kha'Zix": 'Khazix',
+  "Vel'Koz": 'Velkoz', "Kog'Maw": 'KogMaw',
+  "Rek'Sai": 'RekSai', "Bel'Veth": 'Belveth',
+  'Nunu & Willump': 'Nunu', 'Jarvan IV': 'JarvanIV',
+  'Wukong': 'MonkeyKing', 'Renata Glasc': 'Renata',
+  'Dr. Mundo': 'DrMundo', 'Tahm Kench': 'TahmKench'
+};
+function ddragonFileFromName(name) {
+  if (!name) return '';
+  if (DDRAGON_FILE[name]) return `${DDRAGON_FILE[name]}.png`;
+  const clean = name.replace(/['’.&]/g, '').replace(/\s+/g, ' ').trim()
+    .split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join('');
+  return `${clean}.png`;
+}
 
-const LAMBDA_URL = "https://qhn53vmz4dsaf34lowcbnao3ya0ncvem.lambda-url.us-east-1.on.aws/";
+document.addEventListener('DOMContentLoaded', () => {
+  const form = document.getElementById('riot-form');
+  const resultsEl = document.getElementById('riot-results');
+  const chartSection = document.getElementById('chart-section');
+  const recentEl = document.getElementById('recentId');
 
-lookupBtn?.addEventListener("click", async () => {
-  const summonerName = summonerInput.value.trim();
-  const region = regionSel.value;
-  if (!summonerName) {
-    resultBox.innerHTML = `<p class="muted">Please enter a Riot ID in GameName#TAG format.</p>`;
+  if (!form || !resultsEl) return;
+
+  const recent = localStorage.getItem('recentRiotId');
+  if (recent && recentEl) {
+    recentEl.textContent = recent;
+    recentEl.style.display = 'inline';
+    recentEl.addEventListener('click', e => {
+      e.preventDefault();
+      document.getElementById('riotId').value = recent;
+    });
+  }
+
+  form.addEventListener('submit', async e => {
+    e.preventDefault();
+    resultsEl.innerHTML = '<p class="tiny muted">Fetching…</p>';
+
+    const riotId = (form.riotId.value || '').trim();
+    const platform = REGION_CODE[form.region.value];
+    if (!riotId.includes('#')) {
+      resultsEl.innerHTML = '<p class="tiny" style="color:#ff9b9b">Invalid Riot ID. Use <b>GameName#TAG</b>.</p>';
+      return;
+    }
+
+    localStorage.setItem('recentRiotId', riotId);
+    if (recentEl) { recentEl.textContent = riotId; recentEl.style.display = 'inline'; }
+
+    try {
+      const t0 = performance.now();
+      const resp = await fetch(RIOT_LAMBDA_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ summonerName: riotId, region: platform })
+      });
+      const t1 = performance.now();
+
+      if (!resp.ok) {
+        const text = await resp.text();
+        resultsEl.innerHTML =
+          `<div class="panel" style="background:rgba(40,0,0,.25);border:1px solid rgba(255,120,120,.25);border-radius:12px;padding:12px;">
+            <span style="color:#ff9b9b">Lambda error (${resp.status}):</span>
+            <pre style="white-space:pre-wrap;margin:6px 0 0">${escapeHtml(text || 'Request failed')}</pre>
+          </div>`;
+        chartSection.style.display = 'none';
+        return;
+      }
+
+      const data = await resp.json();
+      renderResult(resultsEl, data, Math.round(t1 - t0), platform);
+      renderChart(data.topChampions || []);
+    } catch (err) {
+      resultsEl.innerHTML = `<p class="tiny" style="color:#ff9b9b">Network error: ${escapeHtml(err.message)}</p>`;
+      chartSection.style.display = 'none';
+    }
+  });
+});
+
+function renderResult(root, data, ms, region) {
+  const lvl = data?.summoner?.level ?? '?';
+  const name = data?.summoner?.name ?? 'Unknown';
+  const champs = Array.isArray(data?.topChampions) ? data.topChampions : [];
+
+  const rows = champs.map(ch => {
+    const pts = (ch.championPoints ?? 0).toLocaleString();
+    const masteryLvl = ch.championLevel ?? 0;
+    const progress = Math.max(6, Math.min(100, Math.round((ch.championPoints ?? 0) / 700000 * 100)));
+
+    const champName = ch.championName || CHAMPION_MAP[ch.championId] || `Champion ${ch.championId}`;
+    const file = ddragonFileFromName(champName);
+    const champImg = `https://ddragon.leagueoflegends.com/cdn/14.18.1/img/champion/${file}`;
+
+    return `
+      <div class="panel" style="margin:12px 0; background:rgba(255,255,255,.02); border:1px solid rgba(255,255,255,.08); border-radius:14px; padding:14px;">
+        <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap;">
+          <div style="display:flex; align-items:center; gap:10px; min-width:220px;">
+            <img src="${champImg}" alt="${champName}"
+                 style="width:42px;height:42px;border-radius:10px;object-fit:cover;flex:0 0 42px">
+            <div style="font-weight:800; font-size:18px; white-space:nowrap;">${escapeHtml(champName)}</div>
+          </div>
+          <div class="pill small" style="background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.12); border-radius:999px; padding:6px 10px;">
+            Mastery Lv ${masteryLvl}
+          </div>
+          <div style="color:#aecdff; font-weight:800; margin-left:auto;">${pts} pts</div>
+        </div>
+        <div style="height:10px; border-radius:999px; background:rgba(255,255,255,.08); margin-top:10px; overflow:hidden;">
+          <div style="height:100%; width:${progress}%; background:linear-gradient(90deg, var(--brand1), var(--brand2));"></div>
+        </div>
+      </div>`;
+  }).join('');
+
+  root.innerHTML = `
+    <div class="panel" style="background:rgba(255,255,255,.02); border:1px solid rgba(255,255,255,.08); border-radius:16px; padding:16px;">
+      <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; margin-bottom:10px;">
+        <h3 style="margin:0">Summoner: ${escapeHtml(name)}</h3>
+        <div class="pill small" style="background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.12); border-radius:999px; padding:6px 10px;">Level ${lvl}</div>
+      </div>
+      <div class="pill small" style="display:inline-flex; background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.12); border-radius:999px; padding:6px 10px; margin:6px 0 14px;">
+        Fetched in ${ms} ms via AWS Lambda (${escapeHtml(region)})
+      </div>
+      ${rows || '<p class="tiny muted">No mastery data</p>'}
+    </div>`;
+}
+
+function renderChart(champions = []) {
+  const chartSection = document.getElementById('chart-section');
+  const ctx = document.getElementById('masteryChart').getContext('2d');
+  if (!champions.length) {
+    chartSection.style.display = 'none';
     return;
   }
 
-  recent.innerHTML = `Recent: <a href="#">${summonerName}</a>`;
-  resultBox.innerHTML = `<p class="muted">Fetching data...</p>`;
+  const names = champions.map(c => c.championName || CHAMPION_MAP[c.championId] || `Champ ${c.championId}`);
+  const points = champions.map(c => c.championPoints);
 
-  const start = performance.now();
-  try {
-    const response = await fetch(LAMBDA_URL, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ summonerName, region }),
-    });
-    const latency = Math.round(performance.now() - start);
-    const data = await response.json();
+  chartSection.style.display = 'block';
 
-    if (!response.ok) throw new Error(data.error || "Error fetching summoner data");
-
-    const champs = data.topChampions.map(c => `
-      <div class="champ-card">
-        <p><strong>Champion ID ${c.championId}</strong></p>
-        <p>Mastery Lv ${c.championLevel}</p>
-        <p>${c.championPoints.toLocaleString()} pts</p>
-      </div>
-    `).join("");
-
-    resultBox.innerHTML = `
-      <p><strong>Summoner:</strong> ${data.summoner.name}</p>
-      <p>Level ${data.summoner.level}</p>
-      <p>Fetched in ${latency} ms via AWS Lambda (${region})</p>
-      ${champs}
-    `;
-  } catch (err) {
-    resultBox.innerHTML = `<p class="muted">Lambda error: ${err.message}</p>`;
+  if (window.masteryChart) {
+    window.masteryChart.destroy();
   }
-});
 
-// ===== Serverless Insights (2nd Lambda) =====
-// Update if your 2nd function URL is different:
-const INSIGHTS_LAMBDA_URL = 'https://tfapgtyrz75ve4lrye32a3zzfe0zgaft.lambda-url.us-east-1.on.aws/';
-
-(function initInsights(){
-  const root = document.getElementById('serverless-insights');
-  if (!root) return; // badge not on page
-
-  const invEl = document.getElementById('ins-inv');
-  const durEl = document.getElementById('ins-dur');
-  const foot = document.getElementById('ins-foot');
-
-  const fmt = (n) => {
-    if (n === null || n === undefined || Number.isNaN(n)) return '—';
-    return Number(n).toLocaleString();
-  };
-
-  const set = (inv, durMs, extraNote) => {
-    invEl.textContent = fmt(inv);
-    durEl.textContent = durMs === '—' ? '—' : `${fmt(Math.round(durMs))} ms`;
-    foot.textContent = extraNote || 'Powered by AWS Lambda • CloudWatch Metrics';
-  };
-
-  const load = async () => {
-    try {
-      // GET keeps it simple (no CORS preflight). Ensure your Function URL CORS allows GET + your domain.
-      const res = await fetch(INSIGHTS_LAMBDA_URL, { method: 'GET' });
-      if (!res.ok) {
-        set('—', '—', `Error ${res.status}: ${await res.text().catch(()=> 'Request failed')}`);
-        return;
+  window.masteryChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: names,
+      datasets: [{
+        label: 'Champion Points',
+        data: points,
+        backgroundColor: 'rgba(0,224,184,0.6)',
+        borderColor: 'rgba(91,138,255,0.6)',
+        borderWidth: 2,
+        borderRadius: 6
+      }]
+    },
+    options: {
+      plugins: {
+        legend: { display: false }
+      },
+      scales: {
+        y: {
+          ticks: { color: '#9bb0ff' },
+          grid: { color: 'rgba(255,255,255,.04)' }
+        },
+        x: {
+          ticks: { color: '#9bb0ff' },
+          grid: { display: false }
+        }
       }
-      const data = await res.json();
-
-      // Be resilient to different response shapes:
-      const m = data.metrics || data;
-
-      const inv = m.invocationsLast60m ?? m.invocations ?? m.count ?? 0;
-      const dur =
-        m.avgDurationMs ??
-        m.averageDurationMs ??
-        m.durationMs ??
-        (Array.isArray(m.datapoints) ? averageDurationFrom(m.datapoints) : 0);
-
-      set(inv, dur, (m.region && m.functionName)
-        ? `${m.functionName} • ${m.region}`
-        : 'AWS Lambda • CloudWatch Metrics');
-    } catch (e) {
-      set('—', '—', `Network error: ${e.message}`);
-    }
-  };
-
-  const averageDurationFrom = (points) => {
-    const durations = points
-      .map(p => Number(p.Average ?? p.avg ?? p.value ?? p.Duration ?? NaN))
-      .filter(n => Number.isFinite(n));
-    if (!durations.length) return 0;
-    return durations.reduce((a,b)=>a+b,0) / durations.length;
-  };
-
-  // load on mount and refresh every 60s (cheap/free-tier friendly)
-  load();
-  const t = setInterval(load, 60_000);
-  // optional cleanup if you ever remove the node dynamically:
-  const obs = new MutationObserver(() => {
-    if (!document.body.contains(root)) {
-      clearInterval(t);
-      obs.disconnect();
     }
   });
-  obs.observe(document.body, { childList:true, subtree:true });
-})();
+}
+
+function escapeHtml(s = '') {
+  return s.replace(/[&<>"'`=\/]/g, c => ({
+    '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;',
+    '`':'&#96;', '=':'&#61;', '/':'&#47;'
+  }[c]));
+}
