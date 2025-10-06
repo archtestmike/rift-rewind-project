@@ -131,7 +131,7 @@ header.hero{ padding:88px 0 56px; position:relative; }
   box-shadow:0 0 0 3px rgba(91,138,255,.18), 0 0 22px rgba(91,138,255,.16), inset 0 0 0 9999px rgba(255,255,255,.02);
   transform: translateY(-1px);
 }
-/* Chrome/Safari/Edge autofill (prevent white background) */
+/* Chrome/Safari/Edge autofill (prevents white flash) */
 .pretty-form .input:-webkit-autofill,
 .pretty-form .input:-webkit-autofill:hover,
 .pretty-form .input:-webkit-autofill:focus{

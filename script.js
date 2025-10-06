@@ -143,7 +143,7 @@ function renderResult(data, ms=0){
         <div>
           <div class="champ-title" style="justify-content:space-between;">
             <div class="champ-title">
-              <span class="champ-icon">${iconUrl ? `<img src="${iconUrl}" alt="${escapeHtml(displayName)} icon" loading="lazy">` : ''}</span>
+              <span class="champ-icon">${iconUrl ? `<img src="${iconUrl}" alt="${escapeHtml(displayName)} icon" loading="lazy" decoding="async">` : ''}</span>
               <strong>${escapeHtml(displayName)}</strong>
             </div>
             <span class="badge">Mastery Lv ${lvl}</span>
