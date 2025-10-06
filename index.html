@@ -4,36 +4,81 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Michael Ramirez — Cloud Builder</title>
+  <meta name="description" content="Michael Ramirez • Cloud Builder & AWS Enthusiast" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+  <header class="hero">
+    <div class="wrap grid cols-2">
+      <div class="hero-stack">
+        <div class="avatar-wrap">
+          <img src="profile.png" alt="Michael Ramirez headshot" loading="lazy">
+        </div>
+
+        <div class="hero-text">
+          <h1 class="neon-title">Michael Ramirez</h1>
+          <p class="subtitle">Cloud Builder & AWS Enthusiast</p>
+          <p class="muted">Currently working on the AWS Builder Challenge and learning to deploy with S3 + CloudFront. This site runs on AWS Amplify/CloudFront.</p>
+
+          <div class="cta">
+            <a class="btn linkedin" href="https://www.linkedin.com/in/ramirezmichael1/" target="_blank" rel="noopener" aria-label="LinkedIn">
+              <span class="brand-chip li">in</span>
+              <span>LinkedIn</span>
+            </a>
+
+            <a class="btn github" href="https://github.com/archtestmike" target="_blank" rel="noopener" aria-label="GitHub">
+              <span class="brand-chip gh">
+                <svg viewBox="0 0 16 16" aria-hidden="true">
+                  <path fill="currentColor" d="M8 .2A8 8 0 0 0 5.47 15.8c.4.07.55-.17.55-.38 0-.19-.01-.69-.01-1.36-2.24.49-2.71-1.08-2.71-1.08-.36-.92-.89-1.17-.89-1.17-.73-.5.06-.49.06-.49.8.06 1.22.83 1.22.83.72 1.23 1.88.87 2.34.67.07-.52.28-.87.5-1.07-1.79-.2-3.66-.89-3.66-3.98 0-.88.31-1.6.82-2.16-.08-.2-.36-1.02.08-2.13 0 0 .67-.21 2.2.82.64-.18 1.33-.27 2.01-.27.69 0 1.37.09 2.01.27 1.53-1.04 2.2-.82 2.2-.82.44 1.11.16 1.93.08 2.13.51.56.82 1.28.82 2.16 0 3.1-1.88 3.78-3.67 3.98.29.25.54.74.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8 8 0 0 0 8 .2Z"/>
+                </svg>
+              </span>
+              <span>GitHub</span>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Facts (kept simple) -->
+      <div class="card panel">
+        <h3>Quick Facts</h3>
+        <ul class="fact-list">
+          <li class="fact"><span class="dot"></span><span><strong>Learning goal:</strong> build cloud skills one service at a time (S3, CloudFront, and beyond).</span></li>
+          <li class="fact"><span class="dot"></span><span><strong>Fun project:</strong> this site is served globally via AWS.</span></li>
+          <li class="fact"><span class="dot"></span><span><strong>Challenge:</strong> AWS Builder Challenge #2.</span></li>
+          <li class="fact"><span class="dot"></span><span><strong>Explore my art:</strong> <a href="https://main.d1r289f3oq47go.amplifyapp.com/" target="_blank" rel="noopener">view portfolio</a></span></li>
+        </ul>
+      </div>
+    </div>
+  </header>
+
   <main class="wrap">
     <section class="grid cols-3">
       <div class="glass panel">
         <h2>Cloud & DevOps</h2>
         <ul class="list">
+          <!-- real logos via CDN; no local files -->
           <li class="pill skill">
             <span class="logo-glass">
-              <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/amazonwebservices/amazonwebservices-original.svg" alt="AWS logo">
+              <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/amazonwebservices/amazonwebservices-original.svg" alt="AWS">
             </span>
             AWS
           </li>
           <li class="pill skill">
             <span class="logo-glass">
-              <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/linux/linux-original.svg" alt="Linux logo">
+              <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/linux/linux-original.svg" alt="Linux">
             </span>
             Linux
           </li>
           <li class="pill skill">
             <span class="logo-glass">
-              <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/docker/docker-original.svg" alt="Docker logo">
+              <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/docker/docker-original.svg" alt="Docker">
             </span>
             Docker
           </li>
           <li class="pill skill">
             <span class="logo-glass">
-              <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/terraform/terraform-original.svg" alt="Terraform logo">
+              <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/terraform/terraform-original.svg" alt="Terraform">
             </span>
             Terraform
           </li>
@@ -42,7 +87,14 @@
 
       <div class="glass panel">
         <h2>Projects</h2>
-        <p class="muted">Static hosting + CDN via S3 & CloudFront. Automated deploys with Amplify.</p>
+        <div class="project">
+          <h3>Personal Site on AWS</h3>
+          <p class="muted">Static hosting + CDN via S3 & CloudFront. Automated deploys with Amplify.</p>
+        </div>
+        <div class="project">
+          <h3>Rift Rewind (Learning)</h3>
+          <p class="muted">Exploring Riot API integrations and serverless patterns.</p>
+        </div>
       </div>
 
       <div class="glass panel">
@@ -66,22 +118,32 @@
           <div class="form-grid">
             <div>
               <label for="region">Region</label>
-              <select id="region" class="input glass-field">
+              <select id="region" name="region" class="input glass-field">
                 <option value="na1">North America (NA1)</option>
                 <option value="euw1">Europe West (EUW1)</option>
+                <option value="eun1">Europe Nordic &amp; East (EUN1)</option>
                 <option value="kr">Korea (KR)</option>
+                <option value="br1">Brazil (BR1)</option>
+                <option value="la1">Latin America North (LA1)</option>
+                <option value="la2">Latin America South (LA2)</option>
+                <option value="oc1">Oceania (OC1)</option>
+                <option value="tr1">Turkey (TR1)</option>
+                <option value="ru">Russia (RU)</option>
+                <option value="jp1">Japan (JP1)</option>
               </select>
             </div>
+
             <div>
               <label for="riotId">Riot ID</label>
-              <input id="riotId" placeholder="GameName#TAG" class="input glass-field" />
+              <input id="riotId" name="riotId" placeholder="GameName#TAG" class="input glass-field" required />
             </div>
           </div>
+
+          <p class="muted tiny">Recent: <a id="recent-link" href="#" style="display:none"></a></p>
+          <button class="btn" type="submit">Look Up Summoner</button>
         </form>
 
-        <p class="muted tiny">Recent: <a id="recent-link" href="#" style="display:none"></a></p>
-        <button id="lookup-btn" class="btn">Look Up Summoner</button>
-        <div id="riot-results" class="panel results-shell">
+        <div id="riot-results" class="panel results-shell" style="margin-top:10px;background:var(--glass)">
           <h3 class="muted">Summoner Info</h3>
           <p class="tiny muted">Results appear here after the lookup.</p>
         </div>
@@ -94,7 +156,7 @@
     </section>
 
     <footer class="wrap">
-      <p class="tiny center">&copy; 2025 Michael Ramirez • Built with ❤️‍🔥 on AWS</p>
+      <p class="tiny center">© 2025 Michael Ramirez • Built with ❤️‍🔥 on AWS</p>
     </footer>
   </main>
 
