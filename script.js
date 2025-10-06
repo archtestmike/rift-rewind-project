@@ -8,22 +8,55 @@ const REGION_CODE = {
   'tr1': 'tr1', 'ru': 'ru', 'jp1': 'jp1'
 };
 
-// Optional: simple static champion ID-to-name map for icons
-// (If your Lambda already returns champName, you can skip this map)
+// Champion ID → Name (only needed if Lambda doesn't return "championName")
 const CHAMPION_MAP = {
   7: 'LeBlanc',
   268: 'Azir',
   517: 'Sylas',
   1: 'Annie',
   103: 'Ahri',
-  64: 'LeeSin',
-  11: 'MasterYi',
+  64: 'Lee Sin',
+  11: 'Master Yi',
   81: 'Ezreal',
   157: 'Yasuo',
   84: 'Akali',
   222: 'Jinx',
-  // add more if desired
 };
+
+// Name → Data Dragon filename overrides (handles punctuation / weird casing)
+const DDRAGON_FILE = {
+  'LeBlanc': 'Leblanc',
+  "Cho'Gath": 'Chogath',
+  "Kai'Sa": 'Kaisa',
+  "Kha'Zix": 'Khazix',
+  "Vel'Koz": 'Velkoz',
+  "Kog'Maw": 'KogMaw',
+  "Rek'Sai": 'RekSai',
+  "Bel'Veth": 'Belveth',
+  'Nunu & Willump': 'Nunu',
+  'Jarvan IV': 'JarvanIV',
+  'Wukong': 'MonkeyKing',
+  'Renata Glasc': 'Renata',
+  'Dr. Mundo': 'DrMundo',
+  'Tahm Kench': 'TahmKench',
+};
+
+// build a safe filename for Data Dragon
+function ddragonFileFromName(name) {
+  if (!name) return '';
+  if (DDDRAGON_FILE[name]) return `${DDDRAGON_FILE[name]}.png`;
+  // fallback: strip non-letters, collapse spaces, PascalCase
+  const clean = name
+    .replace(/['’.&]/g, '')          // remove punctuation
+    .replace(/\s+/g, ' ')            // single spaces
+    .trim()
+    .split(' ')
+    .map(w => w.charAt(0).toUpperCase() + w.slice(1))
+    .join('');
+  return `${clean}.png`;
+}
+
+// ──────────────────────────────────────────────────────────────────────────────
 
 document.addEventListener('DOMContentLoaded', () => {
   const form = document.getElementById('riot-form');
@@ -33,7 +66,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // recent link from localStorage
   const recent = localStorage.getItem('recentRiotId');
-  if (recent) {
+  if (recent && recentEl) {
     recentEl.textContent = recent;
     recentEl.style.display = 'inline';
     recentEl.addEventListener('click', (e) => {
@@ -94,22 +127,23 @@ function renderResult(root, data, ms, region) {
     const masteryLvl = ch.championLevel ?? 0;
     const progress = Math.max(6, Math.min(100, Math.round((ch.championPoints ?? 0) / 700000 * 100)));
 
-    // Try to resolve champion name & image
+    // resolve champion name & image
     const champName = ch.championName || CHAMPION_MAP[ch.championId] || `Champion ${ch.championId}`;
-    const champSlug = champName.replace(/\s+/g, '');
-    const champImg = `https://ddragon.leagueoflegends.com/cdn/14.18.1/img/champion/${champSlug}.png`;
+    const file = ddragonFileFromName(champName);
+    const champImg = `https://ddragon.leagueoflegends.com/cdn/14.18.1/img/champion/${file}`;
 
     return `
       <div class="panel" style="margin:12px 0; background:rgba(255,255,255,.02); border:1px solid rgba(255,255,255,.08); border-radius:14px; padding:14px;">
         <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap;">
-          <div style="display:flex; align-items:center; gap:10px;">
-            <img src="${champImg}" alt="${champName}" style="width:42px;height:42px;border-radius:10px;object-fit:cover;">
-            <div style="font-weight:800; font-size:18px;">${escapeHtml(champName)}</div>
+          <div style="display:flex; align-items:center; gap:10px; min-width:220px;">
+            <img src="${champImg}" alt="${champName}"
+                 style="width:42px;height:42px;border-radius:10px;object-fit:cover;flex:0 0 42px">
+            <div style="font-weight:800; font-size:18px; white-space:nowrap;">${escapeHtml(champName)}</div>
           </div>
           <div class="pill small" style="background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.12); border-radius:999px; padding:6px 10px;">
             Mastery Lv ${masteryLvl}
           </div>
-          <div style="color:#aecdff; font-weight:800;">${pts} pts</div>
+          <div style="color:#aecdff; font-weight:800; margin-left:auto;">${pts} pts</div>
         </div>
         <div style="height:10px; border-radius:999px; background:rgba(255,255,255,.08); margin-top:10px; overflow:hidden;">
           <div style="height:100%; width:${progress}%; background:linear-gradient(90deg, var(--brand1), var(--brand2));"></div>
