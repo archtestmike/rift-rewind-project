@@ -8,6 +8,23 @@ const REGION_CODE = {
   'tr1': 'tr1', 'ru': 'ru', 'jp1': 'jp1'
 };
 
+// Optional: simple static champion ID-to-name map for icons
+// (If your Lambda already returns champName, you can skip this map)
+const CHAMPION_MAP = {
+  7: 'LeBlanc',
+  268: 'Azir',
+  517: 'Sylas',
+  1: 'Annie',
+  103: 'Ahri',
+  64: 'LeeSin',
+  11: 'MasterYi',
+  81: 'Ezreal',
+  157: 'Yasuo',
+  84: 'Akali',
+  222: 'Jinx',
+  // add more if desired
+};
+
 document.addEventListener('DOMContentLoaded', () => {
   const form = document.getElementById('riot-form');
   const resultsEl = document.getElementById('riot-results');
@@ -37,7 +54,6 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
-    // remember
     localStorage.setItem('recentRiotId', riotId);
     if (recentEl) { recentEl.textContent = riotId; recentEl.style.display = 'inline'; }
 
@@ -75,15 +91,23 @@ function renderResult(root, data, ms, region) {
 
   const rows = champs.map(ch => {
     const pts = (ch.championPoints ?? 0).toLocaleString();
-    const lvl = ch.championLevel ?? 0;
+    const masteryLvl = ch.championLevel ?? 0;
     const progress = Math.max(6, Math.min(100, Math.round((ch.championPoints ?? 0) / 700000 * 100)));
-    const champName = ch.championId ? `Champion ID ${ch.championId}` : 'Champion';
+
+    // Try to resolve champion name & image
+    const champName = ch.championName || CHAMPION_MAP[ch.championId] || `Champion ${ch.championId}`;
+    const champSlug = champName.replace(/\s+/g, '');
+    const champImg = `https://ddragon.leagueoflegends.com/cdn/14.18.1/img/champion/${champSlug}.png`;
+
     return `
       <div class="panel" style="margin:12px 0; background:rgba(255,255,255,.02); border:1px solid rgba(255,255,255,.08); border-radius:14px; padding:14px;">
         <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap;">
-          <div style="font-weight:800; font-size:18px;">${champName}</div>
+          <div style="display:flex; align-items:center; gap:10px;">
+            <img src="${champImg}" alt="${champName}" style="width:42px;height:42px;border-radius:10px;object-fit:cover;">
+            <div style="font-weight:800; font-size:18px;">${escapeHtml(champName)}</div>
+          </div>
           <div class="pill small" style="background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.12); border-radius:999px; padding:6px 10px;">
-            Mastery Lv ${lvl}
+            Mastery Lv ${masteryLvl}
           </div>
           <div style="color:#aecdff; font-weight:800;">${pts} pts</div>
         </div>
