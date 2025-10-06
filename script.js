@@ -1,72 +1,50 @@
-/* ========= Your existing Riot lookup code can live here (unchanged) =========
-   If you already have code in script.js, keep it and just append the hover module
-   below. Nothing here touches your Lambda or lookup UI. */
+// ========= Riot API Lookup =========
+const lookupBtn = document.getElementById('lookupBtn');
+const regionSel = document.getElementById('region');
+const summonerInput = document.getElementById('summoner');
+const resultBox = document.getElementById('result');
+const recent = document.getElementById('recent');
 
-/* ====== Architecture hover highlight ======
-   When you hover a node, we:
-   - add `.mutedAll` on the SVG to dim everything
-   - add `.active` to the node and any connected edges + downstream node
-*/
-(function () {
-  const svg = document.querySelector('.arch-svg');
-  if (!svg) return;
+const LAMBDA_URL = "https://qhn53vmz4dsaf34lowcbnao3ya0ncvem.lambda-url.us-east-1.on.aws/";
 
-  const nodes = Array.from(svg.querySelectorAll('.node'));
-  const edges = Array.from(svg.querySelectorAll('.e'));
-
-  // Build a quick adjacency map based on data-a -> data-b
-  const next = {};
-  edges.forEach(e => {
-    const a = e.getAttribute('data-a');
-    const b = e.getAttribute('data-b');
-    if (!next[a]) next[a] = [];
-    next[a].push({ edge: e, id: b });
-  });
-
-  function clearActive() {
-    svg.classList.remove('mutedAll');
-    nodes.forEach(n => n.querySelector('.n')?.classList.remove('active'));
-    nodes.forEach(n => n.querySelector('.t')?.classList.remove('active'));
-    edges.forEach(e => e.classList.remove('active'));
+lookupBtn?.addEventListener("click", async () => {
+  const summonerName = summonerInput.value.trim();
+  const region = regionSel.value;
+  if (!summonerName) {
+    resultBox.innerHTML = `<p class="muted">Please enter a Riot ID in GameName#TAG format.</p>`;
+    return;
   }
 
-  function activateFrom(id) {
-    svg.classList.add('mutedAll');
+  recent.innerHTML = `Recent: <a href="#">${summonerName}</a>`;
+  resultBox.innerHTML = `<p class="muted">Fetching data...</p>`;
 
-    // BFS highlight to show a simple downstream flow
-    const q = [id];
-    const seen = new Set([id]);
+  const start = performance.now();
+  try {
+    const response = await fetch(LAMBDA_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ summonerName, region }),
+    });
+    const latency = Math.round(performance.now() - start);
+    const data = await response.json();
 
-    const setNodeActive = (nid) => {
-      const g = nodes.find(n => n.getAttribute('data-id') === nid);
-      if (!g) return;
-      g.querySelector('.n')?.classList.add('active');
-      g.querySelector('.t')?.classList.add('active');
-    };
+    if (!response.ok) throw new Error(data.error || "Error fetching summoner data");
 
-    setNodeActive(id);
+    const champs = data.topChampions.map(c => `
+      <div class="champ-card">
+        <p><strong>Champion ID ${c.championId}</strong></p>
+        <p>Mastery Lv ${c.championLevel}</p>
+        <p>${c.championPoints.toLocaleString()} pts</p>
+      </div>
+    `).join("");
 
-    while (q.length) {
-      const cur = q.shift();
-      const outs = next[cur] || [];
-      outs.forEach(({ edge, id: to }) => {
-        edge.classList.add('active');
-        setNodeActive(to);
-        if (!seen.has(to)) {
-          seen.add(to);
-          q.push(to);
-        }
-      });
-    }
+    resultBox.innerHTML = `
+      <p><strong>Summoner:</strong> ${data.summoner.name}</p>
+      <p>Level ${data.summoner.level}</p>
+      <p>Fetched in ${latency} ms via AWS Lambda (${region})</p>
+      ${champs}
+    `;
+  } catch (err) {
+    resultBox.innerHTML = `<p class="muted">Lambda error: ${err.message}</p>`;
   }
-
-  nodes.forEach(n => {
-    const id = n.getAttribute('data-id');
-    n.addEventListener('mouseenter', () => activateFrom(id));
-    n.addEventListener('mouseleave', () => clearActive());
-    // also make it keyboard-focus friendly
-    n.setAttribute('tabindex', '0');
-    n.addEventListener('focus', () => activateFrom(id));
-    n.addEventListener('blur', () => clearActive());
-  });
-})();
+});
