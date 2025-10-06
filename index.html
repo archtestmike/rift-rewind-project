@@ -71,31 +71,45 @@
         <ul class="list">
           <li class="pill">
             <span class="logo-wrap">
-              <img class="logo" src="https://cdn.simpleicons.org/amazonaws/ff9900" alt="AWS logo" width="20" height="20" loading="lazy">
+              <!-- AWS: reliable CDN with fallback to monochrome if color blocked -->
+              <img class="logo"
+                   src="https://cdn.simpleicons.org/amazonaws/ff9900"
+                   onerror="this.onerror=null;this.src='https://cdn.simpleicons.org/amazonaws';"
+                   alt="AWS logo" width="20" height="20" loading="lazy">
             </span>
             AWS
           </li>
           <li class="pill">
             <span class="logo-wrap">
-              <img class="logo" src="https://cdn.simpleicons.org/linux/FCC624" alt="Linux logo" width="20" height="20" loading="lazy">
+              <!-- Linux (Tux) in official yellow -->
+              <img class="logo"
+                   src="https://cdn.simpleicons.org/linux/FCC624"
+                   onerror="this.onerror=null;this.src='https://cdn.simpleicons.org/linux';"
+                   alt="Linux logo" width="20" height="20" loading="lazy">
             </span>
             Linux
           </li>
           <li class="pill">
             <span class="logo-wrap">
-              <img class="logo" src="https://cdn.simpleicons.org/docker/2496ED" alt="Docker logo" width="20" height="20" loading="lazy">
+              <img class="logo" src="https://cdn.simpleicons.org/docker/2496ED"
+                   onerror="this.onerror=null;this.src='https://cdn.simpleicons.org/docker';"
+                   alt="Docker logo" width="20" height="20" loading="lazy">
             </span>
             Docker
           </li>
           <li class="pill">
             <span class="logo-wrap">
-              <img class="logo" src="https://cdn.simpleicons.org/terraform/844FBA" alt="Terraform logo" width="20" height="20" loading="lazy">
+              <img class="logo" src="https://cdn.simpleicons.org/terraform/844FBA"
+                   onerror="this.onerror=null;this.src='https://cdn.simpleicons.org/terraform';"
+                   alt="Terraform logo" width="20" height="20" loading="lazy">
             </span>
             Terraform
           </li>
           <li class="pill">
             <span class="logo-wrap">
-              <img class="logo" src="https://cdn.simpleicons.org/githubactions/2088FF" alt="GitHub Actions logo" width="20" height="20" loading="lazy">
+              <img class="logo" src="https://cdn.simpleicons.org/githubactions/2088FF"
+                   onerror="this.onerror=null;this.src='https://cdn.simpleicons.org/githubactions';"
+                   alt="GitHub Actions logo" width="20" height="20" loading="lazy">
             </span>
             CI/CD
           </li>
@@ -120,7 +134,7 @@
 
     <hr class="divider" />
 
-    <!-- League Data Lookup (unchanged functionality) -->
+    <!-- League Data Lookup -->
     <section class="grid cols-2" id="lookup">
       <div class="glass panel">
         <h2>League Data Lookup</h2>
