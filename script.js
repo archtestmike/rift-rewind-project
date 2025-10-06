@@ -1,10 +1,8 @@
-// === Config ===
+// Riot lookup UI (unchanged from your working version with small UX helpers)
 const RIOT_LAMBDA_URL = 'https://qhn53vmz4dsaf34lowcbnao3ya0ncvem.lambda-url.us-east-1.on.aws/';
-
 const REGION_CODE = { 'na1':'na1','euw1':'euw1','eun1':'eun1','kr':'kr','br1':'br1','la1':'la1','la2':'la2','oc1':'oc1','tr1':'tr1','ru':'ru','jp1':'jp1' };
 const TAG_TO_PLATFORM = { 'NA1':'na1','EUW':'euw1','EUN':'eun1','KR1':'kr','BR1':'br1','LA1':'la1','LA2':'la2','OC1':'oc1','TR1':'tr1','RU':'ru','JP1':'jp1' };
 
-// Champion meta cache
 let CHAMP_META = { version: '', byKey: {} };
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -16,11 +14,9 @@ document.addEventListener('DOMContentLoaded', () => {
   const lookupBtn = document.getElementById('lookup-btn');
   if (!form || !resultsEl) return;
 
-  // preload champ meta
   loadChampionMeta().catch(()=>{});
   renderRecent(recentEl);
 
-  // auto-select region from Riot tag
   riotInput.addEventListener('blur', () => {
     const tag = getTagLine(riotInput.value);
     const auto = tag && TAG_TO_PLATFORM[tag.toUpperCase()];
@@ -30,7 +26,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // recent click fill
   recentEl.addEventListener('click', (e) => {
     const a = e.target.closest('a[data-riotid]');
     if (!a) return; e.preventDefault();
@@ -43,13 +38,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const riotId = (riotInput.value || '').trim();
     let platform = REGION_CODE[regionSel.value];
-
     if (!riotId.includes('#')) {
       resultsEl.innerHTML = '<p class="tiny" style="color:#ff9b9b">Invalid Riot ID. Use <b>GameName#TAG</b>.</p>';
       return;
     }
 
-    // infer region from tag
     const tag = getTagLine(riotId);
     const inferred = tag && TAG_TO_PLATFORM[tag.toUpperCase()];
     if (inferred && inferred !== platform) {
@@ -59,7 +52,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     try {
       lookupBtn.classList.add('loading'); lookupBtn.disabled = true;
-
       const t0 = performance.now();
       const resp = await fetch(RIOT_LAMBDA_URL, {
         method: 'POST',
@@ -95,11 +87,9 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 
-/* --- Champion meta (Data Dragon) --- */
+/* ----- Champion meta (Data Dragon) ----- */
 async function loadChampionMeta(){
   if (CHAMP_META.version && Object.keys(CHAMP_META.byKey).length) return CHAMP_META;
-
-  // cache first
   try {
     const cached = JSON.parse(localStorage.getItem('champMeta') || 'null');
     if (cached && cached.expires && Date.now() < cached.expires) {
@@ -108,7 +98,6 @@ async function loadChampionMeta(){
     }
   } catch {}
 
-  // latest version
   let version = '14.20.1';
   try {
     const vr = await fetch('https://ddragon.leagueoflegends.com/api/versions.json', { cache: 'no-store' });
@@ -116,7 +105,6 @@ async function loadChampionMeta(){
     if (Array.isArray(arr) && arr[0]) version = arr[0];
   } catch {}
 
-  // champs
   let byKey = {};
   try {
     const cr = await fetch(`https://ddragon.leagueoflegends.com/cdn/${version}/data/en_US/champion.json`, { cache: 'force-cache' });
@@ -129,7 +117,7 @@ async function loadChampionMeta(){
   return CHAMP_META;
 }
 
-/* --- Rendering --- */
+/* ----- Rendering ----- */
 function renderResult(data, ms=0){
   const name = (data?.summoner?.name ?? 'Unknown');
   const level = (data?.summoner?.level ?? '—');
@@ -186,12 +174,10 @@ function renderResult(data, ms=0){
   `;
 }
 
-/* --- Recent lookups --- */
+/* ----- Recent lookups & helpers ----- */
 function getRecent(){ try { return JSON.parse(localStorage.getItem('recentRiotIds')||'[]'); } catch { return []; } }
 function saveRecent(riotId){ const arr = getRecent(); arr.unshift(riotId); const unique = [...new Set(arr)].slice(0,3); try { localStorage.setItem('recentRiotIds', JSON.stringify(unique)); } catch {} }
 function renderRecent(container){ if (!container) return; const items = getRecent(); container.innerHTML = items.length ? `Recent: ${items.map(r => `<a href="#" data-riotid="${escapeHtml(r)}">${escapeHtml(r)}</a>`).join(' • ')}` : ''; }
-
-/* --- Helpers --- */
 function getTagLine(riotId){ const i = String(riotId).indexOf('#'); return i>-1 ? riotId.slice(i+1).trim() : ''; }
 function showNote(container, html){ container.innerHTML = `<p class="note">${html}</p>`; }
 function formatNumber(n){ return (Number(n)||0).toLocaleString(); }
