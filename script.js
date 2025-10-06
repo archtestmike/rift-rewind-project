@@ -3,21 +3,38 @@ const RIOT_LAMBDA_URL = 'https://qhn53vmz4dsaf34lowcbnao3ya0ncvem.lambda-url.us-
 
 // UI regions → platform routing codes your Lambda expects
 const REGION_CODE = {
-  na1:'na1', euw1:'euw1', eun1:'eun1', kr:'kr',
-  br1:'br1', la1:'la1', la2:'la2', oc1:'oc1',
-  tr1:'tr1', ru:'ru', jp1:'jp1'
+  'na1': 'na1', 'euw1': 'euw1', 'eun1': 'eun1', 'kr': 'kr',
+  'br1': 'br1', 'la1': 'la1', 'la2': 'la2', 'oc1': 'oc1',
+  'tr1': 'tr1', 'ru': 'ru', 'jp1': 'jp1'
 };
 
 document.addEventListener('DOMContentLoaded', () => {
   const form = document.getElementById('riot-form');
   const resultsEl = document.getElementById('riot-results');
+  const riotInput = document.getElementById('riotId');
+  const recentLink = document.getElementById('recent-link');
+
+  // load recent from localStorage (non-disruptive)
+  const RECENT_KEY = 'recentRiotId';
+  const recent = localStorage.getItem(RECENT_KEY) || '';
+  if (recent) {
+    recentLink.textContent = recent;
+    recentLink.onclick = (e) => {
+      e.preventDefault();
+      riotInput.value = recent;
+      riotInput.focus();
+    };
+  } else {
+    recentLink.textContent = '';
+  }
+
   if (!form || !resultsEl) return;
 
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
     resultsEl.innerHTML = '<p class="tiny muted">Fetching…</p>';
 
-    const riotId = (form.riotId.value || '').trim();
+    const riotId = (riotInput.value || '').trim();
     const platform = REGION_CODE[form.region.value];
 
     if (!riotId.includes('#')) {
@@ -25,14 +42,19 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
+    // store recent
+    localStorage.setItem(RECENT_KEY, riotId);
+    if (recentLink) {
+      recentLink.textContent = riotId;
+    }
+
+    const t0 = performance.now();
     try {
-      const t0 = performance.now();
       const resp = await fetch(RIOT_LAMBDA_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ summonerName: riotId, region: platform })
       });
-      const latency = Math.round(performance.now() - t0);
 
       if (!resp.ok) {
         const text = await resp.text();
@@ -41,57 +63,57 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       const data = await resp.json();
-      renderResult(data, latency);
+      const ms = Math.max(1, Math.round(performance.now() - t0));
+
+      resultsEl.innerHTML = renderSummary(data, ms);
     } catch (err) {
       resultsEl.innerHTML = `<p class="tiny" style="color:#ff9b9b">Network error: ${escapeHtml(err.message)}</p>`;
     }
   });
-
-  function renderResult(data, latency) {
-    const { summoner, topChampions = [] } = data || {};
-    const champs = topChampions.slice(0,3);
-    const total = champs.reduce((a,c)=>a+(c.championPoints||0),0);
-    const avgLvl = champs.length ? (champs.reduce((a,c)=>a+(c.championLevel||0),0)/champs.length).toFixed(1) : '—';
-
-    const pill = (label)=>`<span class="tiny muted" style="padding:.4rem .7rem;border:1px solid rgba(255,255,255,.14);border-radius:999px;background:rgba(255,255,255,.04);margin-right:.5rem;display:inline-block">${label}</span>`;
-
-    const rows = champs.map(c=>{
-      const points = c.championPoints||0;
-      const lvl = c.championLevel||0;
-      const p = Math.min(100, Math.round((points/800000)*100));
-      return `
-      <div class="glass" style="padding:14px 16px;margin:10px 0;border-radius:14px">
-        <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:6px">
-          <div style="display:flex;align-items:center;gap:10px">
-            <span class="tiny muted" style="padding:8px;border-radius:12px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.04)">Champion ID ${c.championId}</span>
-          </div>
-          ${pill('Mastery Lv '+lvl)} <span class="tiny muted">${points.toLocaleString()} pts</span>
-        </div>
-        <div style="height:8px;border-radius:999px;background:rgba(255,255,255,.08);overflow:hidden">
-          <div style="height:100%;width:${p}%;background:linear-gradient(90deg,var(--brand1),var(--brand2));border-radius:999px"></div>
-        </div>
-      </div>`;
-    }).join('');
-
-    resultsEl.innerHTML = `
-      <div class="glass" style="padding:18px;border-radius:16px">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
-          <h3 style="margin:0">Summoner: ${escapeHtml(summoner?.name||'')}</h3>
-          ${pill('Level '+(summoner?.level??'—'))}
-        </div>
-        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px">
-          ${pill('Total Points: '+total.toLocaleString())}
-          ${pill('Avg Mastery Lv: '+avgLvl)}
-          ${pill('Fetched in '+latency+' ms via AWS Lambda (us-east-1)')}
-        </div>
-        ${rows || '<p class="tiny muted">No mastery data.</p>'}
-      </div>
-    `;
-  }
 });
 
-// Simple HTML escape for <pre> or inline output
-function escapeHtml(s) {
+// Simple summary renderer (keeps your layout intact)
+function renderSummary(data, ms){
+  const { summoner = {}, topChampions = [] } = data || {};
+  const chip = (txt) => `<span style="display:inline-block;padding:6px 10px;border-radius:999px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.04);margin-right:6px;">${escapeHtml(txt)}</span>`;
+
+  const champs = topChampions.map(c => {
+    const lvl = c.championLevel ?? 0;
+    const pts = c.championPoints ?? 0;
+    const id  = c.championId ?? '?';
+    // progress width scaled
+    const w = Math.min(100, Math.round((lvl/60)*100));
+
+    return `
+      <div style="padding:14px;border:1px solid rgba(255,255,255,.08);border-radius:14px;background:rgba(255,255,255,.03);margin:12px 0;">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;">
+          <div style="font-weight:700">Champion ID ${id}</div>
+          ${chip('Mastery Lv ' + lvl)}
+          <div class="muted" style="min-width:120px;text-align:right">${pts.toLocaleString()} pts</div>
+        </div>
+        <div style="height:8px;border-radius:999px;background:rgba(255,255,255,.06);margin-top:10px;overflow:hidden;">
+          <div style="height:100%;width:${w}%;background:linear-gradient(90deg,var(--brand1),var(--brand2));"></div>
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  return `
+    <div style="border:1px solid rgba(255,255,255,.10);border-radius:16px;padding:14px;background:rgba(255,255,255,.02);">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px;">
+        <div style="font-weight:800">Summoner: ${escapeHtml(summoner.name || '—')}</div>
+        ${chip('Level ' + (summoner.level ?? '—'))}
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:10px;margin-bottom:12px;">
+        ${chip('Fetched in ' + ms + ' ms via AWS Lambda (us-east-1)')}
+      </div>
+      ${champs || '<p class="tiny muted">No mastery data returned.</p>'}
+    </div>
+  `;
+}
+
+// HTML escape
+function escapeHtml(s=''){
   return String(s).replace(/[&<>"'`=\/]/g, (c) => ({
     '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;',
     "'": '&#39;', '`': '&#96;', '=': '&#61;', '/': '&#47;'
