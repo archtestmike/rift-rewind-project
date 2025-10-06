@@ -104,12 +104,7 @@
             </span>
             <span>AWS</span>
           </li>
-
-          <li class="pill skill">
-            <span class="skill-ic"><img src="https://upload.wikimedia.org/wikipedia/commons/3/35/Tux.svg" alt="" referrerpolicy="no-referrer"></span>
-            <span>Linux</span>
-          </li>
-
+          <li class="pill skill"><span class="skill-ic"><img src="https://upload.wikimedia.org/wikipedia/commons/3/35/Tux.svg" alt="" referrerpolicy="no-referrer"></span><span>Linux</span></li>
           <li class="pill skill"><span class="skill-ic"><img src="https://cdn.simpleicons.org/docker/2496ED" alt=""></span><span>Docker</span></li>
           <li class="pill skill"><span class="skill-ic"><img src="https://cdn.simpleicons.org/terraform/7B42BC" alt=""></span><span>Terraform</span></li>
           <li class="pill skill"><span class="skill-ic"><img src="https://cdn.simpleicons.org/githubactions/2088FF" alt=""></span><span>CI/CD</span></li>
@@ -140,9 +135,9 @@
 
     <hr class="divider" />
 
-    <!-- Two-column: Riot Lookup (left) + GitHub Pulse (right) -->
+    <!-- Two-column: Riot Lookup (left) + Latency Race (right) -->
     <section id="lookup" class="grid cols-2">
-      <!-- LEFT: Riot lookup -->
+      <!-- LEFT: Riot lookup (unchanged) -->
       <div class="glass panel">
         <h2>League Data Lookup</h2>
         <p class="muted tiny">Riot ID format: <b>GameName#TAG</b></p>
@@ -182,48 +177,46 @@
         </div>
       </div>
 
-      <!-- RIGHT: GitHub Pulse -->
-      <div id="gh-panel" class="glass panel">
-        <h2>🐙 GitHub Pulse</h2>
-        <p class="muted tiny">Latest commits & open PRs. Public GitHub API — no token needed.</p>
+      <!-- RIGHT: Latency Race -->
+      <div id="race-panel" class="glass panel">
+        <h2>⚡ Latency Race: Edge vs Lambda</h2>
+        <p class="muted tiny">Measure TTFB and total time for CloudFront vs a Lambda Function URL.</p>
 
-        <div class="gh-controls">
+        <div class="race-controls">
           <div>
-            <label for="gh-owner">Owner</label>
-            <input id="gh-owner" class="ui-input" placeholder="github username/org" />
+            <label for="race-edge-path">Edge path (CloudFront)</label>
+            <select id="race-edge-path" class="ui-input">
+              <option value="/styles.css">/styles.css</option>
+              <option value="/script.js">/script.js</option>
+              <option value="/">/ (HTML)</option>
+            </select>
           </div>
           <div>
-            <label for="gh-repo">Repo</label>
-            <select id="gh-repo" class="ui-input"></select>
+            <label for="race-lambda">Lambda Function URL</label>
+            <input id="race-lambda" class="ui-input" placeholder="https://your-id.lambda-url.region.on.aws/" />
           </div>
-          <button id="gh-refresh" class="btn ghost tiny-btn" type="button">Refresh</button>
-        </div>
-
-        <div id="gh-kpis" class="kpis" style="margin-top:8px;">
-          <div class="kpi"><span>Stars</span><b id="k-stars" class="skeleton">—</b></div>
-          <div class="kpi"><span>Forks</span><b id="k-forks" class="skeleton">—</b></div>
-          <div class="kpi"><span>Open PRs</span><b id="k-prs" class="skeleton">—</b></div>
-          <div class="kpi"><span>Last push</span><b id="k-pushed" class="skeleton">—</b></div>
-        </div>
-
-        <div class="gh-section">
-          <h3>Recent Commits</h3>
-          <div id="gh-commits" class="gh-list">
-            <div class="skeleton-row"></div>
-            <div class="skeleton-row"></div>
-            <div class="skeleton-row"></div>
+          <div class="race-btns">
+            <button id="race-prime" class="btn ghost tiny-btn" type="button">Prime Edge</button>
+            <button id="race-run" class="btn tiny-btn" type="button">Run Test</button>
           </div>
         </div>
 
-        <div class="gh-section">
-          <h3>Open Pull Requests</h3>
-          <div id="gh-prs" class="gh-list">
-            <div class="skeleton-row"></div>
-            <div class="skeleton-row"></div>
-          </div>
+        <div id="race-kpis" class="kpis" style="margin-top:8px;">
+          <div class="kpi"><span>Edge TTFB</span><b id="k-edge-ttfb">—</b></div>
+          <div class="kpi"><span>Edge Total</span><b id="k-edge-total">—</b></div>
+          <div class="kpi"><span>Lambda TTFB</span><b id="k-l-ttfb">—</b></div>
+          <div class="kpi"><span>Lambda Total</span><b id="k-l-total">—</b></div>
         </div>
 
-        <div id="gh-status" class="tiny muted" style="margin-top:10px;"></div>
+        <div id="race-results" class="race-rows">
+          <!-- Bars render here -->
+        </div>
+
+        <div id="race-notes" class="tiny muted" style="margin-top:10px;">
+          Tip: “Prime Edge” fetches the asset once so CloudFront can serve a cache hit on the next run.
+        </div>
+
+        <div id="race-status" class="tiny muted" style="margin-top:6px;"></div>
       </div>
     </section>
 
