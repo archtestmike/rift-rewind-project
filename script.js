@@ -1,9 +1,8 @@
 // === Riot API Lambda integration ===
 const RIOT_LAMBDA_URL = 'https://qhn53vmz4dsaf34lowcbnao3ya0ncvem.lambda-url.us-east-1.on.aws/';
 
-// UI regions → platform routing codes your Lambda expects
 const REGION_CODE = {
-  'na1': 'na1','euw1':'euw1','eun1':'eun1','kr':'kr',
+  'na1':'na1','euw1':'euw1','eun1':'eun1','kr':'kr',
   'br1':'br1','la1':'la1','la2':'la2','oc1':'oc1',
   'tr1':'tr1','ru':'ru','jp1':'jp1'
 };
@@ -15,7 +14,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
   if (!form || !resultsEl) return;
 
-  // Recent helper (prefill)
   recentLink.addEventListener('click', (e) => {
     e.preventDefault();
     form.riotId.value = 'Hide on bush#KR1';
@@ -68,7 +66,7 @@ function renderSummary(root, data, ms) {
     const champId = ch.championId ?? '—';
     const pts = ch.championPoints?.toLocaleString?.() ?? '—';
     const lvl = ch.championLevel ?? '—';
-    const pct = Math.max(6, Math.min(100, Math.round((ch.championPoints % 100000) / 1000))); // fake-ish bar width
+    const pct = Math.max(6, Math.min(100, Math.round((ch.championPoints % 100000) / 1000)));
 
     return `
       <div class="card panel" style="margin-top:12px;">
@@ -102,7 +100,7 @@ function renderSummary(root, data, ms) {
   `;
 }
 
-// small pill variant
+// tiny pill style used in results
 const style = document.createElement('style');
 style.textContent = `.pill.lite{
   display:inline-flex; align-items:center; gap:8px;
@@ -112,7 +110,6 @@ style.textContent = `.pill.lite{
 }`;
 document.head.appendChild(style);
 
-// escape HTML
 function escapeHtml(s) {
   return (s || '').replace(/[&<>"'`=\/]/g, c => ({
     '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;','`':'&#96;','=':'&#61;','/':'&#47;'

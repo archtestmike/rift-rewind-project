@@ -4,9 +4,9 @@
   --text:#dfe7ff;
   --muted:#9bb0ff;
 
-  --brand1:#00e0b8;   /* teal */
-  --brand2:#5b8aff;   /* azure */
-  --brand3:#a7b7ff;   /* periwinkle */
+  --brand1:#00e0b8;
+  --brand2:#5b8aff;
+  --brand3:#a7b7ff;
 
   --glass:rgba(255,255,255,.06);
   --max:1100px;
@@ -46,7 +46,6 @@ a:hover{filter:brightness(1.12); text-decoration:underline}
   backdrop-filter: blur(8px);
 }
 
-/* hero */
 header.hero{ padding:88px 0 56px; position:relative; }
 .neon-title{
   font-size:clamp(32px,6vw,56px);
@@ -117,14 +116,12 @@ h3{margin:0 0 6px; font-size:18px}
   border:1px solid rgba(255,255,255,.18);
 }
 .btn-icon svg{ width:20px; height:20px; display:block; }
-
 .btn-li{
   background:#0a66c2; color:#ffffff;
   border-color:#2b74cf;
   box-shadow:0 8px 24px rgba(10,102,194,.25), inset 0 0 0 1px rgba(255,255,255,.08);
 }
 .btn-li:hover{ transform:translateY(-2px); filter:brightness(1.03); }
-
 .btn-gh{
   background:#0d1117; color:#c9d1d9;
   border-color:#30363d;
@@ -132,7 +129,26 @@ h3{margin:0 0 6px; font-size:18px}
 }
 .btn-gh:hover{ transform:translateY(-2px); filter:brightness(1.04); }
 
-/* Skill pills */
+/* === Quick Facts (hard clamp to prevent giant SVGs) === */
+.fact-list{ list-style:none; padding:0; margin:0; display:grid; gap:16px; }
+.fact{
+  display:flex; align-items:center; gap:16px;
+  padding:18px;
+  border-radius:14px;
+  background:linear-gradient(180deg, rgba(255,255,255,.035), rgba(255,255,255,.02));
+  border:1px solid rgba(255,255,255,.08);
+}
+.icon-wrap{
+  width:48px; height:48px; border-radius:12px;
+  display:grid; place-items:center; flex:0 0 48px;
+  background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+  border:1px solid rgba(255,255,255,.14);
+  box-shadow:inset 0 0 18px rgba(91,138,255,.08), 0 0 18px rgba(0,224,184,.12);
+}
+.icon{ width:26px; height:26px; color:#a9c8ff; opacity:.95; display:block; }
+.fact svg:not(.icon){ width:26px; height:26px; display:block; } /* safety guard */
+
+/* Skills */
 .skills .pill{
   display:flex; align-items:center; gap:14px;
   padding:16px 18px; border-radius:999px;
@@ -160,7 +176,7 @@ select, input{ appearance:none; }
 input:focus, select:focus{
   border-color: rgba(91,138,255,.55);
   box-shadow: 0 0 0 3px rgba(91,138,255,.18), inset 0 0 0 9999px rgba(255,255,255,.02);
-  background:#0a0e18; /* prevents “white” look */
+  background:#0a0e18; /* keep from turning white */
 }
 .form-grid{ display:grid; gap:14px; grid-template-columns: 1fr; }
 @media(min-width:680px){ .form-grid{ grid-template-columns: 1fr 1fr; } }
@@ -175,13 +191,13 @@ input:focus, select:focus{
 }
 .btn:hover{ transform:translateY(-1px); filter:brightness(1.03); }
 
-/* Results block */
+/* Results */
 .result-block{
   background:linear-gradient(180deg, rgba(255,255,255,.035), rgba(255,255,255,.02));
   border:1px solid rgba(255,255,255,.08);
   border-radius:16px;
 }
 
-/* Footer centered */
+/* Footer */
 .footer-center{ text-align:center; }
 .tiny{font-size:12px}
