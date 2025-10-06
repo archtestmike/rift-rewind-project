@@ -1,121 +1,99 @@
-// === Riot API Lambda integration ===
+// === Riot API Lambda ===
 const RIOT_LAMBDA_URL = 'https://qhn53vmz4dsaf34lowcbnao3ya0ncvem.lambda-url.us-east-1.on.aws/';
 
-// UI regions → platform routing codes your Lambda expects
+// === (Optional) Metrics Lambda you already created ===
+// const METRICS_LAMBDA_URL = 'https://tfapgtyrz75ve4lrye32a3zzfe0zgaft.lambda-url.us-east-1.on.aws/';
+
+// Champion ID → Name fallback (minimal set; UI uses names from Lambda if provided)
+const CHAMPION_MAP = {7:'LeBlanc',268:'Azir',517:'Sylas',1:'Annie',103:'Ahri',64:'Lee Sin',11:'Master Yi',81:'Ezreal',157:'Yasuo',84:'Akali',222:'Jinx'};
+
+// Friendly → Data Dragon filename exceptions
+const DDRAGON_FILE = {
+  'LeBlanc':'Leblanc',"Cho'Gath":'Chogath',"Kai'Sa":'Kaisa',"Kha'Zix":'Khazix',"Vel'Koz":'Velkoz',
+  "Kog'Maw":'KogMaw',"Rek'Sai":'RekSai',"Bel'Veth":'Belveth','Nunu & Willump':'Nunu',
+  'Jarvan IV':'JarvanIV','Wukong':'MonkeyKing','Renata Glasc':'Renata','Dr. Mundo':'DrMundo','Tahm Kench':'TahmKench'
+};
+function ddragonFileFromName(name){
+  if (!name) return '';
+  if (DDRAGON_FILE[name]) return `${DDRAGON_FILE[name]}.png`;
+  const clean = name.replace(/['’.&]/g,'').replace(/\s+/g,' ').trim().split(' ')
+    .map(w=>w.charAt(0).toUpperCase()+w.slice(1)).join('');
+  return `${clean}.png`;
+}
+
 const REGION_CODE = {
   'na1': 'na1', 'euw1': 'euw1', 'eun1': 'eun1', 'kr': 'kr',
   'br1': 'br1', 'la1': 'la1', 'la2': 'la2', 'oc1': 'oc1',
   'tr1': 'tr1', 'ru': 'ru', 'jp1': 'jp1'
 };
 
-// Champion ID → Name (for pretty labels if Lambda doesn't include names)
-const CHAMPION_MAP = {
-  7: 'LeBlanc',
-  268: 'Azir',
-  517: 'Sylas',
-  1: 'Annie',
-  103: 'Ahri',
-  64: 'Lee Sin',
-  11: 'Master Yi',
-  81: 'Ezreal',
-  157: 'Yasuo',
-  84: 'Akali',
-  222: 'Jinx',
-};
-
-// Name → Data Dragon filename overrides (punctuation / special cases)
-const DDRAGON_FILE = {
-  'LeBlanc': 'Leblanc',
-  "Cho'Gath": 'Chogath',
-  "Kai'Sa": 'Kaisa',
-  "Kha'Zix": 'Khazix',
-  "Vel'Koz": 'Velkoz',
-  "Kog'Maw": 'KogMaw',
-  "Rek'Sai": 'RekSai',
-  "Bel'Veth": 'Belveth',
-  'Nunu & Willump': 'Nunu',
-  'Jarvan IV': 'JarvanIV',
-  'Wukong': 'MonkeyKing',
-  'Renata Glasc': 'Renata',
-  'Dr. Mundo': 'DrMundo',
-  'Tahm Kench': 'TahmKench',
-};
-
-// Build a safe Data Dragon filename for a champion name
-function ddragonFileFromName(name) {
-  if (!name) return '';
-  if (DDRAGON_FILE[name]) return `${DDRAGON_FILE[name]}.png`;  // ← fixed reference
-  // fallback: strip punctuation, PascalCase words
-  const clean = name
-    .replace(/['’.&]/g, '')
-    .replace(/\s+/g, ' ')
-    .trim()
-    .split(' ')
-    .map(w => w.charAt(0).toUpperCase() + w.slice(1))
-    .join('');
-  return `${clean}.png`;
-}
-
-// ──────────────────────────────────────────────────────────────────────────────
-
 document.addEventListener('DOMContentLoaded', () => {
   const form = document.getElementById('riot-form');
   const resultsEl = document.getElementById('riot-results');
-  const recentEl = document.getElementById('recentId');
-  if (!form || !resultsEl) return;
-
-  // recent link from localStorage
-  const recent = localStorage.getItem('recentRiotId');
-  if (recent && recentEl) {
-    recentEl.textContent = recent;
-    recentEl.style.display = 'inline';
-    recentEl.addEventListener('click', (e) => {
-      e.preventDefault();
-      document.getElementById('riotId').value = recent;
-    });
+  if (form && resultsEl){
+    form.addEventListener('submit', onLookup);
   }
 
-  form.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    resultsEl.innerHTML = '<p class="tiny muted">Fetching…</p>';
+  // Add arrowheads <defs> to the architecture SVG (for nicer arrows)
+  const lines = document.querySelector('.arch-lines');
+  if (lines) {
+    const svgNS = 'http://www.w3.org/2000/svg';
+    const defs = document.createElementNS(svgNS,'defs');
+    const marker = document.createElementNS(svgNS,'marker');
+    marker.setAttribute('id','arrowhead');
+    marker.setAttribute('markerWidth','6'); marker.setAttribute('markerHeight','6');
+    marker.setAttribute('refX','5'); marker.setAttribute('refY','3');
+    marker.setAttribute('orient','auto');
+    const tip = document.createElementNS(svgNS,'path');
+    tip.setAttribute('d','M0,0 L6,3 L0,6 Z');
+    tip.setAttribute('fill','rgba(167,183,255,.95)');
+    marker.appendChild(tip);
+    defs.appendChild(marker);
+    lines.prepend(defs);
+    // Attach markers to every path
+    lines.querySelectorAll('path').forEach(p=>p.setAttribute('marker-end','url(#arrowhead)'));
+  }
+});
 
-    const riotId = (form.riotId.value || '').trim();
-    const platform = REGION_CODE[form.region.value];
+async function onLookup(e){
+  e.preventDefault();
+  const form = e.currentTarget;
+  const resultsEl = document.getElementById('riot-results');
+  resultsEl.innerHTML = '<p class="tiny muted">Fetching…</p>';
 
-    if (!riotId.includes('#')) {
-      resultsEl.innerHTML = '<p class="tiny" style="color:#ff9b9b">Invalid Riot ID. Use <b>GameName#TAG</b>.</p>';
+  const riotId = (form.riotId.value || '').trim();
+  const platform = REGION_CODE[form.region.value];
+
+  if (!riotId.includes('#')) {
+    resultsEl.innerHTML = '<p class="tiny" style="color:#ff9b9b">Invalid Riot ID. Use <b>GameName#TAG</b>.</p>';
+    return;
+  }
+
+  try {
+    const t0 = performance.now();
+    const resp = await fetch(RIOT_LAMBDA_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ summonerName: riotId, region: platform })
+    });
+    const t1 = performance.now();
+
+    if (!resp.ok) {
+      const text = await resp.text();
+      resultsEl.innerHTML =
+        `<div class="panel" style="background:rgba(40,0,0,.25);border:1px solid rgba(255,120,120,.25);border-radius:12px;padding:12px;">
+          <span style="color:#ff9b9b">Lambda error (${resp.status}):</span>
+          <pre style="white-space:pre-wrap;margin:6px 0 0">${escapeHtml(text || 'Request failed')}</pre>
+        </div>`;
       return;
     }
 
-    localStorage.setItem('recentRiotId', riotId);
-    if (recentEl) { recentEl.textContent = riotId; recentEl.style.display = 'inline'; }
-
-    try {
-      const t0 = performance.now();
-      const resp = await fetch(RIOT_LAMBDA_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ summonerName: riotId, region: platform })
-      });
-      const t1 = performance.now();
-
-      if (!resp.ok) {
-        const text = await resp.text();
-        resultsEl.innerHTML =
-          `<div class="panel" style="background:rgba(40,0,0,.25);border:1px solid rgba(255,120,120,.25);border-radius:12px;padding:12px;">
-            <span style="color:#ff9b9b">Lambda error (${resp.status}):</span>
-            <pre style="white-space:pre-wrap;margin:6px 0 0">${escapeHtml(text || 'Request failed')}</pre>
-          </div>`;
-        return;
-      }
-
-      const data = await resp.json();
-      renderResult(resultsEl, data, Math.round(t1 - t0), platform);
-    } catch (err) {
-      resultsEl.innerHTML = `<p class="tiny" style="color:#ff9b9b">Network error: ${escapeHtml(err.message)}</p>`;
-    }
-  });
-});
+    const data = await resp.json();
+    renderResult(resultsEl, data, Math.round(t1 - t0), platform);
+  } catch (err) {
+    resultsEl.innerHTML = `<p class="tiny" style="color:#ff9b9b">Network error: ${escapeHtml(err.message)}</p>`;
+  }
+}
 
 function renderResult(root, data, ms, region) {
   const lvl = data?.summoner?.level ?? '?';
@@ -165,7 +143,7 @@ function renderResult(root, data, ms, region) {
     </div>`;
 }
 
-function escapeHtml(s='') {
+function escapeHtml(s=''){
   return s.replace(/[&<>"'`=\/]/g, c => ({
     '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;','`':'&#96;','=':'&#61;','/':'&#47;'
   }[c]));
