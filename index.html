@@ -12,6 +12,7 @@
 <body>
   <header class="hero">
     <div class="wrap grid cols-2">
+      <!-- LEFT -->
       <div class="hero-stack">
         <div class="avatar-wrap"><img src="profile.png" alt="Michael Ramirez headshot" loading="lazy"></div>
         <div class="hero-text">
@@ -26,7 +27,7 @@
         </div>
       </div>
 
-      <!-- Quick Facts (scoped SVG sizing) -->
+      <!-- RIGHT: Quick Facts -->
       <div class="card panel">
         <h3>Quick Facts</h3>
         <ul class="fact-list">
@@ -38,9 +39,8 @@
                 <circle cx="12" cy="12" r="1.6" fill="currentColor"/>
               </svg>
             </span>
-            <span><strong>Learning goal:</strong> build skills one AWS service at a time.</span>
+            <span><strong>Learning goal:</strong> build cloud skills one service at a time.</span>
           </li>
-
           <li class="fact">
             <span class="icon-wrap">
               <svg class="icon" viewBox="0 0 24 24" width="26" height="26" fill="none" aria-hidden="true">
@@ -50,7 +50,6 @@
             </span>
             <span><strong>Fun project:</strong> global hosting via AWS.</span>
           </li>
-
           <li class="fact">
             <span class="icon-wrap">
               <svg class="icon" viewBox="0 0 24 24" width="26" height="26" fill="none" aria-hidden="true">
@@ -66,14 +65,40 @@
 
   <main class="wrap">
     <section class="grid cols-3">
+      <!-- Cloud & DevOps with brand logos -->
       <div class="glass panel">
         <h2>Cloud & DevOps</h2>
         <ul class="list">
-          <li class="pill aws"><span class="ic"><svg viewBox="0 0 24 24" fill="none"><path d="M4 16c4-2.2 12-2.2 16 0" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg></span>AWS</li>
-          <li class="pill linux"><span class="ic"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="10.5" r="4.5" stroke="black" stroke-width="1.4" fill="none"/><path d="M10 11.5l2-1 2 1-2 1-2-1z" fill="currentColor"/><path d="M8.2 19c1-1.8 6.6-1.8 7.6 0" stroke="black" stroke-width="1.4" stroke-linecap="round"/></svg></span>Linux</li>
-          <li class="pill docker"><span class="ic"><svg viewBox="0 0 24 24" fill="none"><path d="M4 13h8M5 10h3v3H5v-3Zm4 0h3v3H9v-3Zm4 0h3v3h-3v-3Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M4 13c0 4 3 6 8 6 5.5 0 8-2.5 8-5.5 0-.7-.1-1.2-.3-1.5-.2-.3-.5-.5-.9-.5h-2" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><circle cx="18.5" cy="14.2" r="0.8" fill="currentColor"/></svg></span>Docker</li>
-          <li class="pill terraform"><span class="ic"><svg viewBox="0 0 24 24" fill="none"><path d="M6 7l5 3v5L6 12V7Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M13 5l5 3v5l-5-3V5Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M13 13l5 3v3l-5-3v-3Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg></span>Terraform</li>
-          <li class="pill cicd"><span class="ic"><svg viewBox="0 0 24 24" fill="none"><path d="M12 8a4 4 0 1 1 0 8 4 4 0 0 1 0-8Z" stroke="currentColor" stroke-width="1.7"/><path d="M8 12h3l-1 1.5M16 12h-3l1-1.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 3v2M12 19v2M3 12h2M19 12h2" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg></span>CI/CD</li>
+          <li class="pill">
+            <span class="logo-wrap">
+              <img class="logo" src="https://cdn.simpleicons.org/amazonaws/ff9900" alt="AWS logo" width="20" height="20" loading="lazy">
+            </span>
+            AWS
+          </li>
+          <li class="pill">
+            <span class="logo-wrap">
+              <img class="logo" src="https://cdn.simpleicons.org/linux/FCC624" alt="Linux logo" width="20" height="20" loading="lazy">
+            </span>
+            Linux
+          </li>
+          <li class="pill">
+            <span class="logo-wrap">
+              <img class="logo" src="https://cdn.simpleicons.org/docker/2496ED" alt="Docker logo" width="20" height="20" loading="lazy">
+            </span>
+            Docker
+          </li>
+          <li class="pill">
+            <span class="logo-wrap">
+              <img class="logo" src="https://cdn.simpleicons.org/terraform/844FBA" alt="Terraform logo" width="20" height="20" loading="lazy">
+            </span>
+            Terraform
+          </li>
+          <li class="pill">
+            <span class="logo-wrap">
+              <img class="logo" src="https://cdn.simpleicons.org/githubactions/2088FF" alt="GitHub Actions logo" width="20" height="20" loading="lazy">
+            </span>
+            CI/CD
+          </li>
         </ul>
       </div>
 
@@ -95,7 +120,7 @@
 
     <hr class="divider" />
 
-    <!-- League Data Lookup -->
+    <!-- League Data Lookup (unchanged functionality) -->
     <section class="grid cols-2" id="lookup">
       <div class="glass panel">
         <h2>League Data Lookup</h2>
@@ -119,7 +144,6 @@
                 <option value="jp1">Japan (JP1)</option>
               </select>
             </div>
-
             <div class="field">
               <label for="riotId">Riot ID</label>
               <input id="riotId" name="riotId" class="input" placeholder="GameName#TAG" required />
@@ -127,7 +151,6 @@
           </div>
 
           <div id="recent-lookups" class="tiny muted" style="margin:6px 0 10px"></div>
-
           <button id="lookup-btn" class="btn" type="submit">Look Up Summoner</button>
         </form>
 

@@ -1,5 +1,6 @@
-// Riot lookup UI (unchanged from your working version with small UX helpers)
+// === Riot API Lambda integration (unchanged behavior) ===
 const RIOT_LAMBDA_URL = 'https://qhn53vmz4dsaf34lowcbnao3ya0ncvem.lambda-url.us-east-1.on.aws/';
+
 const REGION_CODE = { 'na1':'na1','euw1':'euw1','eun1':'eun1','kr':'kr','br1':'br1','la1':'la1','la2':'la2','oc1':'oc1','tr1':'tr1','ru':'ru','jp1':'jp1' };
 const TAG_TO_PLATFORM = { 'NA1':'na1','EUW':'euw1','EUN':'eun1','KR1':'kr','BR1':'br1','LA1':'la1','LA2':'la2','OC1':'oc1','TR1':'tr1','RU':'ru','JP1':'jp1' };
 
@@ -51,7 +52,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     try {
-      lookupBtn.classList.add('loading'); lookupBtn.disabled = true;
+      lookupBtn.disabled = true; lookupBtn.classList.add('loading');
       const t0 = performance.now();
       const resp = await fetch(RIOT_LAMBDA_URL, {
         method: 'POST',
@@ -82,7 +83,7 @@ document.addEventListener('DOMContentLoaded', () => {
     } catch (err) {
       resultsEl.innerHTML = `<p class="tiny" style="color:#ff9b9b">Network error: ${escapeHtml(err.message)}</p>`;
     } finally {
-      lookupBtn.classList.remove('loading'); lookupBtn.disabled = false;
+      lookupBtn.disabled = false; lookupBtn.classList.remove('loading');
     }
   });
 });
