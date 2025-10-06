@@ -1,4 +1,4 @@
-// === Riot API Lambda integration (unchanged behavior) ===
+// === Riot API Lambda integration ===
 const RIOT_LAMBDA_URL = 'https://qhn53vmz4dsaf34lowcbnao3ya0ncvem.lambda-url.us-east-1.on.aws/';
 
 const REGION_CODE = { 'na1':'na1','euw1':'euw1','eun1':'eun1','kr':'kr','br1':'br1','la1':'la1','la2':'la2','oc1':'oc1','tr1':'tr1','ru':'ru','jp1':'jp1' };
@@ -13,6 +13,10 @@ document.addEventListener('DOMContentLoaded', () => {
   const riotInput = document.getElementById('riotId');
   const recentEl = document.getElementById('recent-lookups');
   const lookupBtn = document.getElementById('lookup-btn');
+
+  const savedList = document.getElementById('saved-list');
+  renderSaved(savedList);
+
   if (!form || !resultsEl) return;
 
   loadChampionMeta().catch(()=>{});
@@ -78,6 +82,14 @@ document.addEventListener('DOMContentLoaded', () => {
           el.style.width = w + '%';
         });
       });
+
+      // attach "Save" button handler inside rendered card
+      const saveBtn = resultsEl.querySelector('#save-summoner');
+      if (saveBtn) {
+        saveBtn.addEventListener('click', () => {
+          addSaved(riotId); renderSaved(savedList);
+        });
+      }
 
       saveRecent(riotId); renderRecent(recentEl);
     } catch (err) {
@@ -169,16 +181,48 @@ function renderResult(data, ms=0){
         <span class="chip">Total Points: ${formatNumber(totalPts)}</span>
         <span class="chip">Avg Mastery Lv: ${escapeHtml(String(avgLvl))}</span>
         ${latencyChip}
+        <button id="save-summoner" class="btn-sm" style="margin-left:auto">★ Save</button>
       </div>
       <div class="champ-list">${champRows}</div>
     </div>
   `;
 }
 
-/* ----- Recent lookups & helpers ----- */
+/* ----- Recent lookups ----- */
 function getRecent(){ try { return JSON.parse(localStorage.getItem('recentRiotIds')||'[]'); } catch { return []; } }
 function saveRecent(riotId){ const arr = getRecent(); arr.unshift(riotId); const unique = [...new Set(arr)].slice(0,3); try { localStorage.setItem('recentRiotIds', JSON.stringify(unique)); } catch {} }
 function renderRecent(container){ if (!container) return; const items = getRecent(); container.innerHTML = items.length ? `Recent: ${items.map(r => `<a href="#" data-riotid="${escapeHtml(r)}">${escapeHtml(r)}</a>`).join(' • ')}` : ''; }
+
+/* ----- Saved summoners (right panel) ----- */
+function getSaved(){ try { return JSON.parse(localStorage.getItem('savedSummoners')||'[]'); } catch { return []; } }
+function addSaved(riotId){ const arr = getSaved(); if (!arr.includes(riotId)) arr.unshift(riotId); try { localStorage.setItem('savedSummoners', JSON.stringify(arr.slice(0,10))); } catch {} }
+function removeSaved(riotId){ const arr = getSaved().filter(x => x!==riotId); try { localStorage.setItem('savedSummoners', JSON.stringify(arr)); } catch {} }
+function renderSaved(container){
+  if (!container) return;
+  const saved = getSaved();
+  container.innerHTML = saved.length ? saved.map(id => `
+    <li class="saved-item">
+      <span class="handle">${escapeHtml(id)}</span>
+      <span class="actions">
+        <button class="btn-sm" data-run="${escapeHtml(id)}">Run</button>
+        <button class="btn-sm" data-del="${escapeHtml(id)}">Remove</button>
+      </span>
+    </li>
+  `).join('') : `<li class="saved-item"><span class="handle tiny muted">No saved summoners yet.</span></li>`;
+
+  container.querySelectorAll('[data-run]').forEach(b=>{
+    b.addEventListener('click', ()=>{
+      const id=b.getAttribute('data-run');
+      document.getElementById('riotId').value=id;
+      document.getElementById('riot-form').dispatchEvent(new Event('submit'));
+    });
+  });
+  container.querySelectorAll('[data-del]').forEach(b=>{
+    b.addEventListener('click', ()=>{ removeSaved(b.getAttribute('data-del')); renderSaved(container); });
+  });
+}
+
+/* ----- Helpers ----- */
 function getTagLine(riotId){ const i = String(riotId).indexOf('#'); return i>-1 ? riotId.slice(i+1).trim() : ''; }
 function showNote(container, html){ container.innerHTML = `<p class="note">${html}</p>`; }
 function formatNumber(n){ return (Number(n)||0).toLocaleString(); }

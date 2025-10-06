@@ -59,7 +59,7 @@ header.hero{ padding:88px 0 56px; position:relative; }
 /* Divider */
 .divider{ height:1px; border:0; margin:24px 0; background:linear-gradient(90deg, transparent, rgba(0,224,184,.70), rgba(91,138,255,.70), transparent); filter:drop-shadow(0 0 6px rgba(0,224,184,.55)); }
 
-/* Hero stack + avatar */
+/* Hero */
 .hero-stack{ display:flex; flex-direction:column; align-items:flex-start; gap:clamp(12px,2.5vw,20px); }
 @media (max-width:680px){ .hero-stack{ align-items:center; text-align:center; } .cta{ justify-content:center; } }
 .avatar-wrap{ --size:clamp(110px,16vw,160px); width:var(--size); height:var(--size); border-radius:9999px; padding:5px;
@@ -71,7 +71,7 @@ header.hero{ padding:88px 0 56px; position:relative; }
 .avatar-wrap img{ width:100%; height:100%; display:block; border-radius:9999px; object-fit:cover; background:#0a0e18; box-shadow:0 2px 10px rgba(0,0,0,.35); filter:saturate(1.04) contrast(1.02); }
 .hero-text{ min-width:0; max-width:60ch; }
 
-/* ===== Quick Facts (scoped) ===== */
+/* ===== Quick Facts ===== */
 .fact-list{ list-style:none; padding:0; margin:0; display:grid; gap:16px; }
 .fact{
   display:flex; align-items:center; gap:16px;
@@ -88,7 +88,7 @@ header.hero{ padding:88px 0 56px; position:relative; }
 }
 .fact .icon{ width:26px; height:26px; color:#a9c8ff; opacity:.95; display:block; }
 
-/* ===== Skill pills with logos (hover micro-motion) ===== */
+/* ===== Skill pills (hover motion) ===== */
 .pill{
   display:flex; align-items:center; gap:12px;
   padding:14px 16px; border-radius:999px;
@@ -108,8 +108,10 @@ header.hero{ padding:88px 0 56px; position:relative; }
   box-shadow:inset 0 0 18px rgba(91,138,255,.06);
 }
 .logo{ width:18px; height:18px; display:block; filter:drop-shadow(0 0 6px rgba(0,224,184,.18)); }
+/* if fallback SVG is monochrome, tint it AWS orange via filter */
+.logo.mono{ filter:none; }
 
-/* ===== Form (pretty + autofill fixes) ===== */
+/* ===== Form (consistent focus + autofill) ===== */
 .pretty-form .form-row{ display:grid; gap:12px; grid-template-columns:1fr; }
 @media(min-width:760px){ .pretty-form .form-row{ grid-template-columns:1fr 1fr; } }
 .pretty-form .field label{ display:block; font-size:13px; font-weight:700; color:var(--muted); margin:0 0 6px 2px; letter-spacing:.25px; }
@@ -131,7 +133,7 @@ header.hero{ padding:88px 0 56px; position:relative; }
   box-shadow:0 0 0 3px rgba(91,138,255,.18), 0 0 22px rgba(91,138,255,.16), inset 0 0 0 9999px rgba(255,255,255,.02);
   transform: translateY(-1px);
 }
-/* Chrome/Safari/Edge autofill (prevents white flash) */
+/* Prevent white autofill */
 .pretty-form .input:-webkit-autofill,
 .pretty-form .input:-webkit-autofill:hover,
 .pretty-form .input:-webkit-autofill:focus{
@@ -170,6 +172,20 @@ header.hero{ padding:88px 0 56px; position:relative; }
 .bar i{display:block;height:100%;width:0;border-radius:999px;background:linear-gradient(90deg,var(--brand1),var(--brand2));transition:width .5s ease}
 .meta{color:#cfe3ff;font-weight:700}
 .note{font-size:12px;color:#cfe3ff;background:rgba(255,255,255,.04);padding:8px 10px;border:1px solid rgba(255,255,255,.10);border-radius:10px}
+
+/* ===== Saved Summoners ===== */
+.saved-list{ list-style:none; padding:0; margin:12px 0 0; display:grid; gap:10px; }
+.saved-item{ display:flex; align-items:center; justify-content:space-between; gap:12px;
+  padding:12px 14px; border:1px solid rgba(255,255,255,.10); border-radius:12px;
+  background:rgba(255,255,255,.04);
+}
+.saved-item .handle{ font-weight:700; }
+.saved-item .actions{ display:flex; gap:8px; }
+.btn-sm{
+  font:700 12px/1 Inter; padding:8px 10px; border-radius:10px; border:1px solid rgba(255,255,255,.16);
+  background:rgba(255,255,255,.06); color:var(--text); cursor:pointer;
+}
+.btn-sm:hover{ filter:brightness(1.08); }
 
 /* Footer */
 .footer-center{text-align:center}

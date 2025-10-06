@@ -30,13 +30,13 @@
         </div>
       </div>
 
-      <!-- RIGHT: Quick Facts (restored 4th item) -->
+      <!-- RIGHT: Quick Facts (with portfolio restored) -->
       <div class="card panel">
         <h3>Quick Facts</h3>
         <ul class="fact-list">
           <li class="fact">
             <span class="icon-wrap">
-              <svg class="icon" viewBox="0 0 24 24" width="26" height="26" fill="none" aria-hidden="true">
+              <svg class="icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                 <circle cx="12" cy="12" r="8.5" stroke="currentColor" stroke-width="1.6"/>
                 <circle cx="12" cy="12" r="4.5" stroke="currentColor" stroke-width="1.6"/>
                 <circle cx="12" cy="12" r="1.6" fill="currentColor"/>
@@ -47,7 +47,7 @@
 
           <li class="fact">
             <span class="icon-wrap">
-              <svg class="icon" viewBox="0 0 24 24" width="26" height="26" fill="none" aria-hidden="true">
+              <svg class="icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                 <path d="M6.5 15.5a3.5 3.5 0 1 0 0 7h10a4 4 0 0 0 0-8 5 5 0 0 0-9.6-1.6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
                 <circle cx="17.5" cy="8" r="3.2" stroke="currentColor" stroke-width="1.6"/>
               </svg>
@@ -57,17 +57,16 @@
 
           <li class="fact">
             <span class="icon-wrap">
-              <svg class="icon" viewBox="0 0 24 24" width="26" height="26" fill="none" aria-hidden="true">
+              <svg class="icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                 <path d="M12 3l2.3 4.7 5.2.8-3.8 3.7.9 5.2L12 15.7 7.4 17.4l.9-5.2L4.5 8.5l5.2-.8L12 3Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
               </svg>
             </span>
             <span><strong>Challenge:</strong> AWS Builder Challenge #2.</span>
           </li>
 
-          <!-- Restored item -->
           <li class="fact">
             <span class="icon-wrap">
-              <svg class="icon" viewBox="0 0 24 24" width="26" height="26" fill="none" aria-hidden="true">
+              <svg class="icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                 <path d="M12 3v8m0 0 4-4m-4 4-4-4M6 21h12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
               </svg>
             </span>
@@ -80,29 +79,30 @@
 
   <main class="wrap">
     <section class="grid cols-3">
-      <!-- Cloud & DevOps with real logos (AWS orange + Linux black) -->
+      <!-- Cloud & DevOps with resilient brand icons -->
       <div class="glass panel">
         <h2>Cloud & DevOps</h2>
         <ul class="list">
           <li class="pill">
             <span class="logo-wrap">
-              <!-- AWS brand orange; safe fallback to monochrome if the color CDN blocks -->
+              <!-- Robust AWS logo: try simpleicons (colored), fallback to jsDelivr SVG (monochrome), then badge text -->
               <img class="logo"
                    src="https://cdn.simpleicons.org/amazonaws/ff9900"
-                   onerror="this.onerror=null;this.src='https://cdn.simpleicons.org/amazonaws';"
                    referrerpolicy="no-referrer"
-                   alt="AWS logo" width="20" height="20" loading="lazy" decoding="async">
+                   alt="AWS logo"
+                   width="20" height="20" loading="lazy" decoding="async"
+                   onerror="this.onerror=null;this.src='https://cdn.jsdelivr.net/npm/simple-icons@11/icons/amazonaws.svg';this.classList.add('mono');">
             </span>
             AWS
           </li>
           <li class="pill">
             <span class="logo-wrap">
-              <!-- Linux BLACK (Tux) -->
+              <!-- Linux Tux BLACK -->
               <img class="logo"
                    src="https://cdn.simpleicons.org/linux/000000"
-                   onerror="this.onerror=null;this.src='https://cdn.simpleicons.org/linux';"
                    referrerpolicy="no-referrer"
-                   alt="Linux logo" width="20" height="20" loading="lazy" decoding="async">
+                   alt="Linux logo"
+                   width="20" height="20" loading="lazy" decoding="async">
             </span>
             Linux
           </li>
@@ -110,7 +110,6 @@
             <span class="logo-wrap">
               <img class="logo"
                    src="https://cdn.simpleicons.org/docker/2496ED"
-                   onerror="this.onerror=null;this.src='https://cdn.simpleicons.org/docker';"
                    referrerpolicy="no-referrer"
                    alt="Docker logo" width="20" height="20" loading="lazy" decoding="async">
             </span>
@@ -120,7 +119,6 @@
             <span class="logo-wrap">
               <img class="logo"
                    src="https://cdn.simpleicons.org/terraform/844FBA"
-                   onerror="this.onerror=null;this.src='https://cdn.simpleicons.org/terraform';"
                    referrerpolicy="no-referrer"
                    alt="Terraform logo" width="20" height="20" loading="lazy" decoding="async">
             </span>
@@ -130,7 +128,6 @@
             <span class="logo-wrap">
               <img class="logo"
                    src="https://cdn.simpleicons.org/githubactions/2088FF"
-                   onerror="this.onerror=null;this.src='https://cdn.simpleicons.org/githubactions';"
                    referrerpolicy="no-referrer"
                    alt="GitHub Actions logo" width="20" height="20" loading="lazy" decoding="async">
             </span>
@@ -157,7 +154,7 @@
 
     <hr class="divider" />
 
-    <!-- League Data Lookup -->
+    <!-- League Data Lookup + Saved Summoners side panel -->
     <section class="grid cols-2" id="lookup">
       <div class="glass panel">
         <h2>League Data Lookup</h2>
@@ -183,7 +180,7 @@
             </div>
             <div class="field">
               <label for="riotId">Riot ID</label>
-              <input id="riotId" name="riotId" class="input" placeholder="GameName#TAG" required />
+              <input id="riotId" name="riotId" class="input" placeholder="GameName#TAG" autocomplete="off" required />
             </div>
           </div>
 
@@ -197,10 +194,13 @@
         </div>
       </div>
 
-      <div class="glass panel">
-        <h2>Notes</h2>
-        <p class="tiny muted">Powered by AWS Lambda + CloudFront + S3 (Free Tier friendly).</p>
-      </div>
+      <!-- NEW: Saved Summoners (free-tier, localStorage only) -->
+      <aside class="glass panel" id="saved-panel">
+        <h2>Saved Summoners</h2>
+        <p class="tiny muted">Pin favorite Riot IDs here and re-run with one click. Stored locally in your browser.</p>
+        <ul class="saved-list" id="saved-list"></ul>
+        <p class="tiny muted tip">Tip: The <b>#TAG</b> often implies region (e.g., <b>#KR1 → KR</b>). We auto-detect that for you.</p>
+      </aside>
     </section>
 
     <footer class="wrap footer-center">
