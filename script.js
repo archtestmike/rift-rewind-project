@@ -1,5 +1,5 @@
 /* =========================
-   Riot Lookup (unchanged behavior)
+   Riot Lookup (unchanged)
    ========================= */
 const RIOT_LAMBDA_URL = 'https://qhn53vmz4dsaf34lowcbnao3ya0ncvem.lambda-url.us-east-1.on.aws/';
 const REGION_CODE = {
@@ -15,9 +15,9 @@ const DDRAGON_FILE = {
   'Nunu & Willump':'Nunu','Jarvan IV':'JarvanIV','Wukong':'MonkeyKing',
   'Renata Glasc':'Renata','Dr. Mundo':'DrMundo','Tahm Kench':'TahmKench'
 };
-function ddragonFileFromName(name) {
-  if (!name) return '';
-  if (DDRAGON_FILE[name]) return `${DDRAGON_FILE[name]}.png`;
+function ddragonFileFromName(name){
+  if(!name) return '';
+  if(DDRAGON_FILE[name]) return `${DDRAGON_FILE[name]}.png`;
   const clean = name.replace(/['’.&]/g,'').replace(/\s+/g,' ').trim()
     .split(' ').map(w => w[0].toUpperCase()+w.slice(1)).join('');
   return `${clean}.png`;
@@ -26,6 +26,7 @@ function ddragonFileFromName(name) {
 document.addEventListener('DOMContentLoaded', () => {
   initRiotLookup();
   initNexusParallax();
+  wireIconFallbacks();
 });
 
 function initRiotLookup(){
@@ -135,14 +136,14 @@ function renderResult(root, data, ms, region) {
     </div>`;
 }
 
-function escapeHtml(s='') {
+function escapeHtml(s=''){
   return s.replace(/[&<>"'`=\/]/g, c => ({
     '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;','`':'&#96;','=':'&#61;','/':'&#47;'
   }[c]));
 }
 
 /* =========================
-   Nexus parallax (tiny interaction)
+   Nexus parallax
    ========================= */
 function initNexusParallax(){
   const card = document.getElementById('nexus-card');
@@ -169,4 +170,59 @@ function initNexusParallax(){
 
   nexus.addEventListener('mousemove', onMove);
   nexus.addEventListener('mouseleave', reset);
+}
+
+/* =========================
+   Icon fallbacks (local SVG)
+   ========================= */
+function wireIconFallbacks(){
+  document.querySelectorAll('img.node-ic[data-fallback]').forEach(img=>{
+    img.addEventListener('error', ()=> {
+      const t = img.getAttribute('data-fallback');
+      const svg = createFallbackIcon(t);
+      svg.classList.add('node-ic');
+      img.replaceWith(svg);
+    }, { once:true });
+  });
+}
+
+function createFallbackIcon(type){
+  const NS = 'http://www.w3.org/2000/svg';
+  const svg = document.createElementNS(NS,'svg');
+  svg.setAttribute('viewBox','0 0 32 32');
+  svg.setAttribute('aria-hidden','true');
+
+  const defs = document.createElementNS(NS,'defs');
+  const grad = document.createElementNS(NS,'linearGradient');
+  grad.setAttribute('id','g'); grad.setAttribute('x1','0'); grad.setAttribute('y1','0'); grad.setAttribute('x2','1'); grad.setAttribute('y2','0');
+  const s1 = document.createElementNS(NS,'stop'); s1.setAttribute('offset','0'); s1.setAttribute('stop-color','var(--brand1)');
+  const s2 = document.createElementNS(NS,'stop'); s2.setAttribute('offset','1'); s2.setAttribute('stop-color','var(--brand2)');
+  grad.appendChild(s1); grad.appendChild(s2); defs.appendChild(grad); svg.appendChild(defs);
+
+  function path(d, fill='url(#g)'){
+    const p = document.createElementNS(NS,'path');
+    p.setAttribute('d', d);
+    p.setAttribute('fill', fill);
+    p.setAttribute('stroke', 'rgba(255,255,255,.25)');
+    p.setAttribute('stroke-width', '0.6');
+    p.setAttribute('vector-effect','non-scaling-stroke');
+    return p;
+  }
+
+  switch (type) {
+    case 'amplify': // stylized 'A'
+      svg.appendChild(path('M16 4 L28 26 H22.5 L16 14 L9.5 26 H4z'));
+      break;
+    case 's3': // bucket shape
+      svg.appendChild(path('M7 10 h18 v10 H7z'));
+      svg.appendChild(path('M9 8 h14 v4 H9z'));
+      break;
+    case 'lambda': // λ
+      svg.appendChild(path('M10 26 L16 6 L22 26 H18.3 L16.6 20 H13.4 L11.7 26z'));
+      break;
+    default: // cloudfront-ish hex + node
+      svg.appendChild(path('M16 6 l9 5 v10 l-9 5 -9-5 V11z'));
+      svg.appendChild(path('M16 12 a4 4 0 1 0 0.01 0z'));
+  }
+  return svg;
 }

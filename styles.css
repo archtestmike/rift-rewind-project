@@ -201,9 +201,7 @@ footer{padding:36px 0 64px; color:var(--muted)}
   filter:blur(1px);
 }
 
-.nexus-wires{
-  position:absolute; inset:0; pointer-events:none;
-}
+.nexus-wires{ position:absolute; inset:0; pointer-events:none; }
 
 .nexus-node{
   position:absolute; display:flex; flex-direction:column; align-items:center; gap:8px;
@@ -219,7 +217,7 @@ footer{padding:36px 0 64px; color:var(--muted)}
     0 0 28px rgba(0,224,184,.18);
 }
 .node-ic{
-  position:relative; z-index:1; width:30px; height:30px; margin-top:40px;
+  position:relative; z-index:1; width:30px; height:30px; margin-top:40px; display:block;
   filter: drop-shadow(0 2px 8px rgba(0,224,184,.28));
 }
 .node-badge{
@@ -235,10 +233,10 @@ footer{padding:36px 0 64px; color:var(--muted)}
 .node-lambda  { right:70px; bottom:10px; }
 .node-cf      { left:70px; bottom:10px; }
 
-/* subtle hover motion */
+/* hover */
 #nexus-card .nexus:hover .nexus-core{ transform:translate(-50%,-50%) scale(1.02); }
 
-/* ---------- Forms / Riot styles kept ---------- */
+/* misc */
 .project{padding:18px; border-left:3px solid var(--brand1)}
 .result-panel{ margin-top:12px; background:rgba(255,255,255,.03); border-radius:14px; border:1px solid rgba(255,255,255,.08); }
 .tiny{font-size:12px}

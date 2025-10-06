@@ -104,10 +104,10 @@
             </span>
             <span>AWS</span>
           </li>
-          <li class="pill skill"><span class="skill-ic"><img src="https://cdn.simpleicons.org/linux/fff" alt=""></span><span>Linux</span></li>
-          <li class="pill skill"><span class="skill-ic"><img src="https://cdn.simpleicons.org/docker/2496ED" alt=""></span><span>Docker</span></li>
-          <li class="pill skill"><span class="skill-ic"><img src="https://cdn.simpleicons.org/terraform/7B42BC" alt=""></span><span>Terraform</span></li>
-          <li class="pill skill"><span class="skill-ic"><img src="https://cdn.simpleicons.org/githubactions/2088FF" alt=""></span><span>CI/CD</span></li>
+          <li class="pill skill"><span class="skill-ic"><img src="https://upload.wikimedia.org/wikipedia/commons/3/35/Tux.svg" alt="" referrerpolicy="no-referrer"></span><span>Linux</span></li>
+          <li class="pill skill"><span class="skill-ic"><img src="https://cdn.simpleicons.org/docker/2496ED" alt="" referrerpolicy="no-referrer"></span><span>Docker</span></li>
+          <li class="pill skill"><span class="skill-ic"><img src="https://cdn.simpleicons.org/terraform/7B42BC" alt="" referrerpolicy="no-referrer"></span><span>Terraform</span></li>
+          <li class="pill skill"><span class="skill-ic"><img src="https://cdn.simpleicons.org/githubactions/2088FF" alt="" referrerpolicy="no-referrer"></span><span>CI/CD</span></li>
         </ul>
       </div>
 
@@ -177,22 +177,21 @@
         </div>
       </div>
 
-      <!-- RIGHT: New visual showcase -->
+      <!-- RIGHT: Visual showcase (with robust icons) -->
       <div id="nexus-card" class="glass panel">
         <h2>🔷 Serverless Nexus</h2>
         <p class="muted tiny">My stack, visualized: Amplify → CloudFront → S3, with Lambda for dynamic data.</p>
 
         <div class="nexus" aria-label="Serverless architecture visualization">
-          <!-- glow floor -->
           <div class="nexus-floor"></div>
 
-          <!-- center core -->
+          <!-- center -->
           <div class="nexus-core">
             <div class="core-inner"></div>
             <div class="core-beam"></div>
           </div>
 
-          <!-- connecting wires (SVG for crisp neon curves) -->
+          <!-- wires -->
           <svg class="nexus-wires" viewBox="0 0 640 280" preserveAspectRatio="none" aria-hidden="true">
             <defs>
               <linearGradient id="wireGrad" x1="0" y1="0" x2="1" y2="0">
@@ -204,39 +203,35 @@
                 <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
               </filter>
             </defs>
-            <!-- TL -->
             <path d="M 320 140 C 280 130, 230 110, 180 70" stroke="url(#wireGrad)" stroke-width="2.2" fill="none" filter="url(#softGlow)"/>
-            <!-- TR -->
             <path d="M 320 140 C 360 130, 410 110, 460 70" stroke="url(#wireGrad)" stroke-width="2.2" fill="none" filter="url(#softGlow)"/>
-            <!-- BR -->
             <path d="M 320 140 C 360 160, 410 190, 460 230" stroke="url(#wireGrad)" stroke-width="2.2" fill="none" filter="url(#softGlow)"/>
-            <!-- BL -->
             <path d="M 320 140 C 280 160, 230 190, 180 230" stroke="url(#wireGrad)" stroke-width="2.2" fill="none" filter="url(#softGlow)"/>
           </svg>
 
-          <!-- nodes -->
+          <!-- nodes (CDN logos + fallback) -->
           <a class="nexus-node node-amplify" href="https://aws.amazon.com/amplify/" target="_blank" rel="noopener" aria-label="AWS Amplify">
-            <img class="node-ic" src="https://cdn.simpleicons.org/awsamplify/FF9900" alt="">
+            <img class="node-ic" src="https://cdn.simpleicons.org/awsamplify/FF9900" referrerpolicy="no-referrer" alt="" data-fallback="amplify">
             <span class="node-badge">Amplify</span>
           </a>
 
           <a class="nexus-node node-s3" href="https://aws.amazon.com/s3/" target="_blank" rel="noopener" aria-label="Amazon S3">
-            <img class="node-ic" src="https://cdn.simpleicons.org/amazons3/57A143" alt="">
+            <img class="node-ic" src="https://cdn.simpleicons.org/amazons3/57A143" referrerpolicy="no-referrer" alt="" data-fallback="s3">
             <span class="node-badge">S3</span>
           </a>
 
           <a class="nexus-node node-lambda" href="https://aws.amazon.com/lambda/" target="_blank" rel="noopener" aria-label="AWS Lambda">
-            <img class="node-ic" src="https://cdn.simpleicons.org/awslambda/FF9900" alt="">
+            <img class="node-ic" src="https://cdn.simpleicons.org/awslambda/FF9900" referrerpolicy="no-referrer" alt="" data-fallback="lambda">
             <span class="node-badge">Lambda</span>
           </a>
 
           <a class="nexus-node node-cf" href="https://aws.amazon.com/cloudfront/" target="_blank" rel="noopener" aria-label="Amazon CloudFront">
-            <img class="node-ic" src="https://cdn.simpleicons.org/amazonaws/FF9900" alt="">
+            <img class="node-ic" src="https://cdn.simpleicons.org/amazonaws/FF9900" referrerpolicy="no-referrer" alt="" data-fallback="cloudfront">
             <span class="node-badge">CloudFront</span>
           </a>
         </div>
 
-        <p class="tiny muted" style="margin-top:10px;">Hover to see parallax. Logos © their owners. This is an educational visualization.</p>
+        <p class="tiny muted" style="margin-top:10px;">If a logo fails to load, a local neon fallback appears automatically.</p>
       </div>
     </section>
 
