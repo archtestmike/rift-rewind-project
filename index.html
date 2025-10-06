@@ -177,7 +177,7 @@
         </div>
       </div>
 
-      <!-- RIGHT: Visual showcase (with robust icons) -->
+      <!-- RIGHT: Visual showcase (with inline SVG icons) -->
       <div id="nexus-card" class="glass panel">
         <h2>🔷 Serverless Nexus</h2>
         <p class="muted tiny">My stack, visualized: Amplify → CloudFront → S3, with Lambda for dynamic data.</p>
@@ -203,35 +203,53 @@
                 <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
               </filter>
             </defs>
-            <path d="M 320 140 C 280 130, 230 110, 180 70" stroke="url(#wireGrad)" stroke-width="2.2" fill="none" filter="url(#softGlow)"/>
-            <path d="M 320 140 C 360 130, 410 110, 460 70" stroke="url(#wireGrad)" stroke-width="2.2" fill="none" filter="url(#softGlow)"/>
-            <path d="M 320 140 C 360 160, 410 190, 460 230" stroke="url(#wireGrad)" stroke-width="2.2" fill="none" filter="url(#softGlow)"/>
-            <path d="M 320 140 C 280 160, 230 190, 180 230" stroke="url(#wireGrad)" stroke-width="2.2" fill="none" filter="url(#softGlow)"/>
+            <path class="wire" d="M 320 140 C 270 115, 230 100, 180 70" stroke="url(#wireGrad)" stroke-width="2.2" fill="none" filter="url(#softGlow)"/>
+            <path class="wire" d="M 320 140 C 370 115, 410 100, 460 70" stroke="url(#wireGrad)" stroke-width="2.2" fill="none" filter="url(#softGlow)"/>
+            <path class="wire" d="M 320 140 C 370 170, 410 190, 460 230" stroke="url(#wireGrad)" stroke-width="2.2" fill="none" filter="url(#softGlow)"/>
+            <path class="wire" d="M 320 140 C 270 170, 230 190, 180 230" stroke="url(#wireGrad)" stroke-width="2.2" fill="none" filter="url(#softGlow)"/>
           </svg>
 
-          <!-- nodes (CDN logos + fallback) -->
+          <!-- nodes -->
           <a class="nexus-node node-amplify" href="https://aws.amazon.com/amplify/" target="_blank" rel="noopener" aria-label="AWS Amplify">
-            <img class="node-ic" src="https://cdn.simpleicons.org/awsamplify/FF9900" referrerpolicy="no-referrer" alt="" data-fallback="amplify">
+            <svg class="node-ic" viewBox="0 0 32 32" aria-hidden="true">
+              <defs>
+                <linearGradient id="gA" x1="0" y1="0" x2="1" y2="0">
+                  <stop offset="0" stop-color="#00e0b8"/><stop offset="1" stop-color="#5b8aff"/>
+                </linearGradient>
+              </defs>
+              <path d="M16 4 L28 26 H22.5 L16 14 L9.5 26 H4z" fill="url(#gA)" stroke="rgba(255,255,255,.3)" stroke-width=".6"/>
+            </svg>
             <span class="node-badge">Amplify</span>
           </a>
 
           <a class="nexus-node node-s3" href="https://aws.amazon.com/s3/" target="_blank" rel="noopener" aria-label="Amazon S3">
-            <img class="node-ic" src="https://cdn.simpleicons.org/amazons3/57A143" referrerpolicy="no-referrer" alt="" data-fallback="s3">
+            <svg class="node-ic" viewBox="0 0 32 32" aria-hidden="true">
+              <defs><linearGradient id="gS" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#00e0b8"/><stop offset="1" stop-color="#5b8aff"/></linearGradient></defs>
+              <path d="M7 10 h18 v10 H7z" fill="url(#gS)" stroke="rgba(255,255,255,.3)" stroke-width=".6"/>
+              <path d="M9 8 h14 v4 H9z" fill="url(#gS)" opacity=".9"/>
+            </svg>
             <span class="node-badge">S3</span>
           </a>
 
           <a class="nexus-node node-lambda" href="https://aws.amazon.com/lambda/" target="_blank" rel="noopener" aria-label="AWS Lambda">
-            <img class="node-ic" src="https://cdn.simpleicons.org/awslambda/FF9900" referrerpolicy="no-referrer" alt="" data-fallback="lambda">
+            <svg class="node-ic" viewBox="0 0 32 32" aria-hidden="true">
+              <defs><linearGradient id="gL" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#00e0b8"/><stop offset="1" stop-color="#5b8aff"/></linearGradient></defs>
+              <path d="M10 26 L16 6 L22 26 H18.3 L16.6 20 H13.4 L11.7 26z" fill="url(#gL)" stroke="rgba(255,255,255,.3)" stroke-width=".6"/>
+            </svg>
             <span class="node-badge">Lambda</span>
           </a>
 
           <a class="nexus-node node-cf" href="https://aws.amazon.com/cloudfront/" target="_blank" rel="noopener" aria-label="Amazon CloudFront">
-            <img class="node-ic" src="https://cdn.simpleicons.org/amazonaws/FF9900" referrerpolicy="no-referrer" alt="" data-fallback="cloudfront">
+            <svg class="node-ic" viewBox="0 0 32 32" aria-hidden="true">
+              <defs><linearGradient id="gC" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#00e0b8"/><stop offset="1" stop-color="#5b8aff"/></linearGradient></defs>
+              <path d="M16 6 l9 5 v10 l-9 5 -9-5 V11z" fill="url(#gC)" stroke="rgba(255,255,255,.3)" stroke-width=".6"/>
+              <circle cx="16" cy="16" r="4" fill="rgba(255,255,255,.15)"/>
+            </svg>
             <span class="node-badge">CloudFront</span>
           </a>
         </div>
 
-        <p class="tiny muted" style="margin-top:10px;">If a logo fails to load, a local neon fallback appears automatically.</p>
+        <p class="tiny muted" style="margin-top:10px;">Neon lines animate gently. All logos are inline SVG (no network dependency).</p>
       </div>
     </section>
 
