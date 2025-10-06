@@ -96,6 +96,27 @@
 
     <!-- Notes Section (restored cleanly) -->
     <section class="glass panel">
+      <!-- Serverless Insights (powered by your 2nd Lambda) -->
+<div id="serverless-insights" class="insights-badge glass" aria-live="polite">
+  <div class="insights-head muted tiny" style="margin-bottom:8px;">
+    <strong>Serverless Insights</strong> — last 60 minutes
+  </div>
+
+  <div class="insights-grid">
+    <div class="insight-tile">
+      <div class="label tiny muted">Invocations</div>
+      <div class="value" id="ins-inv">—</div>
+    </div>
+    <div class="insight-tile">
+      <div class="label tiny muted">Avg Duration</div>
+      <div class="value" id="ins-dur">—</div>
+    </div>
+  </div>
+
+  <div class="insights-foot tiny muted" id="ins-foot" style="margin-top:6px;">
+    Fetching from AWS Lambda…
+  </div>
+</div>
       <h2>Notes</h2>
       <p class="muted">
         Powered by <strong>AWS Lambda</strong> + <strong>CloudFront</strong> + <strong>S3</strong> (Free Tier friendly).
