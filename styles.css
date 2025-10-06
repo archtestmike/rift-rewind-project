@@ -184,36 +184,42 @@ footer{padding:36px 0 64px; color:var(--muted)}
 .tiny{font-size:12px}
 .center{text-align:center}
 
-/* ---------- Latency Race styles (fits right panel) ---------- */
-.race-controls{ display:grid; grid-template-columns: 1fr 1.4fr auto; gap:10px; align-items:end; }
-@media (max-width:880px){ .race-controls{ grid-template-columns: 1fr; } }
-.race-btns{ display:flex; gap:10px; justify-content:flex-end; }
-.tiny-btn{ padding:8px 10px; font-size:12px; border-radius:10px; }
+/* ---------- Edge & Cost Snapshot styles ---------- */
+.chip{ display:inline-flex; align-items:center; gap:6px; padding:4px 8px;
+  border-radius:999px; background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.12);
+  font-size:12px; font-weight:700; color:#aecdff; }
+.chip-row{ display:flex; flex-wrap:wrap; gap:8px; }
 
-/* KPI tiles reuse .kpis/.kpi from above */
-
-/* Comparative metric bars */
-.race-metrics{ display:grid; gap:14px; margin-top:12px; }
-.metric{ border:1px solid rgba(255,255,255,.08); background:linear-gradient(180deg, rgba(255,255,255,.035), rgba(255,255,255,.02)); border-radius:12px; padding:12px; }
-.metric-head{ display:flex; align-items:center; justify-content:space-between; gap:12px; }
-.metric-title{ font-weight:800; letter-spacing:.2px; }
-.metric-legend{ display:flex; gap:10px; }
-.legend{ font-size:12px; font-weight:800; padding:4px 8px; border-radius:999px; border:1px solid rgba(255,255,255,.14); }
-.legend.edge{ color:#0b382f; background:linear-gradient(90deg,var(--brand1),var(--brand2)); }
-.legend.lam{ color:#dfe7ff; background:rgba(255,255,255,.06); }
+.mini-section{
+  margin-top:14px; padding:14px; border-radius:12px;
+  background:linear-gradient(180deg, rgba(255,255,255,.035), rgba(255,255,255,.02));
+  border:1px solid rgba(255,255,255,.08);
+}
+.mini-head{ display:flex; align-items:center; justify-content:space-between; gap:10px; }
+.mini-title{ font-weight:800; letter-spacing:.2px; }
 
 .meter{
   position:relative; height:16px; border-radius:999px;
   background:rgba(255,255,255,.08); overflow:hidden;
   border:1px solid rgba(255,255,255,.10); margin-top:8px;
 }
-.bar{
-  position:absolute; top:0; left:0; height:100%; width:0%;
-  transition:width .35s ease;
-}
-.bar.edge{ background:linear-gradient(90deg,var(--brand1),var(--brand2)); }
+.bar{ position:absolute; top:0; left:0; height:100%; width:0%; transition:width .35s ease; }
+.bar.edge{ background:linear-gradient(90deg, var(--brand1), var(--brand2)); }
 .bar.lam{ background:linear-gradient(90deg, rgba(167,183,255,.7), rgba(91,138,255,.85)); }
 
 .bar-labels{ display:flex; align-items:center; justify-content:space-between; margin-top:6px; font-size:12px; color:var(--muted); }
 .lbl.edge{ font-weight:800; color:#aee9dc; }
 .lbl.lam{ font-weight:800; color:#aecdff; }
+
+.tiny-btn{ padding:8px 10px; font-size:12px; border-radius:10px; }
+
+/* cost inputs */
+.cost-grid{ display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+@media(max-width:880px){ .cost-grid{ grid-template-columns:1fr; } }
+.range{ accent-color:#5b8aff; }
+.kpis{ display:grid; grid-template-columns:repeat(4,1fr); gap:10px; }
+.kpi{ background:linear-gradient(180deg, rgba(255,255,255,.035), rgba(255,255,255,.02));
+  border:1px solid rgba(255,255,255,.08); border-radius:12px; padding:10px 12px;
+  display:flex; align-items:center; justify-content:space-between; }
+.kpi span{ color:var(--muted); font-weight:700; font-size:12px; }
+.kpi b{ font-size:14px; letter-spacing:.2px; }

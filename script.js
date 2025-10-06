@@ -24,14 +24,11 @@ function ddragonFileFromName(name){
 }
 
 /* =========================
-   Latency Race config
+   Boot
    ========================= */
-const LAMBDA_RACE_URL = 'https://tfapgtyrz75ve4lrye32a3zzfe0zgaft.lambda-url.us-east-1.on.aws/'; // optional: put your second Lambda Function URL here
-const EDGE_DEFAULT_PATH = '/styles.css';
-
 document.addEventListener('DOMContentLoaded', () => {
   initRiotLookup();
-  initLatencyRace();
+  initEdgeSnapshot();
 });
 
 /* ===== Riot Lookup ===== */
@@ -150,118 +147,168 @@ function escapeHtml(s='') {
 }
 
 /* =========================
-   Latency Race
+   Edge & Cost Snapshot
    ========================= */
-function initLatencyRace(){
-  const panel = document.getElementById('race-panel'); if(!panel) return;
+function initEdgeSnapshot(){
+  const panel = document.getElementById('edge-panel');
+  if(!panel) return;
 
-  const edgeSel = document.getElementById('race-edge-path');
-  const lambdaIn = document.getElementById('race-lambda');
-  const primeBtn = document.getElementById('race-prime');
-  const runBtn   = document.getElementById('race-run');
+  const chipPOP   = document.getElementById('chip-pop');
+  const chipProto = document.getElementById('chip-proto');
+  const chipXc    = document.getElementById('chip-xcache');
+  const chipAge   = document.getElementById('chip-age');
 
-  const kEdgeTTFB  = document.getElementById('k-edge-ttfb');
-  const kEdgeTotal = document.getElementById('k-edge-total');
-  const kLamTTFB   = document.getElementById('k-l-ttfb');
-  const kLamTotal  = document.getElementById('k-l-total');
-
-  const barTTFBEdge = document.getElementById('bar-ttfb-edge');
-  const barTTFBLam  = document.getElementById('bar-ttfb-lam');
-  const barTotalEdge= document.getElementById('bar-total-edge');
-  const barTotalLam = document.getElementById('bar-total-lam');
-
-  const lblTTFBEdge = document.getElementById('lbl-ttfb-edge');
-  const lblTTFBLam  = document.getElementById('lbl-ttfb-lam');
-  const lblTotalEdge= document.getElementById('lbl-total-edge');
-  const lblTotalLam = document.getElementById('lbl-total-lam');
-
-  const statusEl  = document.getElementById('race-status');
-
-  // Prefill
-  edgeSel.value = EDGE_DEFAULT_PATH;
-  lambdaIn.value = localStorage.getItem('raceLambda') || LAMBDA_RACE_URL || '';
-
-  lambdaIn.addEventListener('change', ()=>{
-    localStorage.setItem('raceLambda', lambdaIn.value.trim());
-  });
-
-  document.getElementById('race-prime').addEventListener('click', async ()=>{
-    statusEl.textContent = 'Priming CloudFront cache…';
-    try{
-      await fetch(edgeUrl(), { cache: 'reload' });
-      statusEl.textContent = 'Primed. Run the test!';
-    }catch(e){
-      statusEl.textContent = `Prime failed: ${e.message}`;
-    }
-  });
-
-  runBtn.addEventListener('click', async ()=>{
-    const lurl = (lambdaIn.value || '').trim();
-    if (!lurl){ statusEl.textContent = 'Enter a Lambda Function URL first.'; return; }
-    runBtn.disabled = true; primeBtn.disabled = true; statusEl.textContent = 'Running…';
-
-    // Reset displays
-    [kEdgeTTFB,kEdgeTotal,kLamTTFB,kLamTotal].forEach(el=>el.textContent='—');
-    [barTTFBEdge,barTTFBLam,barTotalEdge,barTotalLam].forEach(b=>b.style.width='0%');
-    [lblTTFBEdge,lblTTFBLam,lblTotalEdge,lblTotalLam].forEach(l=>l.textContent='—');
-
-    try{
-      const edgeRes = await measure(edgeUrl(), { readBody:true });
-      const lamRes  = await measure(lurl, { readBody:true });
-
-      // KPIs
-      kEdgeTTFB.textContent  = edgeRes.ttfb  + ' ms';
-      kEdgeTotal.textContent = edgeRes.total + ' ms';
-      kLamTTFB.textContent   = lamRes.ttfb   + ' ms';
-      kLamTotal.textContent  = lamRes.total  + ' ms';
-
-      // Bars (comparative scale)
-      updateBars(edgeRes, lamRes);
-
-      statusEl.textContent = `Done • Edge ${edgeRes.status} • Lambda ${lamRes.status}`;
-    }catch(e){
-      statusEl.textContent = `Error: ${e.message}`;
-    }finally{
-      runBtn.disabled = false; primeBtn.disabled = false;
-    }
-  });
-
-  function edgeUrl(){ return new URL(edgeSel.value, location.origin).href; }
-
-  function updateBars(edge, lam){
-    const maxTTFB  = Math.max(edge.ttfb, lam.ttfb, 1);
-    const maxTotal = Math.max(edge.total, lam.total, 1);
-
-    barTTFBEdge.style.width  = Math.min(100, Math.round(edge.ttfb / maxTTFB * 100)) + '%';
-    barTTFBLam.style.width   = Math.min(100, Math.round(lam.ttfb  / maxTTFB * 100)) + '%';
-    barTotalEdge.style.width = Math.min(100, Math.round(edge.total / maxTotal * 100)) + '%';
-    barTotalLam.style.width  = Math.min(100, Math.round(lam.total  / maxTotal * 100)) + '%';
-
-    lblTTFBEdge.textContent  = `Edge ${edge.ttfb} ms`;
-    lblTTFBLam.textContent   = `Lambda ${lam.ttfb} ms`;
-    lblTotalEdge.textContent = `Edge ${edge.total} ms`;
-    lblTotalLam.textContent  = `Lambda ${lam.total} ms`;
-  }
+  const warmthBar   = document.getElementById('warmth-bar');
+  const warmthLabel = document.getElementById('warmth-label');
+  const ttlLabel    = document.getId('ttl-label'); // <- fixed below with safe getter
 }
 
-/* fetch timer */
-async function measure(url, { method='GET', readBody=true }={}){
-  const controller = new AbortController();
-  const timer = setTimeout(()=>controller.abort(), 10000);
+function document_getId(id){ return document.getElementById(id); }
 
-  let res;
-  const t0 = performance.now();
-  try{
-    const p0 = performance.now();
-    res = await fetch(url, { method, cache:'no-cache', mode:'cors', signal:controller.signal });
-    const ttfb = Math.max(0, performance.now() - p0);
-    if (readBody) { await res.arrayBuffer(); }
-    const total = Math.max(0, performance.now() - p0);
+/* Rebuild with correct getters */
+(function(){
+  const chipPOP   = document_getId('chip-pop');
+  const chipProto = document_getId('chip-proto');
+  const chipXc    = document_getId('chip-xcache');
+  const chipAge   = document_getId('chip-age');
 
-    return {
-      url, status: res.status, ttfb: Math.round(ttfb), total: Math.round(total)
-    };
-  } finally {
-    clearTimeout(timer);
+  const warmthBar   = document_getId('warmth-bar');
+  const warmthLabel = document_getId('warmth-label');
+  const ttlLabel    = document_getId('ttl-label');
+  const refreshBtn  = document_getId('edge-refresh');
+
+  const visitsRange = document_getId('cost-visits');
+  const mbRange     = document_getId('cost-mb');
+  const visitsOut   = document_getId('visits-out');
+  const mbOut       = document_getId('mb-out');
+
+  const kData   = document_getId('k-data');
+  const kReq    = document_getId('k-req');
+  const kLambda = document_getId('k-lambda');
+  const kResult = document_getId('k-result');
+  const costBar = document_getId('cost-bar');
+  const costLbl = document_getId('cost-label');
+
+  if (!chipPOP) return; // panel not present
+
+  // Defaults for sliders
+  visitsRange.value = 400; // nice safe defaults
+  mbRange.value = 0.5;
+  visitsOut.textContent = visitsRange.value;
+  mbOut.textContent = mbRange.value;
+
+  // Events
+  visitsRange.addEventListener('input', updateCost);
+  mbRange.addEventListener('input', updateCost);
+  refreshBtn.addEventListener('click', measureEdge);
+
+  // Initial runs
+  measureEdge();
+  updateCost();
+
+  async function measureEdge(){
+    // Same-origin asset
+    const url = new URL('/styles.css', location.origin).href;
+
+    // Clear previous
+    warmthBar.style.width = '0%';
+    warmthLabel.textContent = '—';
+    ttlLabel.textContent = 'TTL —';
+    chipPOP.innerHTML = '<b>POP</b>: —';
+    chipProto.innerHTML = '<b>Protocol</b>: —';
+    chipXc.innerHTML = '<b>X-Cache</b>: —';
+    chipAge.innerHTML = '<b>Age</b>: —';
+
+    try{
+      // Use no-cache to allow revalidation but still go through CF
+      const t0 = performance.now();
+      const res = await fetch(url, { cache:'no-cache' });
+      await res.arrayBuffer(); // ensure full body so timing entry is populated
+      const t1 = performance.now();
+
+      // Headers
+      const age = toInt(res.headers.get('age'));
+      const cacheCtl = res.headers.get('cache-control') || '';
+      const maxAge = parseMaxAge(cacheCtl) ?? 300;
+      const xc = res.headers.get('x-cache') || '—';
+      const pop = res.headers.get('x-amz-cf-pop') || '—';
+
+      // Protocol from ResourceTiming
+      let proto = '';
+      try{
+        const entries = performance.getEntriesByName(url, 'resource');
+        if (entries && entries.length){
+          proto = entries[entries.length-1].nextHopProtocol || '';
+        }
+      }catch{}
+
+      // Chips
+      chipPOP.innerHTML   = `<b>POP</b>: ${escapeHtml(pop)}`;
+      chipProto.innerHTML = `<b>Protocol</b>: ${proto || '—'}`;
+      chipXc.innerHTML    = `<b>X-Cache</b>: ${escapeHtml(xc)}`;
+      chipAge.innerHTML   = `<b>Age</b>: ${Number.isFinite(age) ? age+'s' : '—'}`;
+
+      // Warmth
+      const warmth = Math.max(0, Math.min(1, (Number.isFinite(age) ? age : 0) / maxAge));
+      warmthBar.style.width = Math.round(warmth * 100) + '%';
+      warmthLabel.textContent = `${Math.round(warmth*100)}% warm`;
+      ttlLabel.textContent = `TTL ${maxAge}s`;
+
+    }catch(err){
+      warmthLabel.textContent = 'Unavailable';
+      chipProto.innerHTML = `<b>Protocol</b>: —`;
+      chipXc.innerHTML = `<b>X-Cache</b>: —`;
+      chipAge.innerHTML = `<b>Age</b>: —`;
+      console.warn('Edge measure error:', err);
+    }
   }
-}
+
+  function updateCost(){
+    const visitsPerDay = toInt(visitsRange.value);
+    const mbPerVisit   = Number(mbRange.value);
+    visitsOut.textContent = visitsPerDay.toLocaleString();
+    mbOut.textContent = mbPerVisit.toFixed(1);
+
+    // Simple assumptions: 10 requests/visit, Lambda 0.1 per visit (some pages call Lambda sometimes)
+    const reqPerVisit = 10;
+    const lambdaPerVisit = 0.1;
+
+    const days = 30;
+    const monthlyVisits = visitsPerDay * days;
+    const dataGB = (monthlyVisits * mbPerVisit) / 1024;     // MB -> GB
+    const dataTB = dataGB / 1024;
+
+    const requests = monthlyVisits * reqPerVisit;
+    const lambdas  = Math.round(monthlyVisits * lambdaPerVisit);
+
+    // Free tiers: CF 1 TB / 10M req; Lambda 1M req (ignoring GB-s for simplicity)
+    const pctData = clamp01(dataTB / 1.0);      // vs 1 TB
+    const pctReq  = clamp01(requests / 10_000_000);
+    const pctLam  = clamp01(lambdas / 1_000_000);
+
+    kData.textContent   = `${fmtNumber(dataTB,2)} TB`;
+    kReq.textContent    = `${fmtNumber(requests)} req`;
+    kLambda.textContent = `${fmtNumber(lambdas)} inv`;
+
+    // Result + bar (take worst utilization)
+    const worst = Math.max(pctData, pctReq, pctLam);
+    costBar.style.width = Math.round(worst*100) + '%';
+
+    const allWithin = (pctData <= 1 && pctReq <= 1 && pctLam <= 1);
+    kResult.textContent = allWithin ? 'Likely $0 (Free Tier)' : 'May exceed Free Tier';
+    costLbl.textContent = `${Math.round(worst*100)}% of Free Tier`;
+
+  }
+
+  function toInt(v){ const n = parseInt(v,10); return Number.isFinite(n) ? n : 0; }
+  function clamp01(x){ return Math.max(0, Math.min(1, x)); }
+  function fmtNumber(n, decimals=0){
+    if (decimals > 0) return Number(n).toFixed(decimals);
+    return Number(n).toLocaleString();
+  }
+  function parseMaxAge(cacheControl){
+    // parse max-age or s-maxage
+    const m = /(?:s-maxage|max-age)=(\d+)/i.exec(cacheControl);
+    return m ? parseInt(m[1],10) : null;
+  }
+})();

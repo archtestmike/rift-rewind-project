@@ -140,9 +140,9 @@
 
     <hr class="divider" />
 
-    <!-- Two-column: Riot Lookup (left) + Latency Race (right) -->
+    <!-- Two-column: Riot Lookup (left) + Edge & Cost Snapshot (right) -->
     <section id="lookup" class="grid cols-2">
-      <!-- LEFT: Riot lookup (unchanged) -->
+      <!-- LEFT: Riot lookup -->
       <div class="glass panel">
         <h2>League Data Lookup</h2>
         <p class="muted tiny">Riot ID format: <b>GameName#TAG</b></p>
@@ -182,81 +182,70 @@
         </div>
       </div>
 
-      <!-- RIGHT: Latency Race -->
-      <div id="race-panel" class="glass panel">
-        <h2>⚡ Latency Race: Edge vs Lambda</h2>
-        <p class="muted tiny">Compare TTFB & total time between CloudFront and your Lambda Function URL.</p>
+      <!-- RIGHT: Edge & Cost Snapshot -->
+      <div id="edge-panel" class="glass panel">
+        <h2>🛰️ Edge & Cost Snapshot</h2>
+        <p class="muted tiny">Live signals from CloudFront + a quick free-tier cost estimate. Safe: same-origin only.</p>
 
-        <div class="race-controls">
-          <div>
-            <label for="race-edge-path">Edge path (CloudFront)</label>
-            <select id="race-edge-path" class="ui-input">
-              <option value="/styles.css">/styles.css</option>
-              <option value="/script.js">/script.js</option>
-              <option value="/">/ (HTML)</option>
-            </select>
+        <!-- Top: Edge chips -->
+        <div class="chip-row">
+          <span class="chip" id="chip-pop"><b>POP</b>: —</span>
+          <span class="chip" id="chip-proto"><b>Protocol</b>: —</span>
+          <span class="chip" id="chip-xcache"><b>X-Cache</b>: —</span>
+          <span class="chip" id="chip-age"><b>Age</b>: —</span>
+        </div>
+
+        <!-- Warmth meter -->
+        <div class="mini-section">
+          <div class="mini-head">
+            <div class="mini-title">Cache Warmth</div>
+            <button id="edge-refresh" class="btn ghost tiny-btn" type="button">Refresh</button>
           </div>
-          <div>
-            <label for="race-lambda">Lambda Function URL</label>
-            <input id="race-lambda" class="ui-input" placeholder="https://xxxxxxxx.lambda-url.us-east-1.on.aws/" />
+          <p class="tiny muted" style="margin:6px 0 10px;">Based on <code>/styles.css</code> → uses <b>Age</b> vs <b>max-age</b> from <code>Cache-Control</code>.</p>
+          <div class="meter">
+            <div id="warmth-bar" class="bar edge" style="width:0%"></div>
           </div>
-          <div class="race-btns">
-            <button id="race-prime" class="btn ghost tiny-btn" type="button">Prime Edge</button>
-            <button id="race-run" class="btn tiny-btn" type="button">Run Test</button>
+          <div class="bar-labels">
+            <span id="warmth-label" class="lbl edge">—</span>
+            <span id="ttl-label" class="lbl lam">TTL —</span>
           </div>
         </div>
 
-        <!-- KPI tiles -->
-        <div id="race-kpis" class="kpis" style="margin-top:8px;">
-          <div class="kpi"><span>Edge TTFB</span><b id="k-edge-ttfb">—</b></div>
-          <div class="kpi"><span>Edge Total</span><b id="k-edge-total">—</b></div>
-          <div class="kpi"><span>Lambda TTFB</span><b id="k-l-ttfb">—</b></div>
-          <div class="kpi"><span>Lambda Total</span><b id="k-l-total">—</b></div>
-        </div>
-
-        <!-- Comparative bars -->
-        <div class="race-metrics">
-          <div class="metric">
-            <div class="metric-head">
-              <div class="metric-title">TTFB</div>
-              <div class="metric-legend">
-                <span class="legend edge">Edge</span>
-                <span class="legend lam">Lambda</span>
-              </div>
+        <!-- Cost meter -->
+        <div class="mini-section">
+          <div class="mini-head">
+            <div class="mini-title">Free-Tier Cost Meter</div>
+          </div>
+          <div class="cost-grid">
+            <div>
+              <label for="cost-visits">Visits per day</label>
+              <input id="cost-visits" type="range" min="0" max="5000" step="50" class="ui-input range">
+              <div class="tiny muted"><span id="visits-out">0</span> /day</div>
             </div>
-            <div class="meter">
-              <div id="bar-ttfb-edge" class="bar edge"></div>
-              <div id="bar-ttfb-lam" class="bar lam"></div>
-            </div>
-            <div class="bar-labels">
-              <span id="lbl-ttfb-edge" class="lbl edge">—</span>
-              <span id="lbl-ttfb-lam" class="lbl lam">—</span>
+            <div>
+              <label for="cost-mb">Avg MB per visit</label>
+              <input id="cost-mb" type="range" min="0.1" max="5" step="0.1" class="ui-input range">
+              <div class="tiny muted"><span id="mb-out">0.5</span> MB</div>
             </div>
           </div>
 
-          <div class="metric">
-            <div class="metric-head">
-              <div class="metric-title">Total</div>
-              <div class="metric-legend">
-                <span class="legend edge">Edge</span>
-                <span class="legend lam">Lambda</span>
-              </div>
-            </div>
-            <div class="meter">
-              <div id="bar-total-edge" class="bar edge"></div>
-              <div id="bar-total-lam" class="bar lam"></div>
-            </div>
-            <div class="bar-labels">
-              <span id="lbl-total-edge" class="lbl edge">—</span>
-              <span id="lbl-total-lam" class="lbl lam">—</span>
-            </div>
+          <div class="kpis" style="margin-top:10px;">
+            <div class="kpi"><span>Data Out / 1 TB</span><b id="k-data">—</b></div>
+            <div class="kpi"><span>Requests / 10M</span><b id="k-req">—</b></div>
+            <div class="kpi"><span>Lambda / 1M</span><b id="k-lambda">—</b></div>
+            <div class="kpi"><span>Result</span><b id="k-result">—</b></div>
           </div>
-        </div>
 
-        <div id="race-notes" class="tiny muted" style="margin-top:10px;">
-          Tip: “Prime Edge” fetches the asset once so the next run is likely a CloudFront cache hit.
+          <div class="meter" style="margin-top:10px;">
+            <div id="cost-bar" class="bar lam" style="width:0%"></div>
+          </div>
+          <div class="bar-labels">
+            <span class="lbl edge">Within Free Tier</span>
+            <span id="cost-label" class="lbl lam">—</span>
+          </div>
+
+          <p class="tiny muted" style="margin-top:8px;">Estimates only (prices vary by region). Assumes ~10 requests/visit and no video.</p>
         </div>
-        <div id="race-status" class="tiny muted" style="margin-top:6px;"></div>
       </div>
     </section>
 
