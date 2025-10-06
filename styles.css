@@ -45,8 +45,19 @@ a:hover{filter:brightness(1.12); text-decoration:underline}
   border-radius:var(--radius);
   backdrop-filter: blur(8px);
 }
+.panel{padding:22px}
+.muted{color:var(--muted)}
+.list{display:grid; gap:10px; padding:0; margin:0; list-style:none}
+.grid{display:grid; gap:18px}
+@media(min-width:880px){
+  .grid.cols-2{grid-template-columns: 1.1fr 1fr}
+  .grid.cols-3{grid-template-columns: repeat(3,1fr)}
+}
+section{margin:28px 0}
+h2{ margin:6px 0 16px; font-size:clamp(22px,3vw,28px); font-weight:800; letter-spacing:.4px; }
+h3{margin:0 0 6px; font-size:18px}
+.project{padding:18px; border-left:3px solid var(--brand1)}
 
-/* hero */
 header.hero{ padding:80px 0 56px; position:relative; }
 .neon-title{
   font-size:clamp(28px,5.6vw,44px);
@@ -67,39 +78,17 @@ header.hero{ padding:80px 0 56px; position:relative; }
   transition:transform .15s ease, filter .15s ease;
 }
 .btn:hover{ transform:translateY(-1px); filter:brightness(1.03); }
-
-/* Social button variants */
-.btn.social{ padding:12px 16px; }
-.btn.social .ic{ width:20px; height:20px; }
-.btn.social.linkedin{
-  background:#2867B2; color:#fff; box-shadow:none; border:1px solid rgba(255,255,255,.14);
-}
-.btn.social.github{
-  background:#0d1117; color:#c9d1d9; box-shadow:none; border:1px solid rgba(255,255,255,.14);
-}
-.btn.social span{ font-weight:800; }
-
 .btn.ghost{
   background:transparent; color:var(--text);
   border:1px solid rgba(255,255,255,.18);
   box-shadow:none;
 }
+.btn.social{ padding:12px 16px; }
+.btn.social .ic{ width:20px; height:20px; }
+.btn.social.linkedin{ background:#2867B2; color:#fff; box-shadow:none; border:1px solid rgba(255,255,255,.14); }
+.btn.social.github{ background:#0d1117; color:#c9d1d9; box-shadow:none; border:1px solid rgba(255,255,255,.14); }
+.btn.social span{ font-weight:800; }
 
-/* layout helpers */
-.grid{display:grid; gap:18px}
-@media(min-width:880px){
-  .grid.cols-2{grid-template-columns: 1.1fr 1fr}
-  .grid.cols-3{grid-template-columns: repeat(3,1fr)}
-}
-section{margin:28px 0}
-h2{ margin:6px 0 16px; font-size:clamp(22px,3vw,28px); font-weight:800; letter-spacing:.4px; }
-h3{margin:0 0 6px; font-size:18px}
-.list{display:grid; gap:10px; padding:0; margin:0; list-style:none}
-.panel{padding:22px}
-.project{padding:18px; border-left:3px solid var(--brand1)}
-.muted{color:var(--muted)}
-
-/* divider */
 .divider{
   height:1px; border:0; margin:24px 0;
   background:linear-gradient(90deg, transparent, rgba(0,224,184,.70), rgba(91,138,255,.70), transparent);
@@ -113,7 +102,7 @@ h3{margin:0 0 6px; font-size:18px}
   .cta{ justify-content:center; }
 }
 
-/* FIXED avatar size + crop (prevents “blown up” image) */
+/* Avatar */
 .avatar-wrap{
   --size:clamp(110px,16vw,160px);
   width:var(--size); height:var(--size);
@@ -131,7 +120,7 @@ h3{margin:0 0 6px; font-size:18px}
   image-rendering:auto;
 }
 
-/* skill pills */
+/* Skills pills */
 .skills .skill{ display:flex; align-items:center; gap:14px; padding:16px; border-radius:999px;
   background:linear-gradient(180deg, rgba(255,255,255,.035), rgba(255,255,255,.02));
   border:1px solid rgba(255,255,255,.08);
@@ -147,7 +136,7 @@ h3{margin:0 0 6px; font-size:18px}
 .skill-ic img, .skill-ic svg{ width:26px; height:26px; display:block; }
 
 /* Quick Facts */
-.fact-list{ list-style:none; margin:0; padding:0; display:grid; gap:16px; }
+.fact-list{ display:grid; gap:16px; }
 .fact{ display:flex; align-items:center; gap:16px; padding:18px; border-radius:14px;
   background:linear-gradient(180deg, rgba(255,255,255,.035), rgba(255,255,255,.02));
   border:1px solid rgba(255,255,255,.08);
@@ -163,7 +152,7 @@ h3{margin:0 0 6px; font-size:18px}
 .fact a{ color:var(--brand3); text-decoration:underline; text-underline-offset:2px; }
 .fact a:hover{ color:#c9d6ff; }
 
-/* Inputs — keep dark, prevent white focus/autofill */
+/* Inputs */
 label{ display:block; margin:8px 0 6px; font-weight:700; color:var(--muted); }
 .ui-input, form input, form textarea, select{
   width:100%; padding:12px 14px; margin:4px 0 14px;
@@ -175,10 +164,8 @@ label{ display:block; margin:8px 0 6px; font-weight:700; color:var(--muted); }
 .ui-input:focus, select:focus{
   border-color:rgba(91,138,255,.45);
   box-shadow:0 0 0 4px rgba(91,138,255,.15);
-  background:#0a0e18; /* prevent white */
+  background:#0a0e18;
 }
-
-/* Chrome autofill fix */
 input.ui-input:-webkit-autofill,
 input.ui-input:-webkit-autofill:hover,
 input.ui-input:-webkit-autofill:focus{
@@ -188,7 +175,41 @@ input.ui-input:-webkit-autofill:focus{
 }
 
 .result-panel{ margin-top:12px; background:rgba(255,255,255,.03); border-radius:14px; border:1px solid rgba(255,255,255,.08); }
-
 footer{padding:36px 0 64px; color:var(--muted)}
 .tiny{font-size:12px}
 .center{text-align:center}
+
+/* ===========================
+   Heatmap styles
+   =========================== */
+.heatmap-stats{
+  display:flex; align-items:center; gap:10px; margin:6px 0 8px;
+}
+.tiny-btn{padding:8px 10px; font-size:12px; border-radius:10px}
+.progress-pill{
+  background:rgba(255,255,255,.06);
+  border:1px solid rgba(255,255,255,.12);
+  border-radius:999px; padding:6px 10px; font-weight:800;
+}
+
+.heatmap-container svg{
+  width:100%; height:auto; margin-top:10px; border-radius:12px;
+  box-shadow:inset 0 0 18px rgba(91,138,255,.08);
+}
+.continent path{
+  fill:rgba(255,255,255,.08);
+  stroke:rgba(255,255,255,.12);
+  stroke-width:1.4;
+  transition:filter .25s ease, transform .25s ease, fill .25s ease;
+}
+.continent path:hover{ fill:rgba(255,255,255,.12); cursor:pointer; }
+
+.continent.lit path{
+  fill:url(#gradLit);
+  filter:url(#glow) drop-shadow(0 0 10px rgba(0,224,184,.35)) drop-shadow(0 0 14px rgba(91,138,255,.22));
+  transform:translateY(-1px);
+}
+
+/* Gradient for lit continents (applied via defs at runtime) */
+.heatmap-container svg defs linearGradient stop:first-child{ stop-color:var(--brand1) }
+.heatmap-container svg defs linearGradient stop:last-child{ stop-color:var(--brand2) }

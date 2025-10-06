@@ -1,4 +1,4 @@
-// === Riot API Lambda integration ===
+// === Riot API Lambda integration (unchanged) ===
 const RIOT_LAMBDA_URL = 'https://qhn53vmz4dsaf34lowcbnao3ya0ncvem.lambda-url.us-east-1.on.aws/';
 
 // UI regions → platform routing codes your Lambda expects
@@ -8,44 +8,24 @@ const REGION_CODE = {
   'tr1': 'tr1', 'ru': 'ru', 'jp1': 'jp1'
 };
 
-// Champion ID → Name (for pretty labels if Lambda doesn't include names)
+// Champion ID → Name
 const CHAMPION_MAP = {
-  7: 'LeBlanc',
-  268: 'Azir',
-  517: 'Sylas',
-  1: 'Annie',
-  103: 'Ahri',
-  64: 'Lee Sin',
-  11: 'Master Yi',
-  81: 'Ezreal',
-  157: 'Yasuo',
-  84: 'Akali',
-  222: 'Jinx',
+  7: 'LeBlanc', 268: 'Azir', 517: 'Sylas', 1: 'Annie', 103: 'Ahri',
+  64: 'Lee Sin', 11: 'Master Yi', 81: 'Ezreal', 157: 'Yasuo', 84: 'Akali', 222: 'Jinx',
 };
 
-// Name → Data Dragon filename overrides (punctuation / special cases)
+// Name → Data Dragon filename overrides
 const DDRAGON_FILE = {
-  'LeBlanc': 'Leblanc',
-  "Cho'Gath": 'Chogath',
-  "Kai'Sa": 'Kaisa',
-  "Kha'Zix": 'Khazix',
-  "Vel'Koz": 'Velkoz',
-  "Kog'Maw": 'KogMaw',
-  "Rek'Sai": 'RekSai',
-  "Bel'Veth": 'Belveth',
-  'Nunu & Willump': 'Nunu',
-  'Jarvan IV': 'JarvanIV',
-  'Wukong': 'MonkeyKing',
-  'Renata Glasc': 'Renata',
-  'Dr. Mundo': 'DrMundo',
-  'Tahm Kench': 'TahmKench',
+  'LeBlanc': 'Leblanc', "Cho'Gath": 'Chogath', "Kai'Sa": 'Kaisa', "Kha'Zix": 'Khazix',
+  "Vel'Koz": 'Velkoz', "Kog'Maw": 'KogMaw', "Rek'Sai": 'RekSai', "Bel'Veth": 'Belveth',
+  'Nunu & Willump': 'Nunu', 'Jarvan IV': 'JarvanIV', 'Wukong': 'MonkeyKing',
+  'Renata Glasc': 'Renata', 'Dr. Mundo': 'DrMundo', 'Tahm Kench': 'TahmKench',
 };
 
 // Build a safe Data Dragon filename for a champion name
 function ddragonFileFromName(name) {
   if (!name) return '';
-  if (DDRAGON_FILE[name]) return `${DDRAGON_FILE[name]}.png`;  // ← fixed reference
-  // fallback: strip punctuation, PascalCase words
+  if (DDRAGON_FILE[name]) return `${DDRAGON_FILE[name]}.png`;
   const clean = name
     .replace(/['’.&]/g, '')
     .replace(/\s+/g, ' ')
@@ -57,8 +37,14 @@ function ddragonFileFromName(name) {
 }
 
 // ──────────────────────────────────────────────────────────────────────────────
-
+// Page bootstrap
 document.addEventListener('DOMContentLoaded', () => {
+  initRiotLookup();
+  initVisitorHeatmap();
+});
+
+// === Riot Lookup UI ===
+function initRiotLookup(){
   const form = document.getElementById('riot-form');
   const resultsEl = document.getElementById('riot-results');
   const recentEl = document.getElementById('recentId');
@@ -115,7 +101,7 @@ document.addEventListener('DOMContentLoaded', () => {
       resultsEl.innerHTML = `<p class="tiny" style="color:#ff9b9b">Network error: ${escapeHtml(err.message)}</p>`;
     }
   });
-});
+}
 
 function renderResult(root, data, ms, region) {
   const lvl = data?.summoner?.level ?? '?';
@@ -169,4 +155,99 @@ function escapeHtml(s='') {
   return s.replace(/[&<>"'`=\/]/g, c => ({
     '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;','`':'&#96;','=':'&#61;','/':'&#47;'
   }[c]));
+}
+
+// ──────────────────────────────────────────────────────────────────────────────
+// Visitor Heatmap (Gamified) — continents highlight (privacy-friendly)
+const VISITED_KEY = 'visitedContinents_v1'; // stores array of continent codes
+
+async function initVisitorHeatmap(){
+  const panel = document.getElementById('heatmap-panel');
+  if (!panel) return;
+
+  // Inject a gradient into the SVG so lit continents look neon
+  const svg = panel.querySelector('svg');
+  if (svg && !svg.querySelector('#gradLit')) {
+    const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
+    const grad = document.createElementNS('http://www.w3.org/2000/svg', 'linearGradient');
+    grad.setAttribute('id','gradLit'); grad.setAttribute('x1','0%'); grad.setAttribute('x2','100%');
+    grad.setAttribute('y1','0%'); grad.setAttribute('y2','0%');
+    const s1 = document.createElementNS('http://www.w3.org/2000/svg','stop'); s1.setAttribute('offset','0%');
+    const s2 = document.createElementNS('http://www.w3.org/2000/svg','stop'); s2.setAttribute('offset','100%');
+    grad.appendChild(s1); grad.appendChild(s2); defs.appendChild(grad);
+    svg.insertBefore(defs, svg.firstChild);
+  }
+
+  // Reset button
+  const resetBtn = document.getElementById('reset-progress');
+  if (resetBtn) resetBtn.addEventListener('click', () => {
+    localStorage.removeItem(VISITED_KEY);
+    updateVisitedStats([]);
+    // remove lit class
+    panel.querySelectorAll('.continent.lit').forEach(g => g.classList.remove('lit'));
+  });
+
+  // Click to toggle (fun interaction)
+  panel.querySelectorAll('.continent').forEach(g => {
+    g.addEventListener('click', () => {
+      const code = g.getAttribute('data-continent');
+      const set = new Set(readVisited());
+      if (g.classList.toggle('lit')) set.add(code); else set.delete(code);
+      persistVisited([...set]);
+      updateVisitedStats([...set]);
+    });
+  });
+
+  // Local progress render
+  updateVisitedStats(readVisited());
+
+  // Geo lookup (continent + country)
+  const msgEl = document.getElementById('visitor-msg');
+  try {
+    const geo = await getVisitorGeo();
+    if (geo) {
+      const { country_name, continent_code, continent_name } = geo;
+      msgEl.textContent = `👋 Welcome from ${country_name || 'your region'} (${continent_name || continent_code}).`;
+      lightContinent(continent_code);
+    } else {
+      msgEl.textContent = '🌍 Could not detect location.';
+    }
+  } catch (e) {
+    msgEl.textContent = '🌍 Could not detect location.';
+    console.error(e);
+  }
+}
+
+async function getVisitorGeo(){
+  // ipapi.co returns continent_code, continent_name, country_name
+  const res = await fetch('https://ipapi.co/json/', { cache: 'no-store' });
+  if (!res.ok) return null;
+  return res.json();
+}
+
+function lightContinent(code){
+  if (!code) return;
+  const id = code.toUpperCase(); // AF, AN, AS, EU, NA, OC, SA
+  if (id === 'AN') return; // ignore Antarctica
+  const el = document.querySelector(`.continent[data-continent="${id}"]`);
+  if (!el) return;
+  if (!el.classList.contains('lit')) el.classList.add('lit');
+
+  const set = new Set(readVisited());
+  set.add(id);
+  persistVisited([...set]);
+  updateVisitedStats([...set]);
+}
+
+function readVisited(){
+  try{
+    const raw = localStorage.getItem(VISITED_KEY);
+    const arr = raw ? JSON.parse(raw) : [];
+    return Array.isArray(arr) ? arr.filter(Boolean) : [];
+  }catch{ return []; }
+}
+function persistVisited(arr){ localStorage.setItem(VISITED_KEY, JSON.stringify(arr)); }
+function updateVisitedStats(arr){
+  const countEl = document.getElementById('visited-count');
+  if (countEl) countEl.textContent = String(new Set(arr).size);
 }

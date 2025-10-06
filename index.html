@@ -15,7 +15,6 @@
       <!-- LEFT: avatar ABOVE name/title -->
       <div class="hero-stack">
         <div class="avatar-wrap">
-          <!-- keep your existing filename -->
           <img src="profile.png" alt="Michael Ramirez headshot" loading="eager">
         </div>
 
@@ -41,7 +40,7 @@
         </div>
       </div>
 
-      <!-- RIGHT: quick facts (unchanged content, sized properly) -->
+      <!-- RIGHT: quick facts -->
       <div class="card panel">
         <h3>Quick Facts</h3>
         <ul class="fact-list">
@@ -91,15 +90,13 @@
 
   <main class="wrap">
     <section class="grid cols-3">
-      <!-- Cloud & DevOps with REAL logos -->
+      <!-- Cloud & DevOps -->
       <div class="glass panel">
         <h2>Cloud & DevOps</h2>
         <ul class="list skills">
-          <!-- AWS — orange 3-cubes (inline SVG so it never breaks) -->
           <li class="pill skill">
             <span class="skill-ic">
               <svg viewBox="0 0 64 64" aria-hidden="true">
-                <!-- three orange cubes -->
                 <g fill="#FF9900" stroke="#D67F00" stroke-width="1">
                   <path d="M12 14l10-6 10 6v12l-10 6-10-6z"/><path d="M32 14l10-6 10 6v12l-10 6-10-6z"/><path d="M22 28l10-6 10 6v12l-10 6-10-6z"/>
                 </g>
@@ -107,36 +104,22 @@
             </span>
             <span>AWS</span>
           </li>
-
-          <!-- Linux — Tux (from Wikimedia) -->
           <li class="pill skill">
             <span class="skill-ic">
               <img src="https://upload.wikimedia.org/wikipedia/commons/3/35/Tux.svg" alt="" referrerpolicy="no-referrer">
             </span>
             <span>Linux</span>
           </li>
-
-          <!-- Docker -->
           <li class="pill skill">
-            <span class="skill-ic">
-              <img src="https://cdn.simpleicons.org/docker/2496ED" alt="">
-            </span>
+            <span class="skill-ic"><img src="https://cdn.simpleicons.org/docker/2496ED" alt=""></span>
             <span>Docker</span>
           </li>
-
-          <!-- Terraform -->
           <li class="pill skill">
-            <span class="skill-ic">
-              <img src="https://cdn.simpleicons.org/terraform/7B42BC" alt="">
-            </span>
+            <span class="skill-ic"><img src="https://cdn.simpleicons.org/terraform/7B42BC" alt=""></span>
             <span>Terraform</span>
           </li>
-
-          <!-- CI/CD — GitHub Actions logo -->
           <li class="pill skill">
-            <span class="skill-ic">
-              <img src="https://cdn.simpleicons.org/githubactions/2088FF" alt="">
-            </span>
+            <span class="skill-ic"><img src="https://cdn.simpleicons.org/githubactions/2088FF" alt=""></span>
             <span>CI/CD</span>
           </li>
         </ul>
@@ -207,11 +190,71 @@
         </div>
       </div>
 
-      <!-- Right side placeholder (Notes) -->
-      <div class="glass panel">
-        <h2>Notes</h2>
-        <p class="muted">Powered by AWS Lambda + CloudFront + S3 (Free Tier friendly).</p>
-        <p class="muted tiny">We keep the right column for notes for now—easy to replace later with “Saved Summoners” or a small metrics card.</p>
+      <!-- RIGHT: Visitor Heatmap (Gamified) -->
+      <div id="heatmap-panel" class="glass panel">
+        <h2>🌍 Visitor Heatmap</h2>
+        <p class="muted tiny" id="visitor-msg">Detecting your location…</p>
+
+        <div class="heatmap-stats">
+          <div class="pill small progress-pill">
+            <span id="visited-count">0</span>/6 regions lit
+          </div>
+          <button id="reset-progress" class="btn ghost tiny-btn" type="button" title="Clear local progress">Reset</button>
+        </div>
+
+        <div id="world-map" class="heatmap-container" aria-label="World map">
+          <!-- Stylized continent blobs (fast + lightweight) -->
+          <svg viewBox="0 0 1000 520" xmlns="http://www.w3.org/2000/svg" role="img">
+            <defs>
+              <filter id="glow">
+                <feGaussianBlur stdDeviation="3.5" result="coloredBlur"/>
+                <feMerge>
+                  <feMergeNode in="coloredBlur"/>
+                  <feMergeNode in="SourceGraphic"/>
+                </feMerge>
+              </filter>
+            </defs>
+
+            <!-- Ocean backdrop -->
+            <rect x="0" y="0" width="1000" height="520" rx="14" ry="14"
+              fill="rgba(255,255,255,.02)" stroke="rgba(255,255,255,.08)" />
+
+            <!-- Continents (stylized). Each has data-continent + title for a11y -->
+            <g class="continent" id="NA" data-continent="NA">
+              <title>North America</title>
+              <path d="M95,130 C200,70 330,90 390,160 C440,210 415,260 330,300 C230,345 160,310 120,260 C90,220 70,170 95,130 Z"/>
+            </g>
+
+            <g class="continent" id="SA" data-continent="SA">
+              <title>South America</title>
+              <path d="M350,330 C410,300 480,310 520,360 C560,410 530,470 470,490 C420,505 390,475 390,440 C380,405 330,360 350,330 Z"/>
+            </g>
+
+            <g class="continent" id="EU" data-continent="EU">
+              <title>Europe</title>
+              <path d="M540,120 C570,95 630,100 660,130 C690,160 670,195 635,205 C600,215 560,200 545,175 C535,160 525,140 540,120 Z"/>
+            </g>
+
+            <g class="continent" id="AF" data-continent="AF">
+              <title>Africa</title>
+              <path d="M575,210 C625,190 690,200 710,250 C735,310 690,370 630,380 C585,385 560,350 560,315 C560,280 545,235 575,210 Z"/>
+            </g>
+
+            <g class="continent" id="AS" data-continent="AS">
+              <title>Asia</title>
+              <path d="M675,130 C740,95 860,110 905,170 C945,220 915,275 850,300 C785,325 720,315 690,270 C665,235 640,170 675,130 Z"/>
+            </g>
+
+            <g class="continent" id="OC" data-continent="OC">
+              <title>Oceania</title>
+              <path d="M820,380 C860,360 910,365 935,395 C955,420 935,450 900,455 C865,460 830,445 820,420 C815,405 805,390 820,380 Z"/>
+            </g>
+          </svg>
+        </div>
+
+        <p class="tiny muted" style="margin-top:10px">
+          Tip: this is local & privacy-friendly. We highlight your continent using a free GeoIP lookup (no tracking).
+        </p>
       </div>
     </section>
 
