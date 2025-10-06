@@ -13,6 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const regionSel = document.getElementById('region');
   const riotInput = document.getElementById('riotId');
   const recentEl = document.getElementById('recent-lookups');
+  const lookupBtn = document.getElementById('lookup-btn');
   if (!form || !resultsEl) return;
 
   // preload champ meta
@@ -57,6 +58,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     try {
+      // spinner on button
+      lookupBtn.classList.add('loading'); lookupBtn.disabled = true;
+
       const t0 = performance.now();
       const resp = await fetch(RIOT_LAMBDA_URL, {
         method: 'POST',
@@ -87,6 +91,8 @@ document.addEventListener('DOMContentLoaded', () => {
       saveRecent(riotId); renderRecent(recentEl);
     } catch (err) {
       resultsEl.innerHTML = `<p class="tiny" style="color:#ff9b9b">Network error: ${escapeHtml(err.message)}</p>`;
+    } finally {
+      lookupBtn.classList.remove('loading'); lookupBtn.disabled = false;
     }
   });
 });
@@ -154,14 +160,13 @@ function renderResult(data, ms=0){
             <div class="champ-title tooltip" aria-label="${escapeHtml(displayName)} ${title ? `– ${escapeHtml(title)}` : ''}">
               <span class="champ-icon">${iconUrl ? `<img src="${iconUrl}" alt="${escapeHtml(displayName)} icon" loading="lazy">` : ''}</span>
               <strong>${escapeHtml(displayName)}</strong>
-              ${title ? `<span class="tip">${escapeHtml(displayName)} — ${escapeHtml(title)}</span>` : ''}
             </div>
             <span class="badge">Mastery Lv ${lvl}</span>
           </div>
           <div class="role-tags">${tagChips}</div>
           <div class="bar"><i data-w="${pct}"></i></div>
         </div>
-        <div class="meta">${formatNumber(pts)} pts</div>
+        <div class="meta" title="Total mastery points earned on this champion">${formatNumber(pts)} pts</div>
       </div>
     `;
   }).join('') || `<p class="tiny muted">No champion mastery data found.</p>`;
@@ -195,5 +200,5 @@ function smartTitle(t){ return String(t||'').slice(0,1).toUpperCase()+String(t||
 function getTagLine(riotId){ const i = String(riotId).indexOf('#'); return i>-1 ? riotId.slice(i+1).trim() : ''; }
 function showNote(container, html){ container.innerHTML = `<p class="note">${html}</p>`; }
 function formatNumber(n){ return (Number(n)||0).toLocaleString(); }
-function escapeHtml(s){ return String(s).replace(/[&<>"'`=\/]/g, (c)=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;','`':'&#96;','=':'&#61;','/':'&#47;'}[c])); }
+function escapeHtml(s){ return String(s).replace(/[&<>"'`=\/]/g, (c)=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;','`':'&#96;','=':'&#61;','/':'&#47;'}[c])); }
 function getAwsRegionFromUrl(url){ const m = String(url).match(/lambda-url\.([a-z0-9-]+)\.on\.aws/i); return m ? m[1] : ''; }
