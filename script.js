@@ -1,29 +1,29 @@
-// Riot API Lambda integration (unchanged)
+// === Riot API Lambda integration ===
 const RIOT_LAMBDA_URL = 'https://qhn53vmz4dsaf34lowcbnao3ya0ncvem.lambda-url.us-east-1.on.aws/';
 
+// UI regions → platform routing codes your Lambda expects
 const REGION_CODE = {
-  'na1':'na1','euw1':'euw1','eun1':'eun1','kr':'kr',
-  'br1':'br1','la1':'la1','la2':'la2','oc1':'oc1',
-  'tr1':'tr1','ru':'ru','jp1':'jp1'
+  'na1': 'na1', 'euw1': 'euw1', 'eun1': 'eun1', 'kr': 'kr',
+  'br1': 'br1', 'la1': 'la1', 'la2': 'la2', 'oc1': 'oc1',
+  'tr1': 'tr1', 'ru': 'ru', 'jp1': 'jp1'
 };
 
 document.addEventListener('DOMContentLoaded', () => {
   const form = document.getElementById('riot-form');
   const resultsEl = document.getElementById('riot-results');
-  const recentSlot = document.getElementById('recentSlot');
+  const recentEl = document.getElementById('recentId');
+  if (!form || !resultsEl) return;
 
-  // recent helper
-  const lastKey = 'lastRiotId';
-  const last = localStorage.getItem(lastKey);
-  if (last) {
-    recentSlot.innerHTML = `Recent: <a href="#" id="lastLink">${escapeHtml(last)}</a>`;
-    recentSlot.querySelector('#lastLink').addEventListener('click', (e) => {
+  // recent link from localStorage
+  const recent = localStorage.getItem('recentRiotId');
+  if (recent) {
+    recentEl.textContent = recent;
+    recentEl.style.display = 'inline';
+    recentEl.addEventListener('click', (e) => {
       e.preventDefault();
-      form.riotId.value = last;
+      document.getElementById('riotId').value = recent;
     });
   }
-
-  if (!form || !resultsEl) return;
 
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -37,67 +37,79 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
-    // save recent
-    localStorage.setItem(lastKey, riotId);
+    // remember
+    localStorage.setItem('recentRiotId', riotId);
+    if (recentEl) { recentEl.textContent = riotId; recentEl.style.display = 'inline'; }
 
-    const t0 = performance.now();
     try {
+      const t0 = performance.now();
       const resp = await fetch(RIOT_LAMBDA_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ summonerName: riotId, region: platform })
       });
+      const t1 = performance.now();
 
       if (!resp.ok) {
         const text = await resp.text();
-        resultsEl.innerHTML = `<p class="tiny" style="color:#ff9b9b">Lambda error (${resp.status}): ${escapeHtml(text || 'Request failed')}</p>`;
+        resultsEl.innerHTML =
+          `<div class="panel" style="background:rgba(40,0,0,.25);border:1px solid rgba(255,120,120,.25);border-radius:12px;padding:12px;">
+            <span style="color:#ff9b9b">Lambda error (${resp.status}):</span>
+            <pre style="white-space:pre-wrap;margin:6px 0 0">${escapeHtml(text || 'Request failed')}</pre>
+          </div>`;
         return;
       }
 
       const data = await resp.json();
-      const t1 = performance.now();
-      const latency = Math.round(t1 - t0);
-
-      // pretty render (fallback simple)
-      const name = data?.summoner?.name || riotId;
-      const level = data?.summoner?.level ?? '—';
-      const champs = Array.isArray(data?.topChampions) ? data.topChampions : [];
-
-      resultsEl.innerHTML = `
-        <div class="card panel" style="background:linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.015)); border:1px solid rgba(255,255,255,.08);">
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
-            <h3 style="margin:0">Summoner: ${escapeHtml(name)}</h3>
-            <span class="tiny muted" style="border:1px solid rgba(255,255,255,.12);padding:6px 10px;border-radius:12px;">Level ${escapeHtml(String(level))}</span>
-          </div>
-          <p class="tiny muted" style="margin:0 0 12px;">Fetched in ${latency} ms via AWS Lambda (us-east-1)</p>
-
-          ${champs.map(ch => {
-            const pts = (ch.championPoints ?? 0).toLocaleString();
-            const lvl = ch.championLevel ?? '—';
-            const prog = Math.min(100, Math.round(((ch.championPointsSinceLastLevel ?? 0) / Math.max(1,(ch.championPointsUntilNextLevel ?? 1))) * 100));
-            return `
-              <div class="glass panel" style="margin:10px 0;">
-                <div style="display:flex;justify-content:space-between;align-items:center">
-                  <h3 style="margin:0">Champion ID ${escapeHtml(String(ch.championId))}</h3>
-                  <span class="tiny muted" style="border:1px solid rgba(255,255,255,.12);padding:6px 10px;border-radius:12px;">Mastery Lv ${escapeHtml(String(lvl))}</span>
-                </div>
-                <div style="height:8px;border-radius:6px;background:rgba(255,255,255,.06);margin:10px 0;overflow:hidden">
-                  <div style="height:100%;width:${prog}%;background:linear-gradient(90deg,var(--brand1),var(--brand2));"></div>
-                </div>
-                <div class="tiny muted" style="text-align:right">${pts} pts</div>
-              </div>`;
-          }).join('')}
-        </div>
-      `;
+      renderResult(resultsEl, data, Math.round(t1 - t0), platform);
     } catch (err) {
       resultsEl.innerHTML = `<p class="tiny" style="color:#ff9b9b">Network error: ${escapeHtml(err.message)}</p>`;
     }
   });
 });
 
-function escapeHtml(s) {
-  return String(s).replace(/[&<>"'`=\/]/g, (c) => ({
-    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;',
-    "'": '&#39;', '`': '&#96;', '=': '&#61;', '/': '&#47;'
+function renderResult(root, data, ms, region) {
+  const lvl = data?.summoner?.level ?? '?';
+  const name = data?.summoner?.name ?? 'Unknown';
+  const champs = Array.isArray(data?.topChampions) ? data.topChampions : [];
+
+  const rows = champs.map(ch => {
+    const pts = (ch.championPoints ?? 0).toLocaleString();
+    const lvl = ch.championLevel ?? 0;
+    const progress = Math.max(6, Math.min(100, Math.round((ch.championPoints ?? 0) / 700000 * 100)));
+    const champName = ch.championId ? `Champion ID ${ch.championId}` : 'Champion';
+    return `
+      <div class="panel" style="margin:12px 0; background:rgba(255,255,255,.02); border:1px solid rgba(255,255,255,.08); border-radius:14px; padding:14px;">
+        <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap;">
+          <div style="font-weight:800; font-size:18px;">${champName}</div>
+          <div class="pill small" style="background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.12); border-radius:999px; padding:6px 10px;">
+            Mastery Lv ${lvl}
+          </div>
+          <div style="color:#aecdff; font-weight:800;">${pts} pts</div>
+        </div>
+        <div style="height:10px; border-radius:999px; background:rgba(255,255,255,.08); margin-top:10px; overflow:hidden;">
+          <div style="height:100%; width:${progress}%; background:linear-gradient(90deg, var(--brand1), var(--brand2));"></div>
+        </div>
+      </div>`;
+  }).join('');
+
+  root.innerHTML = `
+    <div class="panel" style="background:rgba(255,255,255,.02); border:1px solid rgba(255,255,255,.08); border-radius:16px; padding:16px;">
+      <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; margin-bottom:10px;">
+        <h3 style="margin:0">Summoner: ${escapeHtml(name)}</h3>
+        <div class="pill small" style="background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.12); border-radius:999px; padding:6px 10px;">Level ${lvl}</div>
+      </div>
+
+      <div class="pill small" style="display:inline-flex; background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.12); border-radius:999px; padding:6px 10px; margin:6px 0 14px;">
+        Fetched in ${ms} ms via AWS Lambda (${escapeHtml(region)})
+      </div>
+
+      ${rows || '<p class="tiny muted">No mastery data</p>'}
+    </div>`;
+}
+
+function escapeHtml(s='') {
+  return s.replace(/[&<>"'`=\/]/g, c => ({
+    '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;','`':'&#96;','=':'&#61;','/':'&#47;'
   }[c]));
 }
