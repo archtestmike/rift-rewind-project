@@ -8,7 +8,7 @@ const REGION_CODE = {
   'tr1': 'tr1', 'ru': 'ru', 'jp1': 'jp1'
 };
 
-// Champion ID → Name (only needed if Lambda doesn't return "championName")
+// Champion ID → Name (for pretty labels if Lambda doesn't include names)
 const CHAMPION_MAP = {
   7: 'LeBlanc',
   268: 'Azir',
@@ -23,7 +23,7 @@ const CHAMPION_MAP = {
   222: 'Jinx',
 };
 
-// Name → Data Dragon filename overrides (handles punctuation / weird casing)
+// Name → Data Dragon filename overrides (punctuation / special cases)
 const DDRAGON_FILE = {
   'LeBlanc': 'Leblanc',
   "Cho'Gath": 'Chogath',
@@ -41,14 +41,14 @@ const DDRAGON_FILE = {
   'Tahm Kench': 'TahmKench',
 };
 
-// build a safe filename for Data Dragon
+// Build a safe Data Dragon filename for a champion name
 function ddragonFileFromName(name) {
   if (!name) return '';
-  if (DDDRAGON_FILE[name]) return `${DDDRAGON_FILE[name]}.png`;
-  // fallback: strip non-letters, collapse spaces, PascalCase
+  if (DDRAGON_FILE[name]) return `${DDRAGON_FILE[name]}.png`;  // ← fixed reference
+  // fallback: strip punctuation, PascalCase words
   const clean = name
-    .replace(/['’.&]/g, '')          // remove punctuation
-    .replace(/\s+/g, ' ')            // single spaces
+    .replace(/['’.&]/g, '')
+    .replace(/\s+/g, ' ')
     .trim()
     .split(' ')
     .map(w => w.charAt(0).toUpperCase() + w.slice(1))
@@ -127,7 +127,6 @@ function renderResult(root, data, ms, region) {
     const masteryLvl = ch.championLevel ?? 0;
     const progress = Math.max(6, Math.min(100, Math.round((ch.championPoints ?? 0) / 700000 * 100)));
 
-    // resolve champion name & image
     const champName = ch.championName || CHAMPION_MAP[ch.championId] || `Champion ${ch.championId}`;
     const file = ddragonFileFromName(champName);
     const champImg = `https://ddragon.leagueoflegends.com/cdn/14.18.1/img/champion/${file}`;
