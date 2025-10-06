@@ -1,54 +1,87 @@
-// Riot Lambda Setup
+// === Riot API Lambda integration ===
 const RIOT_LAMBDA_URL = 'https://qhn53vmz4dsaf34lowcbnao3ya0ncvem.lambda-url.us-east-1.on.aws/';
+
+// UI regions → platform routing codes your Lambda expects
 const REGION_CODE = {
-  'na1': 'na1', 'euw1': 'euw1', 'eun1': 'eun1', 'kr': 'kr'
+  'na1': 'na1', 'euw1': 'euw1', 'eun1': 'eun1', 'kr': 'kr',
+  'br1': 'br1', 'la1': 'la1', 'la2': 'la2', 'oc1': 'oc1',
+  'tr1': 'tr1', 'ru': 'ru', 'jp1': 'jp1'
 };
+
+// Champion ID → Name (for pretty labels if Lambda doesn't include names)
 const CHAMPION_MAP = {
-  7: 'LeBlanc', 268: 'Azir', 517: 'Sylas', 1: 'Annie',
-  103: 'Ahri', 64: 'Lee Sin', 11: 'Master Yi',
-  81: 'Ezreal', 157: 'Yasuo', 84: 'Akali', 222: 'Jinx'
+  7: 'LeBlanc',
+  268: 'Azir',
+  517: 'Sylas',
+  1: 'Annie',
+  103: 'Ahri',
+  64: 'Lee Sin',
+  11: 'Master Yi',
+  81: 'Ezreal',
+  157: 'Yasuo',
+  84: 'Akali',
+  222: 'Jinx',
 };
+
+// Name → Data Dragon filename overrides (punctuation / special cases)
 const DDRAGON_FILE = {
-  'LeBlanc': 'Leblanc', "Cho'Gath": 'Chogath',
-  "Kai'Sa": 'Kaisa', "Kha'Zix": 'Khazix',
-  "Vel'Koz": 'Velkoz', "Kog'Maw": 'KogMaw',
-  "Rek'Sai": 'RekSai', "Bel'Veth": 'Belveth',
-  'Nunu & Willump': 'Nunu', 'Jarvan IV': 'JarvanIV',
-  'Wukong': 'MonkeyKing', 'Renata Glasc': 'Renata',
-  'Dr. Mundo': 'DrMundo', 'Tahm Kench': 'TahmKench'
+  'LeBlanc': 'Leblanc',
+  "Cho'Gath": 'Chogath',
+  "Kai'Sa": 'Kaisa',
+  "Kha'Zix": 'Khazix',
+  "Vel'Koz": 'Velkoz',
+  "Kog'Maw": 'KogMaw',
+  "Rek'Sai": 'RekSai',
+  "Bel'Veth": 'Belveth',
+  'Nunu & Willump': 'Nunu',
+  'Jarvan IV': 'JarvanIV',
+  'Wukong': 'MonkeyKing',
+  'Renata Glasc': 'Renata',
+  'Dr. Mundo': 'DrMundo',
+  'Tahm Kench': 'TahmKench',
 };
+
+// Build a safe Data Dragon filename for a champion name
 function ddragonFileFromName(name) {
   if (!name) return '';
-  if (DDRAGON_FILE[name]) return `${DDRAGON_FILE[name]}.png`;
-  const clean = name.replace(/['’.&]/g, '').replace(/\s+/g, ' ').trim()
-    .split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join('');
+  if (DDRAGON_FILE[name]) return `${DDRAGON_FILE[name]}.png`;  // ← fixed reference
+  // fallback: strip punctuation, PascalCase words
+  const clean = name
+    .replace(/['’.&]/g, '')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .split(' ')
+    .map(w => w.charAt(0).toUpperCase() + w.slice(1))
+    .join('');
   return `${clean}.png`;
 }
+
+// ──────────────────────────────────────────────────────────────────────────────
 
 document.addEventListener('DOMContentLoaded', () => {
   const form = document.getElementById('riot-form');
   const resultsEl = document.getElementById('riot-results');
-  const chartSection = document.getElementById('chart-section');
   const recentEl = document.getElementById('recentId');
-
   if (!form || !resultsEl) return;
 
+  // recent link from localStorage
   const recent = localStorage.getItem('recentRiotId');
   if (recent && recentEl) {
     recentEl.textContent = recent;
     recentEl.style.display = 'inline';
-    recentEl.addEventListener('click', e => {
+    recentEl.addEventListener('click', (e) => {
       e.preventDefault();
       document.getElementById('riotId').value = recent;
     });
   }
 
-  form.addEventListener('submit', async e => {
+  form.addEventListener('submit', async (e) => {
     e.preventDefault();
     resultsEl.innerHTML = '<p class="tiny muted">Fetching…</p>';
 
     const riotId = (form.riotId.value || '').trim();
     const platform = REGION_CODE[form.region.value];
+
     if (!riotId.includes('#')) {
       resultsEl.innerHTML = '<p class="tiny" style="color:#ff9b9b">Invalid Riot ID. Use <b>GameName#TAG</b>.</p>';
       return;
@@ -73,16 +106,13 @@ document.addEventListener('DOMContentLoaded', () => {
             <span style="color:#ff9b9b">Lambda error (${resp.status}):</span>
             <pre style="white-space:pre-wrap;margin:6px 0 0">${escapeHtml(text || 'Request failed')}</pre>
           </div>`;
-        chartSection.style.display = 'none';
         return;
       }
 
       const data = await resp.json();
       renderResult(resultsEl, data, Math.round(t1 - t0), platform);
-      renderChart(data.topChampions || []);
     } catch (err) {
       resultsEl.innerHTML = `<p class="tiny" style="color:#ff9b9b">Network error: ${escapeHtml(err.message)}</p>`;
-      chartSection.style.display = 'none';
     }
   });
 });
@@ -126,64 +156,17 @@ function renderResult(root, data, ms, region) {
         <h3 style="margin:0">Summoner: ${escapeHtml(name)}</h3>
         <div class="pill small" style="background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.12); border-radius:999px; padding:6px 10px;">Level ${lvl}</div>
       </div>
+
       <div class="pill small" style="display:inline-flex; background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.12); border-radius:999px; padding:6px 10px; margin:6px 0 14px;">
         Fetched in ${ms} ms via AWS Lambda (${escapeHtml(region)})
       </div>
+
       ${rows || '<p class="tiny muted">No mastery data</p>'}
     </div>`;
 }
 
-function renderChart(champions = []) {
-  const chartSection = document.getElementById('chart-section');
-  const ctx = document.getElementById('masteryChart').getContext('2d');
-  if (!champions.length) {
-    chartSection.style.display = 'none';
-    return;
-  }
-
-  const names = champions.map(c => c.championName || CHAMPION_MAP[c.championId] || `Champ ${c.championId}`);
-  const points = champions.map(c => c.championPoints);
-
-  chartSection.style.display = 'block';
-
-  if (window.masteryChart) {
-    window.masteryChart.destroy();
-  }
-
-  window.masteryChart = new Chart(ctx, {
-    type: 'bar',
-    data: {
-      labels: names,
-      datasets: [{
-        label: 'Champion Points',
-        data: points,
-        backgroundColor: 'rgba(0,224,184,0.6)',
-        borderColor: 'rgba(91,138,255,0.6)',
-        borderWidth: 2,
-        borderRadius: 6
-      }]
-    },
-    options: {
-      plugins: {
-        legend: { display: false }
-      },
-      scales: {
-        y: {
-          ticks: { color: '#9bb0ff' },
-          grid: { color: 'rgba(255,255,255,.04)' }
-        },
-        x: {
-          ticks: { color: '#9bb0ff' },
-          grid: { display: false }
-        }
-      }
-    }
-  });
-}
-
-function escapeHtml(s = '') {
+function escapeHtml(s='') {
   return s.replace(/[&<>"'`=\/]/g, c => ({
-    '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;',
-    '`':'&#96;', '=':'&#61;', '/':'&#47;'
+    '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;','`':'&#96;','=':'&#61;','/':'&#47;'
   }[c]));
 }

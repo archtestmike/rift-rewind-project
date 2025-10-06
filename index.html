@@ -1,55 +1,224 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Riot Summoner Tracker</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Michael Ramirez — Cloud Builder</title>
+  <meta name="description" content="Michael Ramirez • Cloud Builder & AWS Enthusiast" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-  <div class="wrap">
-    <header class="hero">
-      <h1 class="neon-title">Riot Summoner Stats</h1>
-      <p class="subtitle">Check top champions and mastery for any summoner</p>
-    </header>
+  <header class="hero">
+    <div class="wrap grid cols-2">
+      <!-- LEFT: avatar ABOVE name/title -->
+      <div class="hero-stack">
+        <div class="avatar-wrap">
+          <!-- keep your existing filename -->
+          <img src="profile.png" alt="Michael Ramirez headshot" loading="eager">
+        </div>
 
-    <section>
-      <form id="riot-form">
-        <label for="riotId">Riot ID</label>
-        <input type="text" id="riotId" name="riotId" class="ui-input" placeholder="GameName#TAG" required>
+        <div class="hero-text">
+          <h1 class="neon-title">Cloud Builder & AWS Enthusiast</h1>
+          <p class="subtitle">Currently working on the AWS Builder Challenge and learning to deploy with S3 + CloudFront. This site runs on AWS Amplify/CloudFront.</p>
 
-        <label for="region">Region</label>
-        <select id="region" name="region" class="ui-input">
-          <option value="na1">North America</option>
-          <option value="euw1">Europe West</option>
-          <option value="eun1">Europe Nordic & East</option>
-          <option value="kr">Korea</option>
-        </select>
+          <div class="cta">
+            <a class="btn" href="https://builder.aws.com/" target="_blank" rel="noopener">AWS Builder Center</a>
 
-        <button type="submit" class="btn">Fetch Stats</button>
-      </form>
-      <p class="tiny muted">Recent: <a href="#" id="recentId" style="display:none"></a></p>
-    </section>
+            <!-- LinkedIn pill style -->
+            <a class="btn social linkedin" href="https://www.linkedin.com/in/ramirezmichael1/" target="_blank" rel="noopener" aria-label="LinkedIn">
+              <svg aria-hidden="true" viewBox="0 0 24 24" class="ic"><path fill="currentColor" d="M4.98 3.5A2.48 2.48 0 1 1 0 3.5 2.48 2.48 0 0 1 4.98 3.5zM0 8h5v16H0V8zm7.5 0H12v2.2h.06c.63-1.12 2.17-2.3 4.47-2.3 4.77 0 5.64 3.14 5.64 7.22V24h-5V16.4c0-1.81-.03-4.14-2.52-4.14-2.52 0-2.91 1.97-2.91 4V24h-5V8z"/></svg>
+              <span>LinkedIn</span>
+            </a>
 
-    <section>
-      <div id="riot-results"></div>
-    </section>
+            <!-- GitHub pill style -->
+            <a class="btn social github" href="https://github.com/archtestmike" target="_blank" rel="noopener" aria-label="GitHub">
+              <svg aria-hidden="true" viewBox="0 0 16 16" class="ic"><path fill="currentColor" d="M8 .198a8 8 0 0 0-2.53 15.6c.4.074.55-.174.55-.386 0-.19-.007-.693-.01-1.36-2.24.487-2.71-1.08-2.71-1.08-.364-.924-.89-1.17-.89-1.17-.727-.497.055-.487.055-.487.804.057 1.226.826 1.226.826.715 1.225 1.876.871 2.334.666.073-.518.28-.872.508-1.073-1.788-.204-3.667-.894-3.667-3.98 0-.88.314-1.598.826-2.162-.083-.203-.358-1.022.078-2.13 0 0 .673-.215 2.205.825.61-.17 1.25-.26 1.9-.27.65.01 1.29.1 1.9.27 1.53-1.04 2.203-.825 2.203-.825.438 1.108.163 1.927.08 2.13.514.564.825 1.282.825 2.162 0 3.095-1.882 3.774-3.674 3.975.287.247.543.735.543 1.482 0 1.07-.01 1.933-.01 2.197 0 .214.146.463.553.385A8.002 8.002 0 0 0 8 .198z"/></svg>
+              <span>GitHub</span>
+            </a>
+          </div>
+        </div>
+      </div>
 
-    <!-- 🎯 Metrics Chart Dashboard -->
-    <section id="chart-section" style="display:none">
-      <h2>Champion Mastery Overview</h2>
-      <div class="panel glass">
-        <canvas id="masteryChart" height="220"></canvas>
+      <!-- RIGHT: quick facts (unchanged content, sized properly) -->
+      <div class="card panel">
+        <h3>Quick Facts</h3>
+        <ul class="fact-list">
+          <li class="fact">
+            <span class="icon-wrap">
+              <svg class="icon" viewBox="0 0 24 24" fill="none">
+                <circle cx="12" cy="12" r="8.5" stroke="currentColor" stroke-width="1.6"/>
+                <circle cx="12" cy="12" r="4.5" stroke="currentColor" stroke-width="1.6"/>
+                <circle cx="12" cy="12" r="1.6" fill="currentColor"/>
+              </svg>
+            </span>
+            <span><strong>Learning goal:</strong> build cloud skills one service at a time (S3, CloudFront, and beyond).</span>
+          </li>
+
+          <li class="fact">
+            <span class="icon-wrap">
+              <svg class="icon" viewBox="0 0 24 24" fill="none">
+                <path d="M6.5 15.5a3.5 3.5 0 1 0 0 7h10a4 4 0 0 0 0-8 5 5 0 0 0-9.6-1.6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+                <circle cx="17.5" cy="8" r="3.2" stroke="currentColor" stroke-width="1.6"/>
+              </svg>
+            </span>
+            <span><strong>Fun project:</strong> this site is served globally via AWS.</span>
+          </li>
+
+          <li class="fact">
+            <span class="icon-wrap">
+              <svg class="icon" viewBox="0 0 24 24" fill="none">
+                <path d="M12 3l2.3 4.7 5.2.8-3.8 3.7.9 5.2L12 15.7 7.4 17.4l.9-5.2L4.5 8.5l5.2-.8L12 3Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+              </svg>
+            </span>
+            <span><strong>Challenge:</strong> AWS Builder Challenge #2.</span>
+          </li>
+
+          <li class="fact">
+            <span class="icon-wrap">
+              <svg class="icon" viewBox="0 0 24 24" fill="none">
+                <path d="M6 19.5c3 3 9 3 12 0" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+                <path d="M12 4c-4.5 0-8 3.6-8 8s3.5 8 8 8 8-3.6 8-8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+              </svg>
+            </span>
+            <span><strong>Explore my art:</strong> <a href="https://main.d1r289f3oq47go.amplifyapp.com/" target="_blank" rel="noopener">view portfolio</a></span>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section class="grid cols-3">
+      <!-- Cloud & DevOps with REAL logos -->
+      <div class="glass panel">
+        <h2>Cloud & DevOps</h2>
+        <ul class="list skills">
+          <!-- AWS — orange 3-cubes (inline SVG so it never breaks) -->
+          <li class="pill skill">
+            <span class="skill-ic">
+              <svg viewBox="0 0 64 64" aria-hidden="true">
+                <!-- three orange cubes -->
+                <g fill="#FF9900" stroke="#D67F00" stroke-width="1">
+                  <path d="M12 14l10-6 10 6v12l-10 6-10-6z"/><path d="M32 14l10-6 10 6v12l-10 6-10-6z"/><path d="M22 28l10-6 10 6v12l-10 6-10-6z"/>
+                </g>
+              </svg>
+            </span>
+            <span>AWS</span>
+          </li>
+
+          <!-- Linux — Tux (from Wikimedia) -->
+          <li class="pill skill">
+            <span class="skill-ic">
+              <img src="https://upload.wikimedia.org/wikipedia/commons/3/35/Tux.svg" alt="" referrerpolicy="no-referrer">
+            </span>
+            <span>Linux</span>
+          </li>
+
+          <!-- Docker -->
+          <li class="pill skill">
+            <span class="skill-ic">
+              <img src="https://cdn.simpleicons.org/docker/2496ED" alt="">
+            </span>
+            <span>Docker</span>
+          </li>
+
+          <!-- Terraform -->
+          <li class="pill skill">
+            <span class="skill-ic">
+              <img src="https://cdn.simpleicons.org/terraform/7B42BC" alt="">
+            </span>
+            <span>Terraform</span>
+          </li>
+
+          <!-- CI/CD — GitHub Actions logo -->
+          <li class="pill skill">
+            <span class="skill-ic">
+              <img src="https://cdn.simpleicons.org/githubactions/2088FF" alt="">
+            </span>
+            <span>CI/CD</span>
+          </li>
+        </ul>
+      </div>
+
+      <div class="glass panel">
+        <h2>Projects</h2>
+        <div class="project">
+          <h3>Personal Site on AWS</h3>
+          <p class="muted">Static hosting + CDN via S3 & CloudFront. Automated deploys with Amplify.</p>
+        </div>
+        <div class="project">
+          <h3>Rift Rewind (Learning)</h3>
+          <p class="muted">Exploring Riot API integrations and serverless patterns.</p>
+        </div>
+      </div>
+
+      <div class="glass panel">
+        <h2>Highlights</h2>
+        <ul class="list">
+          <li>Fast, secure, globally distributed site.</li>
+          <li>Neon cyber style with accessible, semantic HTML.</li>
+          <li>No JS build step—easy to maintain.</li>
+        </ul>
       </div>
     </section>
 
-    <hr class="divider">
+    <hr class="divider" />
 
-    <footer class="center">
-      <p class="tiny">Built with ❤️ using Riot API and AWS Lambda</p>
+    <!-- League Data Lookup -->
+    <section id="lookup" class="grid cols-2">
+      <div class="glass panel">
+        <h2>League Data Lookup</h2>
+        <p class="muted tiny">Riot ID format: <b>GameName#TAG</b></p>
+
+        <form id="riot-form">
+          <div class="grid cols-2">
+            <div>
+              <label for="region">Region</label>
+              <select id="region" name="region" class="ui-input">
+                <option value="na1">North America (NA1)</option>
+                <option value="euw1">Europe West (EUW1)</option>
+                <option value="eun1">Europe Nordic &amp; East (EUN1)</option>
+                <option value="kr">Korea (KR)</option>
+                <option value="br1">Brazil (BR1)</option>
+                <option value="la1">Latin America North (LA1)</option>
+                <option value="la2">Latin America South (LA2)</option>
+                <option value="oc1">Oceania (OC1)</option>
+                <option value="tr1">Turkey (TR1)</option>
+                <option value="ru">Russia (RU)</option>
+                <option value="jp1">Japan (JP1)</option>
+              </select>
+            </div>
+
+            <div>
+              <label for="riotId">Riot ID</label>
+              <input id="riotId" name="riotId" class="ui-input" placeholder="GameName#TAG" autocomplete="off" />
+            </div>
+          </div>
+
+          <p class="tiny muted">Recent: <a id="recentId" href="#" class="recent-link" style="display:none"></a></p>
+          <button class="btn" type="submit">Look Up Summoner</button>
+        </form>
+
+        <div id="riot-results" class="panel result-panel">
+          <h3 class="muted">Summoner Info</h3>
+          <p class="tiny muted">Results appear here after the lookup.</p>
+        </div>
+      </div>
+
+      <!-- Right side placeholder (Notes) -->
+      <div class="glass panel">
+        <h2>Notes</h2>
+        <p class="muted">Powered by AWS Lambda + CloudFront + S3 (Free Tier friendly).</p>
+        <p class="muted tiny">We keep the right column for notes for now—easy to replace later with “Saved Summoners” or a small metrics card.</p>
+      </div>
+    </section>
+
+    <footer class="wrap">
+      <p class="tiny center">© 2025 Michael Ramirez • Built with ❤️‍🔥 on AWS</p>
     </footer>
-  </div>
+  </main>
 
   <script src="script.js"></script>
 </body>
