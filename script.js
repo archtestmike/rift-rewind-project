@@ -1,34 +1,31 @@
-// === Riot API Lambda integration (your existing URL) ===
+// ====== URLs ======
 const RIOT_LAMBDA_URL = 'https://qhn53vmz4dsaf34lowcbnao3ya0ncvem.lambda-url.us-east-1.on.aws/';
+// Your second Lambda (metrics) remains in your account; no front-end change needed here.
 
+// UI regions → platform
 const REGION_CODE = {
   na1:'na1', euw1:'euw1', eun1:'eun1', kr:'kr',
   br1:'br1', la1:'la1', la2:'la2', oc1:'oc1',
   tr1:'tr1', ru:'ru', jp1:'jp1'
 };
 
-// ---- Data Dragon helpers (icons) ----
-let ddragon = {
-  version: null,
-  champMap: null // { [numericId]: {name, imgUrl} }
-};
+// ---------- Data Dragon (champion icons) ----------
+let ddragon = { version:null, champMap:null };
 
 async function getLatestVersion(){
   if (ddragon.version) return ddragon.version;
-  const res = await fetch('https://ddragon.leagueoflegends.com/api/versions.json');
-  const arr = await res.json();
+  const r = await fetch('https://ddragon.leagueoflegends.com/api/versions.json');
+  const arr = await r.json();
   ddragon.version = arr[0];
   return ddragon.version;
 }
-
 async function getChampionMap(){
   if (ddragon.champMap) return ddragon.champMap;
   const v = await getLatestVersion();
-  const res = await fetch(`https://ddragon.leagueoflegends.com/cdn/${v}/data/en_US/champion.json`);
-  const data = await res.json();
+  const r = await fetch(`https://ddragon.leagueoflegends.com/cdn/${v}/data/en_US/champion.json`);
+  const data = await r.json();
   const map = {};
   Object.values(data.data).forEach(ch => {
-    // champion.json uses "key" (string number) and "image.full"
     map[Number(ch.key)] = {
       name: ch.name,
       imgUrl: `https://ddragon.leagueoflegends.com/cdn/${v}/img/champion/${ch.image.full}`
@@ -38,7 +35,7 @@ async function getChampionMap(){
   return map;
 }
 
-// ---- UI glue ----
+// ---------- App ----------
 const fmt = new Intl.NumberFormat('en-US');
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -46,7 +43,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const resultsEl = document.getElementById('riot-results');
   const recentEl = document.getElementById('recent-riot');
 
-  // recent
+  // restore recent
   const last = localStorage.getItem('recentRiotId');
   if (last) {
     recentEl.textContent = last;
@@ -86,11 +83,10 @@ document.addEventListener('DOMContentLoaded', () => {
       const data = await resp.json();
       const ms = Math.round(performance.now() - t0);
 
-      // persist recent
+      // save recent
       localStorage.setItem('recentRiotId', riotId);
       recentEl.textContent = riotId;
 
-      // render with champion icons
       await renderSummoner(resultsEl, data, ms, platform);
     } catch (err) {
       resultsEl.innerHTML = `<p class="tiny" style="color:#ff9b9b">Network error: ${escapeHtml(err.message)}</p>`;
@@ -98,19 +94,19 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 
-// render card with icons
 async function renderSummoner(container, payload, ms, platform){
   const map = await getChampionMap();
   const { summoner, topChampions } = payload;
 
   const rows = topChampions.map(ch => {
     const info = map[ch.championId] || { name:`Champion ID ${ch.championId}`, imgUrl:'' };
-    const pct = Math.min(100, Math.round((ch.championPoints / (ch.championPoints + (ch.championPointsUntilNextLevel||1))) * 100));
+    const need = (ch.championPointsUntilNextLevel ?? 0);
+    const pct = Math.max(0, Math.min(100, need>0 ? Math.round((ch.championPoints/(ch.championPoints+need))*100) : 100));
     return `
       <div class="row">
         <img class="champ-icon" src="${info.imgUrl}" alt="${escapeHtml(info.name)} icon" loading="lazy">
         <div style="flex:1;min-width:0">
-          <div style="display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap">
+          <div style="display:flex;flex-wrap:wrap;align-items:center;gap:12px;justify-content:space-between">
             <div style="font-weight:800">${escapeHtml(info.name)}</div>
             <span class="badge">Mastery Lv ${ch.championLevel}</span>
             <div style="color:#bcd0ff;font-weight:800">${fmt.format(ch.championPoints)} pts</div>
