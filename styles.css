@@ -67,16 +67,5 @@ header.hero{ padding:88px 0 56px; position:relative; }
 .bar i{display:block;height:100%;width:0;border-radius:999px;background:linear-gradient(90deg,var(--brand1),var(--brand2));transition:width .5s ease}
 .meta{color:#cfe3ff;font-weight:700}
 
-/* tooltip */
-.tooltip{position:relative}
-.tooltip .tip{display:none;position:absolute;left:0;bottom:120%;background:#0b0e18;border:1px solid rgba(255,255,255,.16);padding:8px 10px;border-radius:8px;font-size:12px;white-space:nowrap}
-.tooltip:hover .tip{display:block}
-
-/* insights grid */
-.insights-grid{display:grid; gap:12px; grid-template-columns: repeat(auto-fit, minmax(220px,1fr)); margin-top:8px;}
-.stat{padding:12px;border-radius:12px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08)}
-.stat h4{margin:0 0 6px;font-size:14px;color:#cfe3ff}
-.stat .big{font-size:22px;font-weight:800;letter-spacing:.3px}
-.spark{margin-top:8px;height:38px;width:100%;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:10px;overflow:hidden;display:grid;place-items:center}
-.spark svg{width:95%;height:26px;display:block}
-.powered{font-size:12px;text-align:right;margin-top:6px;background:linear-gradient(90deg, var(--brand1), var(--brand2));-webkit-background-clip:text;color:transparent}
+/* small note */
+.note{font-size:12px;color:#cfe3ff;background:rgba(255,255,255,.04);padding:8px 10px;border:1px solid rgba(255,255,255,.10);border-radius:10px}

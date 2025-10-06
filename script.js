@@ -19,6 +19,7 @@ document.addEventListener('DOMContentLoaded', () => {
   loadChampionMeta().catch(()=>{});
   renderRecent(recentEl);
 
+  // auto-select region based on #TAG (if recognizable)
   riotInput.addEventListener('blur', () => {
     const tag = getTagLine(riotInput.value);
     const auto = tag && TAG_TO_PLATFORM[tag.toUpperCase()];
@@ -28,6 +29,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
+  // click a recent lookup to fill the box
   recentEl.addEventListener('click', (e) => {
     const a = e.target.closest('a[data-riotid]');
     if (!a) return; e.preventDefault();
@@ -46,6 +48,7 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
+    // infer region from #TAG if possible
     const tag = getTagLine(riotId);
     const inferred = tag && TAG_TO_PLATFORM[tag.toUpperCase()];
     if (inferred && inferred !== platform) {
@@ -72,6 +75,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
       try { await loadChampionMeta(); } catch {}
       resultsEl.innerHTML = renderResult(data, Math.round(t1 - t0));
+
+      // animate bars after render
       requestAnimationFrame(() => {
         document.querySelectorAll('.bar > i').forEach(el => {
           const w = el.getAttribute('data-w') || '0';
@@ -89,6 +94,8 @@ document.addEventListener('DOMContentLoaded', () => {
 /* -------- Champion meta (Data Dragon) -------- */
 async function loadChampionMeta(){
   if (CHAMP_META.version && Object.keys(CHAMP_META.byKey).length) return CHAMP_META;
+
+  // try cache first
   try {
     const cached = JSON.parse(localStorage.getItem('champMeta') || 'null');
     if (cached && cached.expires && Date.now() < cached.expires) {
@@ -97,12 +104,15 @@ async function loadChampionMeta(){
     }
   } catch {}
 
+  // get latest version
   let version = '14.20.1';
   try {
     const vr = await fetch('https://ddragon.leagueoflegends.com/api/versions.json', { cache: 'no-store' });
-    const arr = await vr.json(); if (Array.isArray(arr) && arr[0]) version = arr[0];
+    const arr = await vr.json();
+    if (Array.isArray(arr) && arr[0]) version = arr[0];
   } catch {}
 
+  // get champion list
   let byKey = {};
   try {
     const cr = await fetch(`https://ddragon.leagueoflegends.com/cdn/${version}/data/en_US/champion.json`, { cache: 'force-cache' });
@@ -157,9 +167,7 @@ function renderResult(data, ms=0){
   }).join('') || `<p class="tiny muted">No champion mastery data found.</p>`;
 
   const awsRegion = getAwsRegionFromUrl(RIOT_LAMBDA_URL) || 'AWS';
-  const edge = detectEdgeCDN();
-  const latencyChip = ms ? `<span class="chip tooltip">Fetched in ${ms} ms via AWS Lambda (${awsRegion})<span class="tip">Path: Browser → ${edge} → Lambda (${awsRegion}) → Riot API → back.</span></span>` : '';
-  const edgeChip = edge ? `<span class="chip">Edge: ${edge}</span>` : '';
+  const latencyChip = ms ? `<span class="chip">Fetched in ${ms} ms via AWS Lambda (${awsRegion})</span>` : '';
 
   return `
     <div class="result-card">
@@ -170,7 +178,7 @@ function renderResult(data, ms=0){
       <div class="summary">
         <span class="chip">Total Points: ${formatNumber(totalPts)}</span>
         <span class="chip">Avg Mastery Lv: ${escapeHtml(String(avgLvl))}</span>
-        ${latencyChip}${edgeChip}
+        ${latencyChip}
       </div>
       <div class="champ-list">${champRows}</div>
     </div>
@@ -182,83 +190,10 @@ function getRecent(){ try { return JSON.parse(localStorage.getItem('recentRiotId
 function saveRecent(riotId){ const arr = getRecent(); arr.unshift(riotId); const unique = [...new Set(arr)].slice(0,3); try { localStorage.setItem('recentRiotIds', JSON.stringify(unique)); } catch {} }
 function renderRecent(container){ if (!container) return; const items = getRecent(); container.innerHTML = items.length ? `Recent: ${items.map(r => `<a href="#" data-riotid="${escapeHtml(r)}">${escapeHtml(r)}</a>`).join(' • ')}` : ''; }
 
-/* -------- Insights (CloudWatch) -------- */
-document.addEventListener('DOMContentLoaded', () => {
-  const btn = document.getElementById('toggle-insights');
-  const panel = document.getElementById('insights');
-  const body = document.getElementById('insights-body');
-  if (!btn || !panel || !body) return;
-
-  let open = false;
-  btn.addEventListener('click', async () => {
-    open = !open;
-    btn.textContent = open ? 'Hide Serverless Insights' : 'Show Serverless Insights';
-    panel.style.display = open ? 'block' : 'none';
-    if (!open) return;
-
-    body.innerHTML = '<p class="tiny muted">Querying CloudWatch…</p>';
-    try {
-      const r = await fetch(`${RIOT_LAMBDA_URL}?op=metrics`, { method: 'GET' });
-      if (!r.ok) {
-        const t = await r.text();
-        body.innerHTML = `<p class="tiny" style="color:#ff9b9b">Metrics error (${r.status}): ${escapeHtml(t)}</p>`;
-        return;
-      }
-      const data = await r.json();
-      body.innerHTML = renderInsights(data);
-    } catch(e){
-      body.innerHTML = `<p class="tiny" style="color:#ff9b9b">Network error: ${escapeHtml(e.message)}</p>`;
-    }
-  });
-});
-
-function renderInsights(m){
-  const inv24 = (m?.window24h?.invocations ?? 0);
-  const err24 = (m?.window24h?.errors ?? 0);
-  const thr24 = (m?.window24h?.throttles ?? 0);
-  const dur24 = (m?.window24h?.avgDurationMs ?? 0);
-  const inv7d = (m?.window7d?.invocations ?? 0);
-  const daily = Array.isArray(m?.window7d?.daily) ? m.window7d.daily : [];
-  const spark = sparkline(daily.map(d => d.v));
-
-  return `
-    <div class="insights-grid">
-      <div class="stat"><h4>Invocations (24h)</h4><div class="big">${formatNumber(inv24)}</div><div class="spark">${spark}</div></div>
-      <div class="stat"><h4>Average Duration (24h)</h4><div class="big">${dur24.toLocaleString()} ms</div><p class="tiny muted">Lower is better — cold starts amortized by CloudFront.</p></div>
-      <div class="stat"><h4>Errors (24h)</h4><div class="big">${formatNumber(err24)}</div></div>
-      <div class="stat"><h4>Throttles (24h)</h4><div class="big">${formatNumber(thr24)}</div></div>
-      <div class="stat"><h4>Invocations (7d)</h4><div class="big">${formatNumber(inv7d)}</div><div class="spark">${spark}</div></div>
-    </div>
-    <div class="powered">Powered by AWS CloudWatch &amp; Lambda</div>
-  `;
-}
-
 /* -------- Helpers -------- */
-function sparkline(values){
-  if (!values || !values.length) return '<svg></svg>';
-  const w = 220, h = 26, pad = 2;
-  const max = Math.max(...values, 1);
-  const step = (w - pad*2) / Math.max(values.length - 1, 1);
-  const points = values.map((v, i) => {
-    const x = pad + i*step;
-    const y = pad + (h - pad*2) * (1 - (v / max));
-    return `${x},${y}`;
-  }).join(' ');
-  return `
-    <svg viewBox="0 0 ${w} ${h}" preserveAspectRatio="none">
-      <polyline points="${points}" fill="none" stroke="url(#g)" stroke-width="2"/>
-      <defs>
-        <linearGradient id="g" x1="0" x2="1" y1="0" y2="0">
-          <stop offset="0" stop-color="#00e0b8"/><stop offset="1" stop-color="#5b8aff"/>
-        </linearGradient>
-      </defs>
-    </svg>
-  `;
-}
 function smartTitle(t){ return String(t||'').slice(0,1).toUpperCase()+String(t||'').slice(1); }
 function getTagLine(riotId){ const i = String(riotId).indexOf('#'); return i>-1 ? riotId.slice(i+1).trim() : ''; }
 function showNote(container, html){ container.innerHTML = `<p class="note">${html}</p>`; }
 function formatNumber(n){ return (Number(n)||0).toLocaleString(); }
 function escapeHtml(s){ return String(s).replace(/[&<>"'`=\/]/g, (c)=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;','`':'&#96;','=':'&#61;','/':'&#47;'}[c])); }
 function getAwsRegionFromUrl(url){ const m = String(url).match(/lambda-url\.([a-z0-9-]+)\.on\.aws/i); return m ? m[1] : ''; }
-function detectEdgeCDN(){ const h = (location.hostname||'').toLowerCase(); if (/cloudfront|amplifyapp\.com/.test(h)) return 'CloudFront'; return 'CloudFront'; }
