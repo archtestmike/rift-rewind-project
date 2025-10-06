@@ -232,107 +232,98 @@
       </div>
     </section>
 
-    <!-- Architecture Overview Card (replaces Notes) -->
+    <!-- Architecture Overview (tidy single-SVG layout) -->
     <section class="glass panel arch-card" aria-labelledby="arch-title">
       <h2 id="arch-title">Architecture Overview</h2>
 
-      <div class="arch-diagram">
-        <!-- Client / Browser -->
-        <div class="node n-client" data-tip="Your browser hits CloudFront (global edge) for super fast loads.">
-          <div class="node-ic">
-            <svg viewBox="0 0 24 24" aria-hidden="true">
-              <rect x="2" y="4" width="20" height="14" rx="2" fill="#a7b7ff"/>
-              <rect x="6" y="20" width="12" height="2" rx="1" fill="#a7b7ff"/>
-            </svg>
-          </div>
-          <div class="node-label">Browser</div>
-        </div>
+      <svg class="arch-svg" viewBox="0 0 1200 360" role="img" aria-label="Architecture: Browser to CloudFront to S3/Amplify and Lambdas">
+        <defs>
+          <linearGradient id="g1" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stop-color="rgba(0,224,184,.5)"/>
+            <stop offset="1" stop-color="rgba(91,138,255,.5)"/>
+          </linearGradient>
+          <marker id="arrow" markerWidth="14" markerHeight="10" refX="10" refY="5" orient="auto">
+            <path d="M0,0 L10,5 L0,10 Z" fill="url(#g1)"/>
+          </marker>
+          <filter id="soft" x="-20%" y="-20%" width="140%" height="140%">
+            <feGaussianBlur in="SourceGraphic" stdDeviation="2" result="b"/>
+            <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+          <style>
+            .node{fill:rgba(255,255,255,.05);stroke:rgba(255,255,255,.12);stroke-width:1.2}
+            .label{font:700 15px Inter, system-ui; fill:#e9efff}
+            .sub{font:600 12px Inter, system-ui; fill:#aecdff}
+            .line{stroke:url(#g1);stroke-width:6;fill:none;filter:url(#soft)}
+            .branch{stroke-dasharray:7 7}
+          </style>
+        </defs>
 
-        <!-- CloudFront -->
-        <div class="node n-cf" data-tip="Amazon CloudFront caches and serves content globally.">
-          <div class="node-ic">
-            <svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="22" fill="#5b8aff"/><path d="M22 24h20v16H22z" fill="#dfe7ff"/></svg>
-          </div>
-          <div class="node-label">CloudFront (CDN)</div>
-        </div>
+        <!-- ROW 1: static path -->
+        <g transform="translate(40,60)">
+          <!-- Browser -->
+          <rect class="node" rx="16" width="170" height="90"/>
+          <text class="label" x="85" y="60" text-anchor="middle">Browser</text>
 
-        <!-- S3 / Amplify -->
-        <div class="node n-s3" data-tip="AWS Amplify builds & deploys; S3 stores your static assets.">
-          <div class="node-ic">
-            <svg viewBox="0 0 64 64">
-              <path d="M10 20l22-8 22 8-22 8-22-8z" fill="#FF9900"/>
-              <path d="M10 44l22 8 22-8V20L32 28v24L10 44z" fill="#cc7a00"/>
-            </svg>
-          </div>
-          <div class="node-label">Amplify → S3</div>
-        </div>
+          <!-- CloudFront -->
+          <g transform="translate(220,0)">
+            <rect class="node" rx="16" width="200" height="90"/>
+            <text class="label" x="100" y="50" text-anchor="middle">CloudFront</text>
+            <text class="sub"   x="100" y="70" text-anchor="middle">(CDN)</text>
+          </g>
 
-        <!-- Lambda Riot -->
-        <div class="node n-lambda" data-tip="Lambda fetches Riot data using your SSM key securely.">
-          <div class="node-ic">
-            <svg viewBox="0 0 64 64">
-              <path d="M18 14h10l18 36h-10l-18-36z" fill="#FF9900"/>
-            </svg>
-          </div>
-          <div class="node-label">Lambda (Riot)</div>
-        </div>
+          <!-- Amplify → S3 -->
+          <g transform="translate(460,0)">
+            <rect class="node" rx="16" width="220" height="90"/>
+            <text class="label" x="110" y="50" text-anchor="middle">Amplify → S3</text>
+          </g>
 
-        <!-- Lambda Metrics -->
-        <div class="node n-metrics" data-tip="Second Lambda reads CloudWatch and returns live metrics.">
-          <div class="node-ic">
-            <svg viewBox="0 0 64 64">
-              <rect x="10" y="40" width="44" height="12" rx="3" fill="#5b8aff"/>
-              <path d="M12 40l10-10 6 6 8-12 6 8 12-16" stroke="#00e0b8" stroke-width="3" fill="none" stroke-linecap="round"/>
-            </svg>
-          </div>
-          <div class="node-label">Lambda (Metrics)</div>
-        </div>
+          <!-- Lambda (Riot) -->
+          <g transform="translate(720,0)">
+            <rect class="node" rx="16" width="200" height="90"/>
+            <text class="label" x="100" y="55" text-anchor="middle">Lambda (Riot)</text>
+          </g>
 
-        <!-- SSM -->
-        <div class="node n-ssm" data-tip="AWS Systems Manager Parameter Store holds your Riot API key.">
-          <div class="node-ic">
-            <svg viewBox="0 0 64 64"><rect x="12" y="14" width="40" height="36" rx="6" fill="#00e0b8"/><circle cx="42" cy="26" r="4" fill="#031218"/></svg>
-          </div>
-          <div class="node-label">SSM Param</div>
-        </div>
+          <!-- Riot API -->
+          <g transform="translate(960,0)">
+            <rect class="node" rx="16" width="180" height="90"/>
+            <text class="label" x="90" y="55" text-anchor="middle">Riot API</text>
+          </g>
 
-        <!-- Riot API (external) -->
-        <div class="node n-riot" data-tip="External Riot API — account, summoner & mastery endpoints.">
-          <div class="node-ic">
-            <svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="22" fill="#a7b7ff"/><path d="M20 32h24" stroke="#031218" stroke-width="4"/></svg>
-          </div>
-          <div class="node-label">Riot API</div>
-        </div>
+          <!-- Lines row 1 -->
+          <path class="line" d="M170,45 L220,45" marker-end="url(#arrow)"/>
+          <path class="line" d="M420,45 L460,45" marker-end="url(#arrow)"/>
+          <path class="line" d="M680,45 L720,45" marker-end="url(#arrow)"/>
+          <path class="line" d="M920,45 L960,45" marker-end="url(#arrow)"/>
+        </g>
 
-        <!-- CloudWatch -->
-        <div class="node n-cw" data-tip="CloudWatch stores metrics used by your Insights panel.">
-          <div class="node-ic">
-            <svg viewBox="0 0 64 64"><rect x="10" y="16" width="44" height="32" rx="6" fill="#7B42BC"/><path d="M16 40l8-8 6 6 8-10 10 12" stroke="#dfe7ff" stroke-width="3" fill="none" stroke-linecap="round"/></svg>
-          </div>
-          <div class="node-label">CloudWatch</div>
-        </div>
+        <!-- SSM branch to Riot Lambda -->
+        <g transform="translate(680,200)">
+          <rect class="node" rx="16" width="200" height="90"/>
+          <text class="label" x="100" y="55" text-anchor="middle">SSM Param</text>
+        </g>
+        <path class="line branch"
+              d="M780,150 C760,170 760,200 780,220"
+              marker-end="url(#arrow)"/>
 
-        <!-- Lines (arrows) -->
-        <svg class="arch-lines" viewBox="0 0 100 60" preserveAspectRatio="none" aria-hidden="true">
-          <!-- Browser -> CloudFront -->
-          <path class="arrow" d="M16,18 C30,18 34,18 48,18" />
-          <!-- CloudFront -> S3 -->
-          <path class="arrow" d="M52,22 C52,30 32,30 32,36" />
-          <!-- Browser -> Lambda Riot (via Function URL) -->
-          <path class="arrow" d="M16,22 C38,28 58,30 68,30" />
-          <!-- Lambda Riot -> Riot API -->
-          <path class="arrow" d="M78,30 C86,30 92,28 94,26" />
-          <!-- Lambda Riot -> SSM -->
-          <path class="arrow dotted" d="M76,28 C74,22 66,18 58,18" />
-          <!-- Metrics Lambda -> CloudWatch -->
-          <path class="arrow" d="M76,44 C82,44 90,44 94,42" />
-          <!-- Browser -> Metrics Lambda -->
-          <path class="arrow" d="M16,26 C36,36 58,44 70,44" />
-        </svg>
-      </div>
+        <!-- Metrics path -->
+        <g transform="translate(320,230)">
+          <rect class="node" rx="16" width="220" height="90"/>
+          <text class="label" x="110" y="55" text-anchor="middle">Lambda (Metrics)</text>
+        </g>
+        <g transform="translate(600,230)">
+          <rect class="node" rx="16" width="220" height="90"/>
+          <text class="label" x="110" y="55" text-anchor="middle">CloudWatch</text>
+        </g>
+        <!-- Lines metrics -->
+        <path class="line" d="M210,105 C260,105 300,260 320,275" marker-end="url(#arrow)"/>
+        <path class="line" d="M540,275 L600,275" marker-end="url(#arrow)"/>
+      </svg>
 
-      <p class="tiny muted" style="margin-top:10px">
-        Static UI via <strong>Amplify → S3 → CloudFront</strong>. Dynamic data via <strong>Lambda (Riot)</strong> calling the <strong>Riot API</strong> with a key from <strong>SSM Parameter Store</strong>. Live health via <strong>Lambda (Metrics)</strong> reading <strong>CloudWatch</strong>.
+      <p class="tiny muted arch-caption">
+        Static UI via <strong>Amplify → S3 → CloudFront</strong>. Dynamic data via
+        <strong>Lambda (Riot)</strong> calling the <strong>Riot API</strong> with a key from
+        <strong>SSM Parameter Store</strong>. Live health via <strong>Lambda (Metrics)</strong> reading
+        <strong>CloudWatch</strong>.
       </p>
     </section>
 

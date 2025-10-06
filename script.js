@@ -1,17 +1,12 @@
-// === Riot API Lambda ===
+// === Riot API Lambda (leave as-is) ===
 const RIOT_LAMBDA_URL = 'https://qhn53vmz4dsaf34lowcbnao3ya0ncvem.lambda-url.us-east-1.on.aws/';
 
-// === (Optional) Metrics Lambda you already created ===
-// const METRICS_LAMBDA_URL = 'https://tfapgtyrz75ve4lrye32a3zzfe0zgaft.lambda-url.us-east-1.on.aws/';
-
-// Champion ID → Name fallback (minimal set; UI uses names from Lambda if provided)
+// Champion helpers
 const CHAMPION_MAP = {7:'LeBlanc',268:'Azir',517:'Sylas',1:'Annie',103:'Ahri',64:'Lee Sin',11:'Master Yi',81:'Ezreal',157:'Yasuo',84:'Akali',222:'Jinx'};
-
-// Friendly → Data Dragon filename exceptions
 const DDRAGON_FILE = {
   'LeBlanc':'Leblanc',"Cho'Gath":'Chogath',"Kai'Sa":'Kaisa',"Kha'Zix":'Khazix',"Vel'Koz":'Velkoz',
-  "Kog'Maw":'KogMaw',"Rek'Sai":'RekSai',"Bel'Veth":'Belveth','Nunu & Willump':'Nunu',
-  'Jarvan IV':'JarvanIV','Wukong':'MonkeyKing','Renata Glasc':'Renata','Dr. Mundo':'DrMundo','Tahm Kench':'TahmKench'
+  "Kog'Maw":'KogMaw',"Rek'Sai":'RekSai','Nunu & Willump':'Nunu','Jarvan IV':'JarvanIV',
+  'Wukong':'MonkeyKing','Renata Glasc':'Renata','Dr. Mundo':'DrMundo','Tahm Kench':'TahmKench','Bel\'Veth':'Belveth'
 };
 function ddragonFileFromName(name){
   if (!name) return '';
@@ -32,26 +27,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const resultsEl = document.getElementById('riot-results');
   if (form && resultsEl){
     form.addEventListener('submit', onLookup);
-  }
-
-  // Add arrowheads <defs> to the architecture SVG (for nicer arrows)
-  const lines = document.querySelector('.arch-lines');
-  if (lines) {
-    const svgNS = 'http://www.w3.org/2000/svg';
-    const defs = document.createElementNS(svgNS,'defs');
-    const marker = document.createElementNS(svgNS,'marker');
-    marker.setAttribute('id','arrowhead');
-    marker.setAttribute('markerWidth','6'); marker.setAttribute('markerHeight','6');
-    marker.setAttribute('refX','5'); marker.setAttribute('refY','3');
-    marker.setAttribute('orient','auto');
-    const tip = document.createElementNS(svgNS,'path');
-    tip.setAttribute('d','M0,0 L6,3 L0,6 Z');
-    tip.setAttribute('fill','rgba(167,183,255,.95)');
-    marker.appendChild(tip);
-    defs.appendChild(marker);
-    lines.prepend(defs);
-    // Attach markers to every path
-    lines.querySelectorAll('path').forEach(p=>p.setAttribute('marker-end','url(#arrowhead)'));
   }
 });
 
@@ -104,7 +79,6 @@ function renderResult(root, data, ms, region) {
     const pts = (ch.championPoints ?? 0).toLocaleString();
     const masteryLvl = ch.championLevel ?? 0;
     const progress = Math.max(6, Math.min(100, Math.round((ch.championPoints ?? 0) / 700000 * 100)));
-
     const champName = ch.championName || CHAMPION_MAP[ch.championId] || `Champion ${ch.championId}`;
     const file = ddragonFileFromName(champName);
     const champImg = `https://ddragon.leagueoflegends.com/cdn/14.18.1/img/champion/${file}`;
