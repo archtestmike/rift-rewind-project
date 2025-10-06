@@ -1,44 +1,54 @@
 // === Riot API Lambda integration ===
 const RIOT_LAMBDA_URL = 'https://qhn53vmz4dsaf34lowcbnao3ya0ncvem.lambda-url.us-east-1.on.aws/';
 
-// UI region codes -> platform routing (unchanged)
+// UI regions → platform routing codes your Lambda expects
 const REGION_CODE = {
-  'na1':'na1','euw1':'euw1','eun1':'eun1','kr':'kr',
-  'br1':'br1','la1':'la1','la2':'la2','oc1':'oc1',
-  'tr1':'tr1','ru':'ru','jp1':'jp1'
+  na1: 'na1', euw1: 'euw1', eun1: 'eun1', kr: 'kr',
+  br1: 'br1', la1: 'la1', la2: 'la2', oc1: 'oc1',
+  tr1: 'tr1', ru: 'ru', jp1: 'jp1'
 };
 
-const LS_KEYS = {
-  LAST_ID: 'rr:lastId',
-  SAVED: 'rr:savedIds',
-  LAT: 'rr:latencies' // store last 10 numbers
-};
+const DD_VERSION = '14.18.1'; // Data Dragon version used for champion metadata/icons
+const DD_BASE = `https://ddragon.leagueoflegends.com/cdn/${DD_VERSION}`;
+const CHAMP_ICON = (id) => `${DD_BASE}/img/champion/${id}.png`;
+
+let champMeta = null; // loaded once
 
 document.addEventListener('DOMContentLoaded', () => {
   const form = document.getElementById('riot-form');
   const resultsEl = document.getElementById('riot-results');
-  const recentDatalist = document.getElementById('recentIds');
-  const lastSeen = document.getElementById('lastSeen');
-
-  hydrateRecent(recentDatalist, lastSeen);
-  renderSaved();
-  renderSpark();
-
+  const recentLink = document.getElementById('recent-link');
   if (!form || !resultsEl) return;
+
+  // show last Riot ID if present
+  const last = localStorage.getItem('lastRiotId');
+  if (last) {
+    recentLink.textContent = last;
+    recentLink.style.display = 'inline';
+    recentLink.addEventListener('click', (e) => {
+      e.preventDefault();
+      document.getElementById('riotId').value = last;
+    });
+  }
 
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
     const riotId = (form.riotId.value || '').trim();
     const platform = REGION_CODE[form.region.value];
 
+    resultsEl.innerHTML = '<p class="tiny muted">Fetching…</p>';
+
     if (!riotId.includes('#')) {
-      resultsEl.innerHTML = `<p class="tiny" style="color:#ff9b9b">Invalid Riot ID. Use <b>GameName#TAG</b>.</p>`;
+      resultsEl.innerHTML = '<p class="tiny" style="color:#ff9b9b">Invalid Riot ID. Use <b>GameName#TAG</b>.</p>';
       return;
     }
 
-    const t0 = performance.now();
-    resultsEl.innerHTML = `<p class="tiny muted">Fetching…</p>`;
+    // Save recent
+    localStorage.setItem('lastRiotId', riotId);
+    recentLink.textContent = riotId;
+    recentLink.style.display = 'inline';
 
+    const t0 = performance.now();
     try {
       const resp = await fetch(RIOT_LAMBDA_URL, {
         method: 'POST',
@@ -46,10 +56,7 @@ document.addEventListener('DOMContentLoaded', () => {
         body: JSON.stringify({ summonerName: riotId, region: platform })
       });
 
-      const t1 = performance.now();
-      const ms = Math.round(t1 - t0);
-      trackLatency(ms);
-      renderSpark();
+      const latency = Math.round(performance.now() - t0);
 
       if (!resp.ok) {
         const text = await resp.text();
@@ -58,171 +65,74 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       const data = await resp.json();
-      localStorage.setItem(LS_KEYS.LAST_ID, riotId);
-      hydrateRecent(recentDatalist, lastSeen);
 
-      resultsEl.innerHTML = renderSummonerCard(data, ms);
-      wireSaveButton(riotId);
+      // lazy-load champion metadata to map IDs -> names/icons/roles
+      if (!champMeta) { champMeta = await loadChampionMeta(); }
+
+      resultsEl.innerHTML = renderSummonerCard(data, latency);
     } catch (err) {
       resultsEl.innerHTML = `<p class="tiny" style="color:#ff9b9b">Network error: ${escapeHtml(err.message)}</p>`;
     }
   });
-
-  lastSeen.addEventListener('click', (e) => {
-    e.preventDefault();
-    const id = localStorage.getItem(LS_KEYS.LAST_ID);
-    if (id) {
-      document.getElementById('riotId').value = id;
-    }
-  });
 });
 
-/* ---- Renderers ---- */
+// Map Riot champion ID -> nice name used by DDragon
+async function loadChampionMeta(){
+  const res = await fetch(`${DD_BASE}/data/en_US/champion.json`);
+  const json = await res.json();
+  const byKey = {};
+  Object.values(json.data).forEach(ch => { byKey[ch.key] = ch; });
+  return byKey;
+}
 
-function renderSummonerCard(data, ms){
-  const { summoner, topChampions } = data || {};
-  const totalPoints = (topChampions || []).reduce((a,c)=>a+(c.championPoints||0),0);
-  const avgLevel = (topChampions && topChampions.length)
-    ? (topChampions.reduce((a,c)=>a+(c.championLevel||0),0)/topChampions.length).toFixed(1)
-    : '—';
+function renderSummonerCard(data, latencyMs){
+  const s = data.summoner;
+  const champs = data.topChampions || [];
+  const header =
+    `<div class="glass panel" style="margin-top:12px">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+        <h3>Summoner: ${escapeHtml(s.name)}</h3>
+        <span class="tiny muted" style="padding:6px 10px;border:1px solid rgba(255,255,255,.14);border-radius:999px;">Level ${s.level}</span>
+      </div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:8px">
+        <span class="tiny muted" style="padding:8px 10px;border:1px solid rgba(255,255,255,.10);border-radius:999px;">Fetched in ${latencyMs} ms via AWS Lambda (us-east-1)</span>
+      </div>
+    </div>`;
 
-  const champs = (topChampions||[]).map(c => {
-    const pct = Math.max(6, Math.min(100, Math.round((c.championPoints/700000)*100)));
+  const items = champs.map(entry => {
+    const meta = champMeta?.[String(entry.championId)] || null;
+    const name = meta?.name || `Champion ID ${entry.championId}`;
+    const icon = meta ? CHAMP_ICON(meta.image.full.replace('.png','')) : null;
+    const tags = meta?.tags || [];
+
     return `
-      <div class="champ">
-        <div class="row" style="justify-content:space-between">
-          <div class="row">
-            ${championIcon(c.championId)}
-            <strong style="font-size:18px">${championName(c.championId)}</strong>
+      <div class="glass panel" style="margin-top:14px">
+        <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;justify-content:space-between">
+          <div style="display:flex;align-items:center;gap:12px">
+            ${icon ? `<img src="${icon}" alt="${escapeHtml(name)} icon" width="36" height="36" style="border-radius:10px">` : ''}
+            <h3 style="margin:0">${escapeHtml(name)}</h3>
           </div>
-          <span class="badge">Mastery Lv ${c.championLevel||0}</span>
+          <span class="tiny muted" style="padding:8px 12px;border:1px solid rgba(255,255,255,.14);border-radius:999px;">Mastery Lv ${entry.championLevel}</span>
         </div>
-        <div class="row muted tiny" style="justify-content:space-between;margin:6px 0 10px">
-          <div class="row" style="gap:8px">${classBadges(c.championId)}</div>
-          <div><b>${fmt(c.championPoints||0)}</b> pts</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin:10px 0">
+          ${tags.map(t => `<span class="tiny muted" style="padding:6px 10px;border:1px solid rgba(255,255,255,.10);border-radius:999px;">${escapeHtml(t)}</span>`).join('')}
         </div>
-        <div class="bar"><span style="width:${pct}%"></span></div>
+        <div style="display:flex;align-items:center;gap:10px">
+          <div style="flex:1;height:8px;border-radius:8px;background:rgba(255,255,255,.08);overflow:hidden">
+            <div style="height:8px;width:${Math.min(100, Math.round(entry.championPoints/700000*100))}%;background:linear-gradient(90deg, var(--brand1), var(--brand2));"></div>
+          </div>
+          <div class="tiny muted" style="min-width:120px;text-align:right">${entry.championPoints.toLocaleString()} pts</div>
+        </div>
       </div>`;
   }).join('');
 
-  return `
-  <div class="panel" style="border-radius:16px; border:1px solid rgba(255,255,255,.1); background:linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,.01));">
-    <div class="row" style="justify-content:space-between; align-items:center;">
-      <h3>Summoner: ${escapeHtml(safe(summoner,'name')||'')}</h3>
-      <span class="badge">Level ${safe(summoner,'level')||'—'}</span>
-    </div>
-
-    <div class="row muted tiny" style="gap:10px; margin:8px 0 12px;">
-      <span class="badge">Total Points: ${fmt(totalPoints)}</span>
-      <span class="badge">Avg Mastery Lv: ${avgLevel}</span>
-      <span class="badge">Fetched in ${ms} ms via AWS Lambda (us-east-1)</span>
-      <button class="btn-xs" id="save-id">★ Save</button>
-    </div>
-
-    ${champs || '<p class="tiny muted">No mastery data.</p>'}
-  </div>`;
+  return header + items;
 }
 
-function championIcon(id){
-  // Use Riot Data Dragon if you later map ID->image; for now glass avatar placeholder
-  return `<img src="https://ddragon.leagueoflegends.com/cdn/14.20.1/img/champion/${championName(id)}.png"
-             onerror="this.style.display='none'"
-             alt="" style="width:36px;height:36px;border-radius:10px;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.04);margin-right:8px">`;
+// HTML escape
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"'`=\/]/g, (c) => ({
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;',
+    "'": '&#39;', '`': '&#96;', '=': '&#61;', '/': '&#47;'
+  }[c]));
 }
-function championName(id){
-  // minimal mapping (IDs from your screenshots). Fallback to "Champion ID X"
-  const map={7:'Leblanc',268:'Azir',517:'Sylas'};
-  return map[id] || `Champion ID ${id}`;
-}
-function classBadges(id){
-  const map={
-    7:['Assassin','Mage'],
-    268:['Mage','Marksman'],
-    517:['Mage','Assassin']
-  };
-  return (map[id]||[]).map(x=>`<span class="badge">${x}</span>`).join('');
-}
-
-/* ---- Saved list + localStorage ---- */
-function wireSaveButton(riotId){
-  const btn = document.getElementById('save-id');
-  if(!btn) return;
-  btn.addEventListener('click', () => {
-    const arr = getSaved();
-    if(!arr.includes(riotId)){
-      arr.unshift(riotId);
-      localStorage.setItem(LS_KEYS.SAVED, JSON.stringify(arr.slice(0,10)));
-      renderSaved();
-    }
-  });
-}
-
-function getSaved(){
-  try{ return JSON.parse(localStorage.getItem(LS_KEYS.SAVED)||'[]'); }
-  catch{ return []; }
-}
-
-function renderSaved(){
-  const c = document.getElementById('saved-list');
-  if(!c) return;
-  const arr = getSaved();
-  if(arr.length===0){
-    c.innerHTML = `<p class="tiny muted">Nothing saved yet. After a lookup, click <b>★ Save</b>.</p>`;
-    return;
-  }
-  c.innerHTML = arr.map(id => `
-    <div class="saved-item">
-      <span>${escapeHtml(id)}</span>
-      <div class="actions">
-        <button class="btn-xs" data-run="${escapeHtml(id)}">Run</button>
-        <button class="btn-xs" data-del="${escapeHtml(id)}">Remove</button>
-      </div>
-    </div>`).join('');
-
-  c.querySelectorAll('[data-run]').forEach(b=>{
-    b.addEventListener('click', ()=>{
-      document.getElementById('riotId').value = b.dataset.run;
-      document.getElementById('riot-form').requestSubmit();
-    });
-  });
-  c.querySelectorAll('[data-del]').forEach(b=>{
-    b.addEventListener('click', ()=>{
-      const next = getSaved().filter(x=>x!==b.dataset.del);
-      localStorage.setItem(LS_KEYS.SAVED, JSON.stringify(next));
-      renderSaved();
-    });
-  });
-}
-
-/* ---- Recent & datalist ---- */
-function hydrateRecent(datalist, anchor){
-  const last = localStorage.getItem(LS_KEYS.LAST_ID);
-  if (anchor){
-    if(last){ anchor.style.display='inline'; anchor.textContent=last; }
-    else { anchor.style.display='none'; }
-  }
-  if (!datalist) return;
-  const saved = getSaved();
-  datalist.innerHTML = [last, ...saved].filter(Boolean).filter((v,i,a)=>a.indexOf(v)===i)
-    .map(v=>`<option value="${escapeHtml(v)}">`).join('');
-}
-
-/* ---- Latency sparkline (last 10) ---- */
-function trackLatency(ms){
-  const arr = getLatencies();
-  arr.push(Number(ms)||0);
-  const last10 = arr.slice(-10);
-  localStorage.setItem(LS_KEYS.LAT, JSON.stringify(last10));
-}
-function getLatencies(){
-  try{ return JSON.parse(localStorage.getItem(LS_KEYS.LAT)||'[]'); }
-  catch{ return []; }
-}
-function renderSpark(){
-  const canvas = document.getElementById('latencySpark');
-  if(!canvas) return;
-  const ctx = canvas.getContext('2d');
-  const W = canvas.width, H = canvas.height;
-  ctx.clearRect(0,0,W,H);
-
-  const
