@@ -1,9 +1,8 @@
-// === Riot API Lambda integration (unchanged) ===
+// === Riot API Lambda integration (stable) ===
 const RIOT_LAMBDA_URL = 'https://qhn53vmz4dsaf34lowcbnao3ya0ncvem.lambda-url.us-east-1.on.aws/';
 
-// UI regions → platform routing codes your Lambda expects
 const REGION_CODE = {
-  'na1': 'na1','euw1':'euw1','eun1':'eun1','kr':'kr',
+  'na1':'na1','euw1':'euw1','eun1':'eun1','kr':'kr',
   'br1':'br1','la1':'la1','la2':'la2','oc1':'oc1',
   'tr1':'tr1','ru':'ru','jp1':'jp1'
 };
@@ -15,7 +14,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const resultsEl = document.getElementById('riot-results');
   const recentLink = document.getElementById('recent-link');
 
-  // restore last Riot ID if present
   const recent = localStorage.getItem('recentRiotId');
   if (recent) {
     recentLink.textContent = recent;
@@ -55,8 +53,6 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       const data = await resp.json();
-
-      // keep a small convenience recent link
       localStorage.setItem('recentRiotId', riotId);
       recentLink.textContent = riotId;
       recentLink.style.display = 'inline';
@@ -68,7 +64,6 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 
-// simple, steady renderer (no external assets needed)
 function renderResults(data, elapsedMs) {
   const resultsEl = document.getElementById('riot-results');
   const summ = data?.summoner || {};
@@ -94,7 +89,7 @@ function renderResults(data, elapsedMs) {
     <div class="glass" style="border-radius:16px;padding:18px;">
       <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;">
         <h3 style="margin:0">Summoner: ${escapeHtml(summ.name || '—')}</h3>
-        <div class="pill" style="padding:8px 12px;">Level ${summ.summonerLevel || '—'}</div>
+        <div class="pill" style="padding:8px 12px;">Level ${summ.level ?? summ.summonerLevel ?? '—'}</div>
       </div>
 
       <div class="pill" style="margin-top:12px;display:inline-flex;padding:8px 12px;">
@@ -106,7 +101,6 @@ function renderResults(data, elapsedMs) {
   `;
 }
 
-// safe HTML for strings
 function escapeHtml(s) {
   return String(s).replace(/[&<>"'`=\/]/g, (c) => ({
     '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;',

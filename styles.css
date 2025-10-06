@@ -10,6 +10,7 @@
   --radius:18px;
 }
 
+/* base */
 *{box-sizing:border-box}
 html,body{height:100%}
 body{
@@ -22,6 +23,9 @@ body{
   font:400 16px/1.6 Inter,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;
   letter-spacing:.2px;
 }
+
+/* make images sane by default (prevents blow-ups in content areas) */
+img{max-width:100%; height:auto; display:block}
 
 a{color:var(--brand2); text-decoration:none}
 a:hover{text-decoration:underline}
@@ -47,6 +51,27 @@ a:hover{text-decoration:underline}
 
 /* hero */
 header.hero{ padding:88px 0 56px; }
+
+/* ✅ FIX: locked avatar sizing (cannot blow up) */
+.hero-stack{ display:flex; flex-direction:column; gap:clamp(12px,2.5vw,20px); }
+.avatar-wrap{
+  --size:clamp(110px,16vw,160px);
+  width:var(--size); height:var(--size);
+  border-radius:9999px; padding:5px;
+  background:
+    radial-gradient(140% 140% at 12% 10%, rgba(0,224,184,.55), transparent 55%),
+    radial-gradient(120% 120% at 85% 85%, rgba(91,138,255,.45), transparent 60%),
+    radial-gradient(120% 120% at 50% 50%, rgba(167,183,255,.35), transparent 65%);
+  box-shadow:0 0 26px rgba(0,224,184,.28), 0 0 40px rgba(91,138,255,.22), inset 0 0 14px rgba(255,255,255,.08);
+  overflow:hidden; /* ensures rounding clips image */
+}
+.avatar-wrap img{
+  width:100%; height:100%;
+  object-fit:cover; /* fill without distortion */
+  border-radius:9999px;
+  background:#0a0e18;
+}
+
 .neon-title{
   font-size:clamp(32px,6vw,56px);
   font-weight:800; line-height:1.1; margin:0 0 8px;
@@ -56,6 +81,8 @@ header.hero{ padding:88px 0 56px; }
 }
 .subtitle{ color:var(--muted); font-weight:600; margin:0 0 24px; font-size:clamp(16px,2.5vw,20px); }
 .cta{ display:flex; gap:12px; flex-wrap:wrap; }
+
+/* buttons */
 .btn{
   display:inline-flex; align-items:center; gap:10px;
   padding:12px 18px; font-weight:700; color:#031218;
@@ -72,7 +99,7 @@ header.hero{ padding:88px 0 56px; }
 .brand-chip.li{ background:#0a66c2; color:#fff; }
 .brand-chip.gh{ background:#0d1117; color:#c9d1d9; }
 
-/* skill pills */
+/* skills */
 .list{display:grid; gap:10px; padding:0; margin:0; list-style:none}
 .pill{
   display:flex; align-items:center; gap:12px;
@@ -112,7 +139,7 @@ header.hero{ padding:88px 0 56px; }
 }
 .input.glass-field:focus{ border-color:rgba(91,138,255,.45); background:#0a0e18; }
 
-/* stop white autofill */
+/* prevent Chrome/Edge autofill turning white */
 input:-webkit-autofill,
 input:-webkit-autofill:hover,
 input:-webkit-autofill:focus{
