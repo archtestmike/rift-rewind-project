@@ -104,12 +104,7 @@
             </span>
             <span>AWS</span>
           </li>
-
-          <li class="pill skill">
-            <span class="skill-ic"><img src="https://upload.wikimedia.org/wikipedia/commons/3/35/Tux.svg" alt="" referrerpolicy="no-referrer"></span>
-            <span>Linux</span>
-          </li>
-
+          <li class="pill skill"><span class="skill-ic"><img src="https://upload.wikimedia.org/wikipedia/commons/3/35/Tux.svg" alt="" referrerpolicy="no-referrer"></span><span>Linux</span></li>
           <li class="pill skill"><span class="skill-ic"><img src="https://cdn.simpleicons.org/docker/2496ED" alt=""></span><span>Docker</span></li>
           <li class="pill skill"><span class="skill-ic"><img src="https://cdn.simpleicons.org/terraform/7B42BC" alt=""></span><span>Terraform</span></li>
           <li class="pill skill"><span class="skill-ic"><img src="https://cdn.simpleicons.org/githubactions/2088FF" alt=""></span><span>CI/CD</span></li>
@@ -140,7 +135,7 @@
 
     <hr class="divider" />
 
-    <!-- Two-column: Riot Lookup (left) + Edge & Cost Snapshot (right) -->
+    <!-- Two-column: Riot Lookup (left) + MISS→HIT Race (right) -->
     <section id="lookup" class="grid cols-2">
       <!-- LEFT: Riot lookup -->
       <div class="glass panel">
@@ -182,70 +177,63 @@
         </div>
       </div>
 
-      <!-- RIGHT: Edge & Cost Snapshot -->
-      <div id="edge-panel" class="glass panel">
-        <h2>🛰️ Edge & Cost Snapshot</h2>
-        <p class="muted tiny">Live signals from CloudFront + a quick free-tier cost estimate. Safe: same-origin only.</p>
+      <!-- RIGHT: MISS→HIT Micro Race -->
+      <div id="race-panel" class="glass panel">
+        <h2>⚡ Edge MISS→HIT Race</h2>
+        <p class="muted tiny">Same-origin only. We fetch a small asset twice to show CDN payoff.</p>
 
-        <!-- Top: Edge chips -->
-        <div class="chip-row">
+        <div class="race-controls">
+          <div>
+            <label for="race-asset">Asset</label>
+            <select id="race-asset" class="ui-input">
+              <option value="/styles.css">/styles.css</option>
+              <option value="/script.js">/script.js</option>
+            </select>
+          </div>
+          <div class="race-btns">
+            <button id="race-run" class="btn tiny-btn" type="button">Run Race</button>
+          </div>
+        </div>
+
+        <!-- Chips -->
+        <div class="chip-row" style="margin-top:8px;">
           <span class="chip" id="chip-pop"><b>POP</b>: —</span>
           <span class="chip" id="chip-proto"><b>Protocol</b>: —</span>
-          <span class="chip" id="chip-xcache"><b>X-Cache</b>: —</span>
+          <span class="chip" id="chip-xc1"><b>Cold</b>: —</span>
+          <span class="chip" id="chip-xc2"><b>Warm</b>: —</span>
           <span class="chip" id="chip-age"><b>Age</b>: —</span>
         </div>
 
-        <!-- Warmth meter -->
+        <!-- Bars -->
         <div class="mini-section">
           <div class="mini-head">
-            <div class="mini-title">Cache Warmth</div>
-            <button id="edge-refresh" class="btn ghost tiny-btn" type="button">Refresh</button>
+            <div class="mini-title">TTFB</div>
           </div>
-          <p class="tiny muted" style="margin:6px 0 10px;">Based on <code>/styles.css</code> → uses <b>Age</b> vs <b>max-age</b> from <code>Cache-Control</code>.</p>
           <div class="meter">
-            <div id="warmth-bar" class="bar edge" style="width:0%"></div>
+            <div id="bar-ttfb-cold" class="bar cold" style="width:0%"></div>
+            <div id="bar-ttfb-warm" class="bar warm" style="width:0%"></div>
           </div>
           <div class="bar-labels">
-            <span id="warmth-label" class="lbl edge">—</span>
-            <span id="ttl-label" class="lbl lam">TTL —</span>
+            <span id="lbl-ttfb-cold" class="lbl lam">Cold —</span>
+            <span id="lbl-ttfb-warm" class="lbl edge">Warm —</span>
           </div>
         </div>
 
-        <!-- Cost meter -->
         <div class="mini-section">
           <div class="mini-head">
-            <div class="mini-title">Free-Tier Cost Meter</div>
+            <div class="mini-title">Total</div>
           </div>
-          <div class="cost-grid">
-            <div>
-              <label for="cost-visits">Visits per day</label>
-              <input id="cost-visits" type="range" min="0" max="5000" step="50" class="ui-input range">
-              <div class="tiny muted"><span id="visits-out">0</span> /day</div>
-            </div>
-            <div>
-              <label for="cost-mb">Avg MB per visit</label>
-              <input id="cost-mb" type="range" min="0.1" max="5" step="0.1" class="ui-input range">
-              <div class="tiny muted"><span id="mb-out">0.5</span> MB</div>
-            </div>
-          </div>
-
-          <div class="kpis" style="margin-top:10px;">
-            <div class="kpi"><span>Data Out / 1 TB</span><b id="k-data">—</b></div>
-            <div class="kpi"><span>Requests / 10M</span><b id="k-req">—</b></div>
-            <div class="kpi"><span>Lambda / 1M</span><b id="k-lambda">—</b></div>
-            <div class="kpi"><span>Result</span><b id="k-result">—</b></div>
-          </div>
-
-          <div class="meter" style="margin-top:10px;">
-            <div id="cost-bar" class="bar lam" style="width:0%"></div>
+          <div class="meter">
+            <div id="bar-total-cold" class="bar cold" style="width:0%"></div>
+            <div id="bar-total-warm" class="bar warm" style="width:0%"></div>
           </div>
           <div class="bar-labels">
-            <span class="lbl edge">Within Free Tier</span>
-            <span id="cost-label" class="lbl lam">—</span>
+            <span id="lbl-total-cold" class="lbl lam">Cold —</span>
+            <span id="lbl-total-warm" class="lbl edge">Warm —</span>
           </div>
-
-          <p class="tiny muted" style="margin-top:8px;">Estimates only (prices vary by region). Assumes ~10 requests/visit and no video.</p>
         </div>
+
+        <div id="race-status" class="tiny muted" style="margin-top:6px;"></div>
       </div>
     </section>
 
