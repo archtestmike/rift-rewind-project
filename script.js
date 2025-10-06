@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const riotInput = document.getElementById('riotId');
   const recentLink = document.getElementById('recent-link');
 
-  // load recent from localStorage (non-disruptive)
+  // Load last used Riot ID
   const RECENT_KEY = 'recentRiotId';
   const recent = localStorage.getItem(RECENT_KEY) || '';
   if (recent) {
@@ -42,11 +42,9 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
-    // store recent
+    // Save recent
     localStorage.setItem(RECENT_KEY, riotId);
-    if (recentLink) {
-      recentLink.textContent = riotId;
-    }
+    if (recentLink) recentLink.textContent = riotId;
 
     const t0 = performance.now();
     try {
@@ -72,7 +70,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 
-// Simple summary renderer (keeps your layout intact)
+// Render summary
 function renderSummary(data, ms){
   const { summoner = {}, topChampions = [] } = data || {};
   const chip = (txt) => `<span style="display:inline-block;padding:6px 10px;border-radius:999px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.04);margin-right:6px;">${escapeHtml(txt)}</span>`;
@@ -81,9 +79,7 @@ function renderSummary(data, ms){
     const lvl = c.championLevel ?? 0;
     const pts = c.championPoints ?? 0;
     const id  = c.championId ?? '?';
-    // progress width scaled
     const w = Math.min(100, Math.round((lvl/60)*100));
-
     return `
       <div style="padding:14px;border:1px solid rgba(255,255,255,.08);border-radius:14px;background:rgba(255,255,255,.03);margin:12px 0;">
         <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;">
