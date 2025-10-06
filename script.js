@@ -1,20 +1,17 @@
 // === Riot API Lambda integration (unchanged) ===
 const RIOT_LAMBDA_URL = 'https://qhn53vmz4dsaf34lowcbnao3ya0ncvem.lambda-url.us-east-1.on.aws/';
 
-// UI regions → platform routing codes your Lambda expects
 const REGION_CODE = {
   'na1': 'na1', 'euw1': 'euw1', 'eun1': 'eun1', 'kr': 'kr',
   'br1': 'br1', 'la1': 'la1', 'la2': 'la2', 'oc1': 'oc1',
   'tr1': 'tr1', 'ru': 'ru', 'jp1': 'jp1'
 };
 
-// Champion ID → Name
 const CHAMPION_MAP = {
   7: 'LeBlanc', 268: 'Azir', 517: 'Sylas', 1: 'Annie', 103: 'Ahri',
   64: 'Lee Sin', 11: 'Master Yi', 81: 'Ezreal', 157: 'Yasuo', 84: 'Akali', 222: 'Jinx',
 };
 
-// Name → Data Dragon filename overrides
 const DDRAGON_FILE = {
   'LeBlanc': 'Leblanc', "Cho'Gath": 'Chogath', "Kai'Sa": 'Kaisa', "Kha'Zix": 'Khazix',
   "Vel'Koz": 'Velkoz', "Kog'Maw": 'KogMaw', "Rek'Sai": 'RekSai', "Bel'Veth": 'Belveth',
@@ -22,7 +19,6 @@ const DDRAGON_FILE = {
   'Renata Glasc': 'Renata', 'Dr. Mundo': 'DrMundo', 'Tahm Kench': 'TahmKench',
 };
 
-// Build a safe Data Dragon filename for a champion name
 function ddragonFileFromName(name) {
   if (!name) return '';
   if (DDRAGON_FILE[name]) return `${DDRAGON_FILE[name]}.png`;
@@ -36,11 +32,9 @@ function ddragonFileFromName(name) {
   return `${clean}.png`;
 }
 
-// ──────────────────────────────────────────────────────────────────────────────
-// Page bootstrap
 document.addEventListener('DOMContentLoaded', () => {
   initRiotLookup();
-  initVisitorHeatmap();
+  initEdgeDiagnostics(); // NEW
 });
 
 // === Riot Lookup UI ===
@@ -50,7 +44,6 @@ function initRiotLookup(){
   const recentEl = document.getElementById('recentId');
   if (!form || !resultsEl) return;
 
-  // recent link from localStorage
   const recent = localStorage.getItem('recentRiotId');
   if (recent && recentEl) {
     recentEl.textContent = recent;
@@ -157,97 +150,95 @@ function escapeHtml(s='') {
   }[c]));
 }
 
-// ──────────────────────────────────────────────────────────────────────────────
-// Visitor Heatmap (Gamified) — continents highlight (privacy-friendly)
-const VISITED_KEY = 'visitedContinents_v1'; // stores array of continent codes
-
-async function initVisitorHeatmap(){
-  const panel = document.getElementById('heatmap-panel');
+/* ────────────────────────────────────────────────────────────────────────────
+   CloudFront Edge Diagnostics (POP, country, protocol, X-Cache, TTFB)
+   ──────────────────────────────────────────────────────────────────────────── */
+function initEdgeDiagnostics(){
+  const panel = document.getElementById('edge-panel');
   if (!panel) return;
 
-  // Inject a gradient into the SVG so lit continents look neon
-  const svg = panel.querySelector('svg');
-  if (svg && !svg.querySelector('#gradLit')) {
-    const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
-    const grad = document.createElementNS('http://www.w3.org/2000/svg', 'linearGradient');
-    grad.setAttribute('id','gradLit'); grad.setAttribute('x1','0%'); grad.setAttribute('x2','100%');
-    grad.setAttribute('y1','0%'); grad.setAttribute('y2','0%');
-    const s1 = document.createElementNS('http://www.w3.org/2000/svg','stop'); s1.setAttribute('offset','0%');
-    const s2 = document.createElementNS('http://www.w3.org/2000/svg','stop'); s2.setAttribute('offset','100%');
-    grad.appendChild(s1); grad.appendChild(s2); defs.appendChild(grad);
-    svg.insertBefore(defs, svg.firstChild);
+  const kPop = document.getElementById('k-pop');
+  const kCountry = document.getElementById('k-country');
+  const kProto = document.getElementById('k-proto');
+  const kXcache = document.getElementById('k-xcache');
+  const bar1 = document.getElementById('bar1');
+  const bar2 = document.getElementById('bar2');
+  const ttfb1El = document.getElementById('ttfb1');
+  const ttfb2El = document.getElementById('ttfb2');
+  const btn = document.getElementById('edge-refresh');
+
+  // Use a cacheable, same-origin asset. styles.css is ideal.
+  async function run(){
+    resetUI();
+
+    const cacheId = Math.random().toString(36).slice(2);
+    const target = `styles.css?cf_demo=${cacheId}`; // same query twice → Miss then Hit (often)
+
+    const r1 = await measureTTFB(target);
+    // slight delay so CF writes to cache
+    await sleep(250);
+    const r2 = await measureTTFB(target);
+
+    // Headers (prefer second)
+    const popHeader = r2.headers.get('x-amz-cf-pop') || r1.headers.get('x-amz-cf-pop') || '';
+    const popCode = (popHeader.match(/^[A-Z]{3}/)?.[0]) || (popHeader.slice(0,3)) || '—';
+    kPop.textContent = popHeader ? `${popCode}` : '—';
+
+    const country = r2.headers.get('x-viewer-country') || r1.headers.get('x-viewer-country') || '—';
+    kCountry.textContent = country || '—';
+
+    const proto = (r2.protocol || r1.protocol || '').toUpperCase();
+    kProto.textContent = proto ? proto.replace('HTTP/2.0','H2').replace('H2','HTTP/2').replace('H3','HTTP/3') : '—';
+
+    const xcache = r2.headers.get('x-cache') || r1.headers.get('x-cache') || '—';
+    kXcache.textContent = xcache;
+
+    // Bars
+    const a = r1.ttfbMs, b = r2.ttfbMs;
+    const max = Math.max(a, b, 1);
+    bar1.style.width = Math.max(6, Math.round((a/max)*100)) + '%';
+    bar2.style.width = Math.max(6, Math.round((b/max)*100)) + '%';
+    ttfb1El.textContent = isFinite(a) ? `${Math.round(a)} ms` : '—';
+    ttfb2El.textContent = isFinite(b) ? `${Math.round(b)} ms` : '—';
   }
 
-  // Reset button
-  const resetBtn = document.getElementById('reset-progress');
-  if (resetBtn) resetBtn.addEventListener('click', () => {
-    localStorage.removeItem(VISITED_KEY);
-    updateVisitedStats([]);
-    // remove lit class
-    panel.querySelectorAll('.continent.lit').forEach(g => g.classList.remove('lit'));
-  });
-
-  // Click to toggle (fun interaction)
-  panel.querySelectorAll('.continent').forEach(g => {
-    g.addEventListener('click', () => {
-      const code = g.getAttribute('data-continent');
-      const set = new Set(readVisited());
-      if (g.classList.toggle('lit')) set.add(code); else set.delete(code);
-      persistVisited([...set]);
-      updateVisitedStats([...set]);
-    });
-  });
-
-  // Local progress render
-  updateVisitedStats(readVisited());
-
-  // Geo lookup (continent + country)
-  const msgEl = document.getElementById('visitor-msg');
-  try {
-    const geo = await getVisitorGeo();
-    if (geo) {
-      const { country_name, continent_code, continent_name } = geo;
-      msgEl.textContent = `👋 Welcome from ${country_name || 'your region'} (${continent_name || continent_code}).`;
-      lightContinent(continent_code);
-    } else {
-      msgEl.textContent = '🌍 Could not detect location.';
-    }
-  } catch (e) {
-    msgEl.textContent = '🌍 Could not detect location.';
-    console.error(e);
-  }
+  btn?.addEventListener('click', run);
+  run();
 }
 
-async function getVisitorGeo(){
-  // ipapi.co returns continent_code, continent_name, country_name
-  const res = await fetch('https://ipapi.co/json/', { cache: 'no-store' });
-  if (!res.ok) return null;
-  return res.json();
-}
+async function measureTTFB(url){
+  // Start timer
+  const t0 = performance.now();
+  const resp = await fetch(url, { cache: 'no-store' }); // bypass browser cache; CF still applies
+  let ttfbMs = NaN;
 
-function lightContinent(code){
-  if (!code) return;
-  const id = code.toUpperCase(); // AF, AN, AS, EU, NA, OC, SA
-  if (id === 'AN') return; // ignore Antarctica
-  const el = document.querySelector(`.continent[data-continent="${id}"]`);
-  if (!el) return;
-  if (!el.classList.contains('lit')) el.classList.add('lit');
-
-  const set = new Set(readVisited());
-  set.add(id);
-  persistVisited([...set]);
-  updateVisitedStats([...set]);
-}
-
-function readVisited(){
   try{
-    const raw = localStorage.getItem(VISITED_KEY);
-    const arr = raw ? JSON.parse(raw) : [];
-    return Array.isArray(arr) ? arr.filter(Boolean) : [];
-  }catch{ return []; }
+    if (resp.body && resp.body.getReader) {
+      const reader = resp.body.getReader();
+      await reader.read(); // first chunk
+      ttfbMs = performance.now() - t0;
+      reader.cancel().catch(()=>{});
+    } else {
+      // Fallback: just use response availability time
+      ttfbMs = performance.now() - t0;
+    }
+  }catch{
+    ttfbMs = performance.now() - t0;
+  }
+
+  // Try to read protocol from ResourceTiming (same-origin → no TAO needed)
+  let protocol = '';
+  try{
+    const entries = performance.getEntriesByName(new URL(url, location.href).toString());
+    if (entries && entries.length) {
+      const last = entries[entries.length - 1];
+      protocol = last.nextHopProtocol || '';
+      if (protocol === 'h2') protocol = 'HTTP/2';
+      if (protocol === 'h3') protocol = 'HTTP/3';
+    }
+  }catch{ /* ignore */ }
+
+  return { ttfbMs, headers: resp.headers, protocol };
 }
-function persistVisited(arr){ localStorage.setItem(VISITED_KEY, JSON.stringify(arr)); }
-function updateVisitedStats(arr){
-  const countEl = document.getElementById('visited-count');
-  if (countEl) countEl.textContent = String(new Set(arr).size);
-}
+
+const sleep = (ms) => new Promise(r => setTimeout(r, ms));
