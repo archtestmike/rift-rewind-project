@@ -104,7 +104,12 @@
             </span>
             <span>AWS</span>
           </li>
-          <li class="pill skill"><span class="skill-ic"><img src="https://upload.wikimedia.org/wikipedia/commons/3/35/Tux.svg" alt="" referrerpolicy="no-referrer"></span><span>Linux</span></li>
+
+          <li class="pill skill">
+            <span class="skill-ic"><img src="https://upload.wikimedia.org/wikipedia/commons/3/35/Tux.svg" alt="" referrerpolicy="no-referrer"></span>
+            <span>Linux</span>
+          </li>
+
           <li class="pill skill"><span class="skill-ic"><img src="https://cdn.simpleicons.org/docker/2496ED" alt=""></span><span>Docker</span></li>
           <li class="pill skill"><span class="skill-ic"><img src="https://cdn.simpleicons.org/terraform/7B42BC" alt=""></span><span>Terraform</span></li>
           <li class="pill skill"><span class="skill-ic"><img src="https://cdn.simpleicons.org/githubactions/2088FF" alt=""></span><span>CI/CD</span></li>
@@ -180,7 +185,7 @@
       <!-- RIGHT: Latency Race -->
       <div id="race-panel" class="glass panel">
         <h2>⚡ Latency Race: Edge vs Lambda</h2>
-        <p class="muted tiny">Measure TTFB and total time for CloudFront vs a Lambda Function URL.</p>
+        <p class="muted tiny">Compare TTFB & total time between CloudFront and your Lambda Function URL.</p>
 
         <div class="race-controls">
           <div>
@@ -193,7 +198,7 @@
           </div>
           <div>
             <label for="race-lambda">Lambda Function URL</label>
-            <input id="race-lambda" class="ui-input" placeholder="https://your-id.lambda-url.region.on.aws/" />
+            <input id="race-lambda" class="ui-input" placeholder="https://xxxxxxxx.lambda-url.us-east-1.on.aws/" />
           </div>
           <div class="race-btns">
             <button id="race-prime" class="btn ghost tiny-btn" type="button">Prime Edge</button>
@@ -201,6 +206,7 @@
           </div>
         </div>
 
+        <!-- KPI tiles -->
         <div id="race-kpis" class="kpis" style="margin-top:8px;">
           <div class="kpi"><span>Edge TTFB</span><b id="k-edge-ttfb">—</b></div>
           <div class="kpi"><span>Edge Total</span><b id="k-edge-total">—</b></div>
@@ -208,14 +214,48 @@
           <div class="kpi"><span>Lambda Total</span><b id="k-l-total">—</b></div>
         </div>
 
-        <div id="race-results" class="race-rows">
-          <!-- Bars render here -->
+        <!-- Comparative bars -->
+        <div class="race-metrics">
+          <div class="metric">
+            <div class="metric-head">
+              <div class="metric-title">TTFB</div>
+              <div class="metric-legend">
+                <span class="legend edge">Edge</span>
+                <span class="legend lam">Lambda</span>
+              </div>
+            </div>
+            <div class="meter">
+              <div id="bar-ttfb-edge" class="bar edge"></div>
+              <div id="bar-ttfb-lam" class="bar lam"></div>
+            </div>
+            <div class="bar-labels">
+              <span id="lbl-ttfb-edge" class="lbl edge">—</span>
+              <span id="lbl-ttfb-lam" class="lbl lam">—</span>
+            </div>
+          </div>
+
+          <div class="metric">
+            <div class="metric-head">
+              <div class="metric-title">Total</div>
+              <div class="metric-legend">
+                <span class="legend edge">Edge</span>
+                <span class="legend lam">Lambda</span>
+              </div>
+            </div>
+            <div class="meter">
+              <div id="bar-total-edge" class="bar edge"></div>
+              <div id="bar-total-lam" class="bar lam"></div>
+            </div>
+            <div class="bar-labels">
+              <span id="lbl-total-edge" class="lbl edge">—</span>
+              <span id="lbl-total-lam" class="lbl lam">—</span>
+            </div>
+          </div>
         </div>
 
         <div id="race-notes" class="tiny muted" style="margin-top:10px;">
-          Tip: “Prime Edge” fetches the asset once so CloudFront can serve a cache hit on the next run.
+          Tip: “Prime Edge” fetches the asset once so the next run is likely a CloudFront cache hit.
         </div>
-
         <div id="race-status" class="tiny muted" style="margin-top:6px;"></div>
       </div>
     </section>
