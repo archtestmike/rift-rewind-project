@@ -12,6 +12,7 @@
 <body>
   <header class="hero">
     <div class="wrap grid cols-2">
+      <!-- LEFT: avatar ABOVE name/title -->
       <div class="hero-stack">
         <div class="avatar-wrap">
           <img src="profile.png" alt="Michael Ramirez headshot" loading="eager">
@@ -24,11 +25,13 @@
           <div class="cta">
             <a class="btn" href="https://builder.aws.com/" target="_blank" rel="noopener">AWS Builder Center</a>
 
+            <!-- LinkedIn -->
             <a class="btn social linkedin" href="https://www.linkedin.com/in/ramirezmichael1/" target="_blank" rel="noopener" aria-label="LinkedIn">
               <svg aria-hidden="true" viewBox="0 0 24 24" class="ic"><path fill="currentColor" d="M4.98 3.5A2.48 2.48 0 1 1 0 3.5 2.48 2.48 0 0 1 4.98 3.5zM0 8h5v16H0V8zm7.5 0H12v2.2h.06c.63-1.12 2.17-2.3 4.47-2.3 4.77 0 5.64 3.14 5.64 7.22V24h-5V16.4c0-1.81-.03-4.14-2.52-4.14-2.52 0-2.91 1.97-2.91 4V24h-5V8z"/></svg>
               <span>LinkedIn</span>
             </a>
 
+            <!-- GitHub -->
             <a class="btn social github" href="https://github.com/archtestmike" target="_blank" rel="noopener" aria-label="GitHub">
               <svg aria-hidden="true" viewBox="0 0 16 16" class="ic"><path fill="currentColor" d="M8 .198a8 8 0 0 0-2.53 15.6c.4.074.55-.174.55-.386 0-.19-.007-.693-.01-1.36-2.24.487-2.71-1.08-2.71-1.08-.364-.924-.89-1.17-.89-1.17-.727-.497.055-.487.055-.487.804.057 1.226.826 1.226.826.715 1.225 1.876.871 2.334.666.073-.518.28-.872.508-1.073-1.788-.204-3.667-.894-3.667-3.98 0-.88.314-1.598.826-2.162-.083-.203-.358-1.022.078-2.13 0 0 .673-.215 2.205.825.61-.17 1.25-.26 1.9-.27.65.01 1.29.1 1.9.27 1.53-1.04 2.203-.825 2.203-.825.438 1.108.163 1.927.08 2.13.514.564.825 1.282.825 2.162 0 3.095-1.882 3.774-3.674 3.975.287.247.543.735.543 1.482 0 1.07-.01 1.933-.01 2.197 0 .214.146.463.553.385A8.002 8.002 0 0 0 8 .198z"/></svg>
               <span>GitHub</span>
@@ -37,6 +40,7 @@
         </div>
       </div>
 
+      <!-- RIGHT: quick facts -->
       <div class="card panel">
         <h3>Quick Facts</h3>
         <ul class="fact-list">
@@ -50,6 +54,7 @@
             </span>
             <span><strong>Learning goal:</strong> build cloud skills one service at a time (S3, CloudFront, and beyond).</span>
           </li>
+
           <li class="fact">
             <span class="icon-wrap">
               <svg class="icon" viewBox="0 0 24 24" fill="none">
@@ -59,6 +64,7 @@
             </span>
             <span><strong>Fun project:</strong> this site is served globally via AWS.</span>
           </li>
+
           <li class="fact">
             <span class="icon-wrap">
               <svg class="icon" viewBox="0 0 24 24" fill="none">
@@ -67,6 +73,7 @@
             </span>
             <span><strong>Challenge:</strong> AWS Builder Challenge #2.</span>
           </li>
+
           <li class="fact">
             <span class="icon-wrap">
               <svg class="icon" viewBox="0 0 24 24" fill="none">
@@ -83,6 +90,7 @@
 
   <main class="wrap">
     <section class="grid cols-3">
+      <!-- Cloud & DevOps -->
       <div class="glass panel">
         <h2>Cloud & DevOps</h2>
         <ul class="list skills">
@@ -96,10 +104,12 @@
             </span>
             <span>AWS</span>
           </li>
+
           <li class="pill skill">
             <span class="skill-ic"><img src="https://upload.wikimedia.org/wikipedia/commons/3/35/Tux.svg" alt="" referrerpolicy="no-referrer"></span>
             <span>Linux</span>
           </li>
+
           <li class="pill skill"><span class="skill-ic"><img src="https://cdn.simpleicons.org/docker/2496ED" alt=""></span><span>Docker</span></li>
           <li class="pill skill"><span class="skill-ic"><img src="https://cdn.simpleicons.org/terraform/7B42BC" alt=""></span><span>Terraform</span></li>
           <li class="pill skill"><span class="skill-ic"><img src="https://cdn.simpleicons.org/githubactions/2088FF" alt=""></span><span>CI/CD</span></li>
@@ -130,8 +140,9 @@
 
     <hr class="divider" />
 
+    <!-- Two-column: Riot Lookup (left) + GitHub Pulse (right) -->
     <section id="lookup" class="grid cols-2">
-      <!-- LEFT: Riot lookup (unchanged) -->
+      <!-- LEFT: Riot lookup -->
       <div class="glass panel">
         <h2>League Data Lookup</h2>
         <p class="muted tiny">Riot ID format: <b>GameName#TAG</b></p>
@@ -171,35 +182,48 @@
         </div>
       </div>
 
-      <!-- RIGHT: CloudFront Edge Diagnostics -->
-      <div id="edge-panel" class="glass panel">
-        <h2>CloudFront Edge Diagnostics</h2>
-        <p class="muted tiny">POP, protocol, X-Cache, and TTFB (2 requests to a cacheable asset).</p>
+      <!-- RIGHT: GitHub Pulse -->
+      <div id="gh-panel" class="glass panel">
+        <h2>🐙 GitHub Pulse</h2>
+        <p class="muted tiny">Latest commits & open PRs. Public GitHub API — no token needed.</p>
 
-        <div id="edge-kpis" class="edge-kpis">
-          <div class="kpi"><span>POP</span><b id="k-pop">—</b></div>
-          <div class="kpi"><span>Country</span><b id="k-country">—</b></div>
-          <div class="kpi"><span>Protocol</span><b id="k-proto">—</b></div>
-          <div class="kpi"><span>X-Cache</span><b id="k-xcache">—</b></div>
-        </div>
-
-        <div class="ttfb">
-          <div class="ttfb-row">
-            <span>First request</span>
-            <div class="bar"><div id="bar1"></div></div>
-            <span id="ttfb1" class="ms">—</span>
+        <div class="gh-controls">
+          <div>
+            <label for="gh-owner">Owner</label>
+            <input id="gh-owner" class="ui-input" placeholder="github username/org" />
           </div>
-          <div class="ttfb-row">
-            <span>Second (same URL)</span>
-            <div class="bar"><div id="bar2"></div></div>
-            <span id="ttfb2" class="ms">—</span>
+          <div>
+            <label for="gh-repo">Repo</label>
+            <select id="gh-repo" class="ui-input"></select>
+          </div>
+          <button id="gh-refresh" class="btn ghost tiny-btn" type="button">Refresh</button>
+        </div>
+
+        <div id="gh-kpis" class="kpis" style="margin-top:8px;">
+          <div class="kpi"><span>Stars</span><b id="k-stars" class="skeleton">—</b></div>
+          <div class="kpi"><span>Forks</span><b id="k-forks" class="skeleton">—</b></div>
+          <div class="kpi"><span>Open PRs</span><b id="k-prs" class="skeleton">—</b></div>
+          <div class="kpi"><span>Last push</span><b id="k-pushed" class="skeleton">—</b></div>
+        </div>
+
+        <div class="gh-section">
+          <h3>Recent Commits</h3>
+          <div id="gh-commits" class="gh-list">
+            <div class="skeleton-row"></div>
+            <div class="skeleton-row"></div>
+            <div class="skeleton-row"></div>
           </div>
         </div>
 
-        <div class="edge-footer">
-          <button id="edge-refresh" class="btn ghost tiny-btn" type="button">Re-run</button>
-          <span class="tiny muted" id="edge-note">Tip: add a CloudFront Function to expose viewer country.</span>
+        <div class="gh-section">
+          <h3>Open Pull Requests</h3>
+          <div id="gh-prs" class="gh-list">
+            <div class="skeleton-row"></div>
+            <div class="skeleton-row"></div>
+          </div>
         </div>
+
+        <div id="gh-status" class="tiny muted" style="margin-top:10px;"></div>
       </div>
     </section>
 
