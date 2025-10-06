@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
   loadChampionMeta().catch(()=>{});
   renderRecent(recentEl);
 
-  // auto-select region based on #TAG
+  // auto-select region from Riot tag
   riotInput.addEventListener('blur', () => {
     const tag = getTagLine(riotInput.value);
     const auto = tag && TAG_TO_PLATFORM[tag.toUpperCase()];
@@ -30,7 +30,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // click a recent lookup to fill the box
+  // recent click fill
   recentEl.addEventListener('click', (e) => {
     const a = e.target.closest('a[data-riotid]');
     if (!a) return; e.preventDefault();
@@ -49,7 +49,7 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
-    // infer region from #TAG if possible
+    // infer region from tag
     const tag = getTagLine(riotId);
     const inferred = tag && TAG_TO_PLATFORM[tag.toUpperCase()];
     if (inferred && inferred !== platform) {
@@ -79,7 +79,6 @@ document.addEventListener('DOMContentLoaded', () => {
       try { await loadChampionMeta(); } catch {}
       resultsEl.innerHTML = renderResult(data, Math.round(t1 - t0));
 
-      // animate bars after render
       requestAnimationFrame(() => {
         document.querySelectorAll('.bar > i').forEach(el => {
           const w = el.getAttribute('data-w') || '0';
@@ -96,11 +95,11 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 
-/* -------- Champion meta (Data Dragon) -------- */
+/* --- Champion meta (Data Dragon) --- */
 async function loadChampionMeta(){
   if (CHAMP_META.version && Object.keys(CHAMP_META.byKey).length) return CHAMP_META;
 
-  // try cache first
+  // cache first
   try {
     const cached = JSON.parse(localStorage.getItem('champMeta') || 'null');
     if (cached && cached.expires && Date.now() < cached.expires) {
@@ -109,7 +108,7 @@ async function loadChampionMeta(){
     }
   } catch {}
 
-  // get latest version
+  // latest version
   let version = '14.20.1';
   try {
     const vr = await fetch('https://ddragon.leagueoflegends.com/api/versions.json', { cache: 'no-store' });
@@ -117,7 +116,7 @@ async function loadChampionMeta(){
     if (Array.isArray(arr) && arr[0]) version = arr[0];
   } catch {}
 
-  // get champion list
+  // champs
   let byKey = {};
   try {
     const cr = await fetch(`https://ddragon.leagueoflegends.com/cdn/${version}/data/en_US/champion.json`, { cache: 'force-cache' });
@@ -130,7 +129,7 @@ async function loadChampionMeta(){
   return CHAMP_META;
 }
 
-/* -------- Rendering -------- */
+/* --- Rendering --- */
 function renderResult(data, ms=0){
   const name = (data?.summoner?.name ?? 'Unknown');
   const level = (data?.summoner?.level ?? '—');
@@ -144,9 +143,7 @@ function renderResult(data, ms=0){
     const meta = CHAMP_META.byKey[key];
     const displayName = meta?.name || `Champion ID ${key}`;
     const iconUrl = meta ? `https://ddragon.leagueoflegends.com/cdn/${CHAMP_META.version}/img/champion/${meta.id}.png` : '';
-    const title = meta?.title ? smartTitle(meta.title) : '';
     const tags = Array.isArray(meta?.tags) ? meta.tags : [];
-
     const pts = Number(c.championPoints||0);
     const lvl = c.championLevel ?? '—';
     const pct = Math.max(6, Math.round((pts / maxPts) * 100));
@@ -189,13 +186,12 @@ function renderResult(data, ms=0){
   `;
 }
 
-/* -------- Recent lookups -------- */
+/* --- Recent lookups --- */
 function getRecent(){ try { return JSON.parse(localStorage.getItem('recentRiotIds')||'[]'); } catch { return []; } }
 function saveRecent(riotId){ const arr = getRecent(); arr.unshift(riotId); const unique = [...new Set(arr)].slice(0,3); try { localStorage.setItem('recentRiotIds', JSON.stringify(unique)); } catch {} }
 function renderRecent(container){ if (!container) return; const items = getRecent(); container.innerHTML = items.length ? `Recent: ${items.map(r => `<a href="#" data-riotid="${escapeHtml(r)}">${escapeHtml(r)}</a>`).join(' • ')}` : ''; }
 
-/* -------- Helpers -------- */
-function smartTitle(t){ return String(t||'').slice(0,1).toUpperCase()+String(t||'').slice(1); }
+/* --- Helpers --- */
 function getTagLine(riotId){ const i = String(riotId).indexOf('#'); return i>-1 ? riotId.slice(i+1).trim() : ''; }
 function showNote(container, html){ container.innerHTML = `<p class="note">${html}</p>`; }
 function formatNumber(n){ return (Number(n)||0).toLocaleString(); }
