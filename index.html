@@ -68,36 +68,43 @@
 
     <hr class="divider" />
 
+    <!-- League Data Lookup -->
     <section class="grid cols-2" id="lookup">
       <div class="glass panel">
         <h2>League Data Lookup</h2>
         <p class="muted tiny">Riot ID format: <b>GameName#TAG</b></p>
 
-        <form id="riot-form">
-          <label for="region">Region</label>
-          <select id="region" name="region">
-            <option value="na1">North America (NA1)</option>
-            <option value="euw1">Europe West (EUW1)</option>
-            <option value="eun1">Europe Nordic &amp; East (EUN1)</option>
-            <option value="kr">Korea (KR)</option>
-            <option value="br1">Brazil (BR1)</option>
-            <option value="la1">Latin America North (LA1)</option>
-            <option value="la2">Latin America South (LA2)</option>
-            <option value="oc1">Oceania (OC1)</option>
-            <option value="tr1">Turkey (TR1)</option>
-            <option value="ru">Russia (RU)</option>
-            <option value="jp1">Japan (JP1)</option>
-          </select>
+        <form id="riot-form" class="pretty-form">
+          <div class="form-row">
+            <div class="field">
+              <label for="region">Region</label>
+              <select id="region" name="region" class="input select">
+                <option value="na1">North America (NA1)</option>
+                <option value="euw1">Europe West (EUW1)</option>
+                <option value="eun1">Europe Nordic &amp; East (EUN1)</option>
+                <option value="kr">Korea (KR)</option>
+                <option value="br1">Brazil (BR1)</option>
+                <option value="la1">Latin America North (LA1)</option>
+                <option value="la2">Latin America South (LA2)</option>
+                <option value="oc1">Oceania (OC1)</option>
+                <option value="tr1">Turkey (TR1)</option>
+                <option value="ru">Russia (RU)</option>
+                <option value="jp1">Japan (JP1)</option>
+              </select>
+            </div>
 
-          <label for="riotId">Riot ID</label>
-          <input id="riotId" name="riotId" placeholder="GameName#TAG" required />
+            <div class="field">
+              <label for="riotId">Riot ID</label>
+              <input id="riotId" name="riotId" class="input" placeholder="GameName#TAG" required />
+            </div>
+          </div>
 
           <div id="recent-lookups" class="tiny muted" style="margin:6px 0 10px"></div>
 
           <button id="lookup-btn" class="btn" type="submit">Look Up Summoner</button>
         </form>
 
-        <div id="riot-results" class="panel" style="margin-top:10px;background:var(--glass)">
+        <div id="riot-results" class="panel" style="margin-top:12px;background:var(--glass)">
           <h3 class="muted">Summoner Info</h3>
           <p class="tiny muted">Results appear here after the lookup.</p>
         </div>

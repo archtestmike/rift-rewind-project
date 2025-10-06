@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
   loadChampionMeta().catch(()=>{});
   renderRecent(recentEl);
 
-  // auto-select region based on #TAG (if recognizable)
+  // auto-select region based on #TAG
   riotInput.addEventListener('blur', () => {
     const tag = getTagLine(riotInput.value);
     const auto = tag && TAG_TO_PLATFORM[tag.toUpperCase()];
@@ -58,7 +58,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     try {
-      // spinner on button
       lookupBtn.classList.add('loading'); lookupBtn.disabled = true;
 
       const t0 = performance.now();
@@ -157,7 +156,7 @@ function renderResult(data, ms=0){
       <div class="champ">
         <div>
           <div class="champ-title" style="justify-content:space-between;">
-            <div class="champ-title tooltip" aria-label="${escapeHtml(displayName)} ${title ? `– ${escapeHtml(title)}` : ''}">
+            <div class="champ-title">
               <span class="champ-icon">${iconUrl ? `<img src="${iconUrl}" alt="${escapeHtml(displayName)} icon" loading="lazy">` : ''}</span>
               <strong>${escapeHtml(displayName)}</strong>
             </div>
