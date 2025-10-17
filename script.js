@@ -1,60 +1,88 @@
-// Contact form handler - Sends form data to AWS Lambda
-const LAMBDA_URL = 'https://qhn53vmz4dsaf34lowcbnao3ya0ncvem.lambda-url.us-east-1.on.aws/'; // Replace with your Function URL
+const RIOT_API_URL = "https://qhn53vmz4dsaf34lowcbnao3ya0ncvem.lambda-url.us-east-1.on.aws/";
 
-document.addEventListener('DOMContentLoaded', function() {
-    const form = document.querySelector('.contact-form-container');
+document.addEventListener("DOMContentLoaded", function () {
+  const lookupBtn = document.getElementById("lookup-btn");
+  const summonerInput = document.getElementById("summoner-name");
+  const regionSelect = document.getElementById("region");
 
-    form.addEventListener('submit', async function(e) {
-        e.preventDefault();
+  lookupBtn.addEventListener("click", async () => {
+    const summonerName = summonerInput.value.trim();
+    const region = regionSelect.value;
+    const messageDiv = document.getElementById("lookup-message");
+    const resultsDiv = document.getElementById("summoner-results");
 
-        const submitBtn = form.querySelector('.contact-submit-btn');
-        const messageDiv = document.getElementById('form-message');
+    if (!summonerName || !summonerName.includes("#")) {
+      showMessage("Please use Riot ID format: GameName#TAG", "error");
+      return;
+    }
 
-        // Show loading state
-        submitBtn.textContent = 'Sending...';
-        submitBtn.disabled = true;
-        messageDiv.style.display = 'none';
+    lookupBtn.textContent = "Looking up...";
+    lookupBtn.disabled = true;
+    messageDiv.style.display = "none";
+    resultsDiv.style.display = "none";
 
-        // Get form data
-        const formData = {
-            name: form.name.value,
-            email: form.email.value,
-            message: form.message.value
-        };
+    try {
+      const response = await fetch(RIOT_API_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ summonerName, region }),
+      });
 
-        try {
-            const response = await fetch(LAMBDA_URL, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(formData)
-            });
+      const data = await response.json();
+      if (response.ok) {
+        displaySummonerData(data);
+        showMessage("Summoner found!", "success");
+      } else {
+        showMessage(data.error || "Failed to fetch data", "error");
+      }
+    } catch (err) {
+      showMessage("Network error. Try again.", "error");
+    }
 
-            if (response.ok) {
-                showMessage('Message sent successfully! Thank you for reaching out.', 'success');
-                form.reset();
-            } else {
-                showMessage('Failed to send message. Please try again.', 'error');
-            }
-        } catch (error) {
-            showMessage('Network error. Please check your connection and try again.', 'error');
-        }
+    lookupBtn.textContent = "Look Up Summoner";
+    lookupBtn.disabled = false;
+  });
 
-        // Reset button
-        submitBtn.textContent = 'Send Message';
-        submitBtn.disabled = false;
-    });
+  summonerInput.addEventListener("keypress", (e) => {
+    if (e.key === "Enter") lookupBtn.click();
+  });
 });
 
-function showMessage(text, type) {
-    const messageDiv = document.getElementById('form-message');
-    messageDiv.textContent = text;
-    messageDiv.className = `form-message ${type}`;
-    messageDiv.style.display = 'block';
+function displaySummonerData(data) {
+  const resultsDiv = document.getElementById("summoner-results");
+  const summonerInfo = document.getElementById("summoner-info");
+  const championMastery = document.getElementById("champion-mastery");
 
-    // Auto-hide after 10 seconds
-    setTimeout(() => {
-        messageDiv.style.display = 'none';
-    }, 10000);
+  summonerInfo.innerHTML = `
+    <div class="summoner-card">
+      <h5>${data.summoner.name}</h5>
+      <p>Level: ${data.summoner.level}</p>
+    </div>
+  `;
+
+  if (data.topChampions && data.topChampions.length > 0) {
+    const champs = data.topChampions
+      .map(
+        (c) => `
+        <div class="champion-card">
+          <p><strong>ID:</strong> ${c.championId}</p>
+          <p><strong>Level:</strong> ${c.championLevel}</p>
+          <p><strong>Points:</strong> ${c.championPoints.toLocaleString()}</p>
+        </div>`
+      )
+      .join("");
+    championMastery.innerHTML = `<h5>Top Champions</h5><div class="champions-grid">${champs}</div>`;
+  } else {
+    championMastery.innerHTML = "<p>No champion mastery data found.</p>";
+  }
+
+  resultsDiv.style.display = "block";
+}
+
+function showMessage(text, type) {
+  const div = document.getElementById("lookup-message");
+  div.textContent = text;
+  div.className = `lookup-message ${type}`;
+  div.style.display = "block";
+  setTimeout(() => (div.style.display = "none"), 10000);
 }
