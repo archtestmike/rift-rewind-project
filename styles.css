@@ -220,3 +220,14 @@ footer {
   .lookup-submit-btn { width: 100%; }
   .topbar { font-size: 12px; padding: 4px 8px; }
 }
+
+.champion-card:hover {
+  transform: scale(1.02);
+  box-shadow: 0 0 12px rgba(200,155,60,0.4);
+  transition: all 0.2s ease-in-out;
+}
+
+.champions-grid {
+  margin-top: 12px;
+  animation: fadeIn 0.6s ease both;
+}

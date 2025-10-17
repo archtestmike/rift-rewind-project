@@ -38,6 +38,29 @@ document.addEventListener("DOMContentLoaded", function () {
       loadingDiv.style.display = "none";
 
       if (response.ok) {
+        const DDRAGON_FILE = {
+  "LeBlanc": "Leblanc",
+  "Cho'Gath": "Chogath",
+  "Kai'Sa": "Kaisa",
+  "Kha'Zix": "Khazix",
+  "Vel'Koz": "Velkoz",
+  "Kog'Maw": "KogMaw",
+  "Rek'Sai": "RekSai",
+  "Bel'Veth": "Belveth",
+  "Nunu & Willump": "Nunu",
+  "Jarvan IV": "JarvanIV",
+  "Wukong": "MonkeyKing",
+  "Renata Glasc": "Renata",
+  "Dr. Mundo": "DrMundo",
+  "Tahm Kench": "TahmKench"
+};
+
+function ddragonFileFromName(name) {
+  if (!name) return '';
+  if (DDRAGON_FILE[name]) return `${DDRAGON_FILE[name]}.png`;
+  const clean = name.replace(/['’.&]/g, '').replace(/\s+/g, '').trim();
+  return `${clean}.png`;
+}
         displaySummonerData(data);
         showMessage("Summoner found!", "success");
       } else {
@@ -72,7 +95,7 @@ function displaySummonerData(data) {
   if (data.topChampions && data.topChampions.length > 0) {
     const champs = data.topChampions.map(c => {
       const champName = CHAMPION_MAP[c.championId] || `Champion ${c.championId}`;
-      const champImg = `https://ddragon.leagueoflegends.com/cdn/14.18.1/img/champion/${champName.replace(/[^a-zA-Z]/g,"")}.png`;
+      const champImg = `https://ddragon.leagueoflegends.com/cdn/14.18.1/img/champion/${ddragonFileFromName(champName)}`;
       return `
         <div class="champion-card">
           <img src="${champImg}" class="champion-img" alt="${champName}">
