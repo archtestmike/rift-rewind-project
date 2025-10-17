@@ -3,86 +3,62 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Rift Raft — Riot Data Lookup</title>
-  <meta name="description" content="Rift Raft • Riot Games API + AWS (Amplify, Lambda) demo for Rift Rewind Challenge." />
+  <title>Rift Raft — Riot API Lookup</title>
+  <meta name="description" content="Rift Raft • Riot Games API + AWS Lambda demo for Rift Rewind Challenge." />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <header class="hero">
-    <div class="wrap grid cols-2">
-      <div class="hero-stack">
-        <div class="hero-text">
-          <h1 class="neon-title">RIFT RAFT</h1>
-          <p class="subtitle">
-            A Riot Games API demo hosted on AWS Amplify — explore player stats and champion mastery in a LoL-themed environment.
-          </p>
-          <div class="cta">
-            <a class="btn" href="https://builder.aws" target="_blank" rel="noopener">AWS Builder Center</a>
-          </div>
-        </div>
-      </div>
-
-      <div class="card panel">
-        <h3>Quick Facts</h3>
-        <ul class="fact-list">
-          <li class="fact">
-            <span class="icon-wrap"><svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5" stroke="currentColor" stroke-width="1.6"/></svg></span>
-            <span><strong>Goal:</strong> Serverless Riot API integration using AWS Lambda + Amplify.</span>
-          </li>
-          <li class="fact">
-            <span class="icon-wrap"><svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4.5" stroke="currentColor" stroke-width="1.6"/></svg></span>
-            <span><strong>Stack:</strong> HTML, JS, CSS, AWS Lambda, Riot API.</span>
-          </li>
-        </ul>
-      </div>
+    <div class="wrap">
+      <h1 class="neon-title">RIFT RAFT ⚡</h1>
+      <p class="subtitle">
+        Riot Games + AWS Amplify + Lambda integration demo — Challenge 1 rebuild.  
+        Test live Riot IDs directly below.
+      </p>
     </div>
   </header>
 
   <main class="wrap">
-    <section id="lookup">
-      <div class="glass panel">
-        <h2>League Data Lookup</h2>
-        <p class="muted tiny">Use Riot ID format: <b>GameName#TAG</b></p>
+    <section class="glass panel">
+      <h2>League Data Lookup</h2>
+      <p class="tiny muted">Use Riot ID format: <b>GameName#TAG</b></p>
 
-        <form id="riot-form">
-          <div class="grid cols-2">
-            <div>
-              <label for="region">Region</label>
-              <select id="region" name="region" class="ui-input">
-                <option value="na1">North America (NA1)</option>
-                <option value="euw1">Europe West (EUW1)</option>
-                <option value="eun1">Europe Nordic &amp; East (EUN1)</option>
-                <option value="kr">Korea (KR)</option>
-                <option value="br1">Brazil (BR1)</option>
-                <option value="la1">Latin America North (LA1)</option>
-                <option value="la2">Latin America South (LA2)</option>
-                <option value="oc1">Oceania (OC1)</option>
-                <option value="tr1">Turkey (TR1)</option>
-                <option value="ru">Russia (RU)</option>
-                <option value="jp1">Japan (JP1)</option>
-              </select>
-            </div>
-
-            <div>
-              <label for="riotId">Riot ID</label>
-              <input id="riotId" name="riotId" class="ui-input" placeholder="GameName#TAG" autocomplete="off" />
-            </div>
+      <form id="riot-form">
+        <div class="grid cols-2">
+          <div>
+            <label for="region">Region</label>
+            <select id="region" class="ui-input">
+              <option value="na1">North America (NA1)</option>
+              <option value="euw1">Europe West (EUW1)</option>
+              <option value="eun1">Europe Nordic &amp; East (EUN1)</option>
+              <option value="kr">Korea (KR)</option>
+              <option value="br1">Brazil (BR1)</option>
+              <option value="la1">Latin America North (LA1)</option>
+              <option value="la2">Latin America South (LA2)</option>
+              <option value="oc1">Oceania (OC1)</option>
+            </select>
           </div>
 
-          <button class="btn" type="submit">Look Up Summoner</button>
-        </form>
-
-        <div id="riot-results" class="panel result-panel">
-          <h3 class="muted">Summoner Info</h3>
-          <p class="tiny muted">Results appear here after lookup.</p>
+          <div>
+            <label for="riotId">Riot ID</label>
+            <input id="riotId" class="ui-input" placeholder="GameName#TAG" />
+          </div>
         </div>
+        <button class="btn" type="submit">Look Up Summoner</button>
+      </form>
+
+      <div id="lambda-status" class="tiny muted" style="margin-top:8px;">Checking Lambda connection...</div>
+
+      <div id="riot-results" class="panel result-panel">
+        <h3 class="muted">Summoner Info</h3>
+        <p class="tiny muted">Results appear here after lookup.</p>
       </div>
     </section>
 
     <footer class="wrap">
-      <p class="tiny center">© 2025 Rift Raft • Built on AWS for the Rift Rewind Challenge</p>
+      <p class="tiny center">© 2025 Rift Raft • Built on AWS Lambda + Amplify</p>
     </footer>
   </main>
 

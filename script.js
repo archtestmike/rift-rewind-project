@@ -1,86 +1,89 @@
-const RIOT_LAMBDA_URL = window.__LAMBDA_URL || '/api/riot';
+const LAMBDA_URL = window.__LAMBDA_URL || '';
 
-const REGION_CODE = {
-  'na1':'na1','euw1':'euw1','eun1':'eun1','kr':'kr','br1':'br1','la1':'la1','la2':'la2','oc1':'oc1','tr1':'tr1','ru':'ru','jp1':'jp1'
-};
+document.addEventListener('DOMContentLoaded', () => {
+  checkLambdaConnection();
+  initRiotLookup();
+});
 
-const CHAMPION_MAP = {
-  7:'LeBlanc',268:'Azir',517:'Sylas',1:'Annie',103:'Ahri',64:'Lee Sin',11:'Master Yi',
-  81:'Ezreal',157:'Yasuo',84:'Akali',222:'Jinx'
-};
+async function checkLambdaConnection() {
+  const status = document.getElementById('lambda-status');
+  if (!status) return;
 
-function ddragonFileFromName(name) {
-  if (!name) return '';
-  return name.replace(/['’.&\s]/g, '');
+  try {
+    const resp = await fetch(LAMBDA_URL, {
+      method: 'OPTIONS'
+    });
+    if (resp.ok) {
+      status.innerHTML = '✅ Connected to AWS Lambda';
+      status.style.color = '#00e0b8';
+    } else {
+      status.innerHTML = `⚠️ Lambda reachable but returned ${resp.status}`;
+      status.style.color = '#ffcc66';
+    }
+  } catch (err) {
+    status.innerHTML = '❌ Cannot reach Lambda endpoint. Check CORS or URL.';
+    status.style.color = '#ff6666';
+  }
 }
-
-document.addEventListener('DOMContentLoaded', initRiotLookup);
 
 function initRiotLookup() {
   const form = document.getElementById('riot-form');
-  const resultsEl = document.getElementById('riot-results');
-  if (!form || !resultsEl) return;
+  const results = document.getElementById('riot-results');
+  if (!form || !results) return;
 
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
-    resultsEl.innerHTML = '<p class="tiny muted">Fetching…</p>';
-
-    const riotId = (form.riotId.value || '').trim();
-    const region = REGION_CODE[form.region.value];
+    const riotId = form.querySelector('#riotId').value.trim();
+    const region = form.querySelector('#region').value;
     if (!riotId.includes('#')) {
-      resultsEl.innerHTML = '<p class="tiny" style="color:#ff9b9b">Invalid Riot ID. Use <b>GameName#TAG</b>.</p>';
+      results.innerHTML = `<p class="tiny" style="color:#ff9b9b">Invalid Riot ID. Use GameName#TAG.</p>`;
       return;
     }
 
+    results.innerHTML = '<p class="tiny muted">Fetching data...</p>';
+
     try {
-      const t0 = performance.now();
-      const resp = await fetch(RIOT_LAMBDA_URL, {
+      const resp = await fetch(LAMBDA_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ summonerName: riotId, region })
       });
-      const t1 = performance.now();
 
-      let data = null;
       const text = await resp.text();
+      let data;
       try { data = JSON.parse(text); } catch { data = { raw: text }; }
 
       if (!resp.ok) {
-        resultsEl.innerHTML = `<p class="tiny" style="color:#ff9b9b">Error (${resp.status}): ${text}</p>`;
+        results.innerHTML = `<p class="tiny" style="color:#ff9b9b">Error ${resp.status}: ${text}</p>`;
         return;
       }
 
-      renderResult(resultsEl, data, Math.round(t1 - t0), region);
+      renderResult(results, data);
     } catch (err) {
-      resultsEl.innerHTML = `<p class="tiny" style="color:#ff9b9b">Network error: ${err.message}</p>`;
+      results.innerHTML = `<p class="tiny" style="color:#ff9b9b">Network error: ${err.message}</p>`;
     }
   });
 }
 
-function renderResult(root, data, ms, region) {
-  const lvl = data?.summoner?.level ?? '?';
-  const name = data?.summoner?.name ?? 'Unknown';
-  const champs = Array.isArray(data?.topChampions) ? data.topChampions : [];
+function renderResult(container, data) {
+  const summoner = data.summoner || {};
+  const champs = data.topChampions || [];
 
-  const rows = champs.map(ch => {
-    const pts = (ch.championPoints ?? 0).toLocaleString();
-    const masteryLvl = ch.championLevel ?? 0;
-    const champName = ch.championName || CHAMPION_MAP[ch.championId] || `Champion ${ch.championId}`;
-    const champImg = `https://ddragon.leagueoflegends.com/cdn/14.18.1/img/champion/${ddragonFileFromName(champName)}.png`;
-
+  const cards = champs.map(c => {
+    const name = c.championName || `Champion ${c.championId}`;
+    const lvl = c.championLevel ?? 0;
+    const pts = (c.championPoints ?? 0).toLocaleString();
     return `
-      <div class="panel" style="margin:12px 0;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:14px;">
-        <div style="display:flex;align-items:center;gap:12px;">
-          <img src="${champImg}" alt="${champName}" style="width:42px;height:42px;border-radius:10px;object-fit:cover;">
-          <div><b>${champName}</b><br><span class="tiny muted">Mastery Lv ${masteryLvl} — ${pts} pts</span></div>
-        </div>
+      <div class="panel" style="margin:10px 0; padding:10px; border-radius:10px; background:rgba(255,255,255,.03);">
+        <b>${name}</b><br>
+        <span class="tiny muted">Mastery Lv ${lvl} — ${pts} pts</span>
       </div>`;
   }).join('');
 
-  root.innerHTML = `
-    <div class="panel" style="background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:16px;">
-      <h3>Summoner: ${name}</h3>
-      <p class="tiny muted">Level ${lvl} • Fetched in ${ms}ms via ${region}</p>
-      ${rows || '<p class="tiny muted">No mastery data found.</p>'}
+  container.innerHTML = `
+    <div class="panel" style="border:1px solid rgba(255,255,255,.08);padding:16px;border-radius:12px;">
+      <h3>${summoner.name || 'Unknown'}</h3>
+      <p class="tiny muted">Level ${summoner.level || '?'} | ${champs.length} champions found</p>
+      ${cards || '<p class="tiny muted">No champion data available.</p>'}
     </div>`;
 }
