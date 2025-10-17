@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Michael Ramirez — Cloud Builder</title>
-  <meta name="description" content="Michael Ramirez • Cloud Builder & AWS Enthusiast" />
+  <title>Rift Raft — Riot Data Lookup</title>
+  <meta name="description" content="Rift Raft • Riot Games API + AWS (Amplify, Lambda) demo for Rift Rewind Challenge." />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
@@ -12,76 +12,28 @@
 <body>
   <header class="hero">
     <div class="wrap grid cols-2">
-      <!-- LEFT: avatar ABOVE name/title -->
       <div class="hero-stack">
-        <div class="avatar-wrap">
-          <img src="profile.png" alt="Michael Ramirez headshot" loading="eager">
-        </div>
-
         <div class="hero-text">
-          <h1 class="neon-title">Cloud Builder & AWS Enthusiast</h1>
-          <p class="subtitle">Currently working on the AWS Builder Challenge and learning to deploy with S3 + CloudFront. This site runs on AWS Amplify/CloudFront.</p>
-
+          <h1 class="neon-title">RIFT RAFT</h1>
+          <p class="subtitle">
+            A Riot Games API demo hosted on AWS Amplify — explore player stats and champion mastery in a LoL-themed environment.
+          </p>
           <div class="cta">
-            <a class="btn" href="https://builder.aws.com/" target="_blank" rel="noopener">AWS Builder Center</a>
-
-            <!-- LinkedIn -->
-            <a class="btn social linkedin" href="https://www.linkedin.com/in/ramirezmichael1/" target="_blank" rel="noopener" aria-label="LinkedIn">
-              <svg aria-hidden="true" viewBox="0 0 24 24" class="ic"><path fill="currentColor" d="M4.98 3.5A2.48 2.48 0 1 1 0 3.5 2.48 2.48 0 0 1 4.98 3.5zM0 8h5v16H0V8zm7.5 0H12v2.2h.06c.63-1.12 2.17-2.3 4.47-2.3 4.77 0 5.64 3.14 5.64 7.22V24h-5V16.4c0-1.81-.03-4.14-2.52-4.14-2.52 0-2.91 1.97-2.91 4V24h-5V8z"/></svg>
-              <span>LinkedIn</span>
-            </a>
-
-            <!-- GitHub -->
-            <a class="btn social github" href="https://github.com/archtestmike" target="_blank" rel="noopener" aria-label="GitHub">
-              <svg aria-hidden="true" viewBox="0 0 16 16" class="ic"><path fill="currentColor" d="M8 .198a8 8 0 0 0-2.53 15.6c.4.074.55-.174.55-.386 0-.19-.007-.693-.01-1.36-2.24.487-2.71-1.08-2.71-1.08-.364-.924-.89-1.17-.89-1.17-.727-.497.055-.487.055-.487.804.057 1.226.826 1.226.826.715 1.225 1.876.871 2.334.666.073-.518.28-.872.508-1.073-1.788-.204-3.667-.894-3.667-3.98 0-.88.314-1.598.826-2.162-.083-.203-.358-1.022.078-2.13 0 0 .673-.215 2.205.825.61-.17 1.25-.26 1.9-.27.65.01 1.29.1 1.9.27 1.53-1.04 2.203-.825 2.203-.825.438 1.108.163 1.927.08 2.13.514.564.825 1.282.825 2.162 0 3.095-1.882 3.774-3.674 3.975.287.247.543.735.543 1.482 0 1.07-.01 1.933-.01 2.197 0 .214.146.463.553.385A8.002 8.002 0 0 0 8 .198z"/></svg>
-              <span>GitHub</span>
-            </a>
+            <a class="btn" href="https://builder.aws" target="_blank" rel="noopener">AWS Builder Center</a>
           </div>
         </div>
       </div>
 
-      <!-- RIGHT: quick facts -->
       <div class="card panel">
         <h3>Quick Facts</h3>
         <ul class="fact-list">
           <li class="fact">
-            <span class="icon-wrap">
-              <svg class="icon" viewBox="0 0 24 24" fill="none">
-                <circle cx="12" cy="12" r="8.5" stroke="currentColor" stroke-width="1.6"/>
-                <circle cx="12" cy="12" r="4.5" stroke="currentColor" stroke-width="1.6"/>
-                <circle cx="12" cy="12" r="1.6" fill="currentColor"/>
-              </svg>
-            </span>
-            <span><strong>Learning goal:</strong> build cloud skills one service at a time (S3, CloudFront, and beyond).</span>
+            <span class="icon-wrap"><svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5" stroke="currentColor" stroke-width="1.6"/></svg></span>
+            <span><strong>Goal:</strong> Serverless Riot API integration using AWS Lambda + Amplify.</span>
           </li>
-
           <li class="fact">
-            <span class="icon-wrap">
-              <svg class="icon" viewBox="0 0 24 24" fill="none">
-                <path d="M6.5 15.5a3.5 3.5 0 1 0 0 7h10a4 4 0 0 0 0-8 5 5 0 0 0-9.6-1.6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
-                <circle cx="17.5" cy="8" r="3.2" stroke="currentColor" stroke-width="1.6"/>
-              </svg>
-            </span>
-            <span><strong>Fun project:</strong> this site is served globally via AWS.</span>
-          </li>
-
-          <li class="fact">
-            <span class="icon-wrap">
-              <svg class="icon" viewBox="0 0 24 24" fill="none">
-                <path d="M12 3l2.3 4.7 5.2.8-3.8 3.7.9 5.2L12 15.7 7.4 17.4l.9-5.2L4.5 8.5l5.2-.8L12 3Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
-              </svg>
-            </span>
-            <span><strong>Challenge:</strong> AWS Rift Rewind Developer Challenge #1.</span>
-          </li>
-
-          <li class="fact">
-            <span class="icon-wrap">
-              <svg class="icon" viewBox="0 0 24 24" fill="none">
-                <path d="M6 19.5c3 3 9 3 12 0" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
-                <path d="M12 4c-4.5 0-8 3.6-8 8s3.5 8 8 8 8-3.6 8-8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
-              </svg>
-            </span>
-            <span><strong>Explore my art:</strong> <a href="https://main.d1r289f3oq47go.amplifyapp.com/" target="_blank" rel="noopener">view portfolio</a></span>
+            <span class="icon-wrap"><svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4.5" stroke="currentColor" stroke-width="1.6"/></svg></span>
+            <span><strong>Stack:</strong> HTML, JS, CSS, AWS Lambda, Riot API.</span>
           </li>
         </ul>
       </div>
@@ -89,58 +41,10 @@
   </header>
 
   <main class="wrap">
-    <section class="grid cols-3">
-      <!-- Cloud & DevOps -->
-      <div class="glass panel">
-        <h2>Cloud & DevOps</h2>
-        <ul class="list skills">
-          <li class="pill skill">
-            <span class="skill-ic">
-              <svg viewBox="0 0 64 64" aria-hidden="true">
-                <g fill="#FF9900" stroke="#D67F00" stroke-width="1">
-                  <path d="M12 14l10-6 10 6v12l-10 6-10-6z"/><path d="M32 14l10-6 10 6v12l-10 6-10-6z"/><path d="M22 28l10-6 10 6v12l-10 6-10-6z"/>
-                </g>
-              </svg>
-            </span>
-            <span>AWS</span>
-          </li>
-          <li class="pill skill"><span class="skill-ic"><img src="https://upload.wikimedia.org/wikipedia/commons/3/35/Tux.svg" alt="" referrerpolicy="no-referrer"></span><span>Linux</span></li>
-          <li class="pill skill"><span class="skill-ic"><img src="https://cdn.simpleicons.org/docker/2496ED" alt="" referrerpolicy="no-referrer"></span><span>Docker</span></li>
-          <li class="pill skill"><span class="skill-ic"><img src="https://cdn.simpleicons.org/terraform/7B42BC" alt="" referrerpolicy="no-referrer"></span><span>Terraform</span></li>
-          <li class="pill skill"><span class="skill-ic"><img src="https://cdn.simpleicons.org/githubactions/2088FF" alt="" referrerpolicy="no-referrer"></span><span>CI/CD</span></li>
-        </ul>
-      </div>
-
-      <div class="glass panel">
-        <h2>Projects</h2>
-        <div class="project">
-          <h3>Personal Site on AWS</h3>
-          <p class="muted">Static hosting + CDN via S3 & CloudFront. Automated deploys with Amplify.</p>
-        </div>
-        <div class="project">
-          <h3>Rift Rewind (Learning)</h3>
-          <p class="muted">Exploring Riot API integrations and serverless patterns.</p>
-        </div>
-      </div>
-
-      <div class="glass panel">
-        <h2>Highlights</h2>
-        <ul class="list">
-          <li>Fast, secure, globally distributed site.</li>
-          <li>Neon cyber style with accessible, semantic HTML.</li>
-          <li>No JS build step—easy to maintain.</li>
-        </ul>
-      </div>
-    </section>
-
-    <hr class="divider" />
-
-    <!-- Two-column: Riot Lookup (left) + Serverless Nexus (right) -->
-    <section id="lookup" class="grid cols-2">
-      <!-- LEFT: Riot lookup -->
+    <section id="lookup">
       <div class="glass panel">
         <h2>League Data Lookup</h2>
-        <p class="muted tiny">Riot ID format: <b>GameName#TAG</b></p>
+        <p class="muted tiny">Use Riot ID format: <b>GameName#TAG</b></p>
 
         <form id="riot-form">
           <div class="grid cols-2">
@@ -167,97 +71,25 @@
             </div>
           </div>
 
-          <p class="tiny muted">Recent: <a id="recentId" href="#" class="recent-link" style="display:none"></a></p>
           <button class="btn" type="submit">Look Up Summoner</button>
         </form>
 
         <div id="riot-results" class="panel result-panel">
           <h3 class="muted">Summoner Info</h3>
-          <p class="tiny muted">Results appear here after the lookup.</p>
+          <p class="tiny muted">Results appear here after lookup.</p>
         </div>
-      </div>
-
-      <!-- RIGHT: Visual showcase (with inline SVG icons) -->
-      <div id="nexus-card" class="glass panel">
-        <h2>🔷 Serverless Nexus</h2>
-        <p class="muted tiny">My stack, visualized: Amplify → CloudFront → S3, with Lambda for dynamic data.</p>
-
-        <div class="nexus" aria-label="Serverless architecture visualization">
-          <div class="nexus-floor"></div>
-
-          <!-- center -->
-          <div class="nexus-core">
-            <div class="core-inner"></div>
-            <div class="core-beam"></div>
-          </div>
-
-          <!-- wires -->
-          <svg class="nexus-wires" viewBox="0 0 640 280" preserveAspectRatio="none" aria-hidden="true">
-            <defs>
-              <linearGradient id="wireGrad" x1="0" y1="0" x2="1" y2="0">
-                <stop offset="0" stop-color="#00e0b8" />
-                <stop offset="1" stop-color="#5b8aff" />
-              </linearGradient>
-              <filter id="softGlow">
-                <feGaussianBlur stdDeviation="3" result="b"/>
-                <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
-              </filter>
-            </defs>
-            <path class="wire" d="M 320 140 C 270 115, 230 100, 180 70" stroke="url(#wireGrad)" stroke-width="2.2" fill="none" filter="url(#softGlow)"/>
-            <path class="wire" d="M 320 140 C 370 115, 410 100, 460 70" stroke="url(#wireGrad)" stroke-width="2.2" fill="none" filter="url(#softGlow)"/>
-            <path class="wire" d="M 320 140 C 370 170, 410 190, 460 230" stroke="url(#wireGrad)" stroke-width="2.2" fill="none" filter="url(#softGlow)"/>
-            <path class="wire" d="M 320 140 C 270 170, 230 190, 180 230" stroke="url(#wireGrad)" stroke-width="2.2" fill="none" filter="url(#softGlow)"/>
-          </svg>
-
-          <!-- nodes -->
-          <a class="nexus-node node-amplify" href="https://aws.amazon.com/amplify/" target="_blank" rel="noopener" aria-label="AWS Amplify">
-            <svg class="node-ic" viewBox="0 0 32 32" aria-hidden="true">
-              <defs>
-                <linearGradient id="gA" x1="0" y1="0" x2="1" y2="0">
-                  <stop offset="0" stop-color="#00e0b8"/><stop offset="1" stop-color="#5b8aff"/>
-                </linearGradient>
-              </defs>
-              <path d="M16 4 L28 26 H22.5 L16 14 L9.5 26 H4z" fill="url(#gA)" stroke="rgba(255,255,255,.3)" stroke-width=".6"/>
-            </svg>
-            <span class="node-badge">Amplify</span>
-          </a>
-
-          <a class="nexus-node node-s3" href="https://aws.amazon.com/s3/" target="_blank" rel="noopener" aria-label="Amazon S3">
-            <svg class="node-ic" viewBox="0 0 32 32" aria-hidden="true">
-              <defs><linearGradient id="gS" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#00e0b8"/><stop offset="1" stop-color="#5b8aff"/></linearGradient></defs>
-              <path d="M7 10 h18 v10 H7z" fill="url(#gS)" stroke="rgba(255,255,255,.3)" stroke-width=".6"/>
-              <path d="M9 8 h14 v4 H9z" fill="url(#gS)" opacity=".9"/>
-            </svg>
-            <span class="node-badge">S3</span>
-          </a>
-
-          <a class="nexus-node node-lambda" href="https://aws.amazon.com/lambda/" target="_blank" rel="noopener" aria-label="AWS Lambda">
-            <svg class="node-ic" viewBox="0 0 32 32" aria-hidden="true">
-              <defs><linearGradient id="gL" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#00e0b8"/><stop offset="1" stop-color="#5b8aff"/></linearGradient></defs>
-              <path d="M10 26 L16 6 L22 26 H18.3 L16.6 20 H13.4 L11.7 26z" fill="url(#gL)" stroke="rgba(255,255,255,.3)" stroke-width=".6"/>
-            </svg>
-            <span class="node-badge">Lambda</span>
-          </a>
-
-          <a class="nexus-node node-cf" href="https://aws.amazon.com/cloudfront/" target="_blank" rel="noopener" aria-label="Amazon CloudFront">
-            <svg class="node-ic" viewBox="0 0 32 32" aria-hidden="true">
-              <defs><linearGradient id="gC" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#00e0b8"/><stop offset="1" stop-color="#5b8aff"/></linearGradient></defs>
-              <path d="M16 6 l9 5 v10 l-9 5 -9-5 V11z" fill="url(#gC)" stroke="rgba(255,255,255,.3)" stroke-width=".6"/>
-              <circle cx="16" cy="16" r="4" fill="rgba(255,255,255,.15)"/>
-            </svg>
-            <span class="node-badge">CloudFront</span>
-          </a>
-        </div>
-
-        <p class="tiny muted" style="margin-top:10px;">Neon lines animate gently. All logos are inline SVG (no network dependency).</p>
       </div>
     </section>
 
     <footer class="wrap">
-      <p class="tiny center">© 2025 Michael Ramirez • Built with ❤️‍🔥 on AWS</p>
+      <p class="tiny center">© 2025 Rift Raft • Built on AWS for the Rift Rewind Challenge</p>
     </footer>
   </main>
 
+  <!-- Inject your Lambda URL here -->
+  <script>
+    window.__LAMBDA_URL__ = "https://qhn53vmz4dsaf34lowcbnao3ya0ncvem.lambda-url.us-east-1.on.aws/";
+  </script>
   <script src="script.js"></script>
 </body>
 </html>
