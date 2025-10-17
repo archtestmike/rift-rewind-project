@@ -1,8 +1,46 @@
 const RIOT_API_URL = "https://qhn53vmz4dsaf34lowcbnao3ya0ncvem.lambda-url.us-east-1.on.aws/";
+
+/* Display names for a few common champion IDs; fallback shows "Champion {id}" */
 const CHAMPION_MAP = {
-  7: "LeBlanc", 268: "Azir", 517: "Sylas", 1: "Annie", 103: "Ahri", 64: "LeeSin",
-  11: "MasterYi", 81: "Ezreal", 157: "Yasuo", 84: "Akali", 222: "Jinx"
+  7: "LeBlanc",
+  268: "Azir",
+  517: "Sylas",
+  1: "Annie",
+  103: "Ahri",
+  64: "Lee Sin",
+  11: "Master Yi",
+  81: "Ezreal",
+  157: "Yasuo",
+  84: "Akali",
+  222: "Jinx"
 };
+
+/* DDragon filename exceptions + normalizer */
+const DDRAGON_FILE = {
+  "LeBlanc": "Leblanc",
+  "Cho'Gath": "Chogath",
+  "Kai'Sa": "Kaisa",
+  "Kha'Zix": "Khazix",
+  "Vel'Koz": "Velkoz",
+  "Kog'Maw": "KogMaw",
+  "Rek'Sai": "RekSai",
+  "Bel'Veth": "Belveth",
+  "Nunu & Willump": "Nunu",
+  "Jarvan IV": "JarvanIV",
+  "Wukong": "MonkeyKing",
+  "Renata Glasc": "Renata",
+  "Dr. Mundo": "DrMundo",
+  "Tahm Kench": "TahmKench"
+};
+function ddragonFileFromName(name) {
+  if (!name) return "";
+  if (DDRAGON_FILE[name]) return `${DDRAGON_FILE[name]}.png`;
+  const clean = name.replace(/['’.&]/g, "").replace(/\s+/g, "").trim();
+  return `${clean}.png`;
+}
+function displayNameFromId(id) {
+  return CHAMPION_MAP[id] || `Champion ${id}`;
+}
 
 document.addEventListener("DOMContentLoaded", function () {
   const lookupBtn = document.getElementById("lookup-btn");
@@ -38,29 +76,6 @@ document.addEventListener("DOMContentLoaded", function () {
       loadingDiv.style.display = "none";
 
       if (response.ok) {
-        const DDRAGON_FILE = {
-  "LeBlanc": "Leblanc",
-  "Cho'Gath": "Chogath",
-  "Kai'Sa": "Kaisa",
-  "Kha'Zix": "Khazix",
-  "Vel'Koz": "Velkoz",
-  "Kog'Maw": "KogMaw",
-  "Rek'Sai": "RekSai",
-  "Bel'Veth": "Belveth",
-  "Nunu & Willump": "Nunu",
-  "Jarvan IV": "JarvanIV",
-  "Wukong": "MonkeyKing",
-  "Renata Glasc": "Renata",
-  "Dr. Mundo": "DrMundo",
-  "Tahm Kench": "TahmKench"
-};
-
-function ddragonFileFromName(name) {
-  if (!name) return '';
-  if (DDRAGON_FILE[name]) return `${DDRAGON_FILE[name]}.png`;
-  const clean = name.replace(/['’.&]/g, '').replace(/\s+/g, '').trim();
-  return `${clean}.png`;
-}
         displaySummonerData(data);
         showMessage("Summoner found!", "success");
       } else {
@@ -94,14 +109,16 @@ function displaySummonerData(data) {
 
   if (data.topChampions && data.topChampions.length > 0) {
     const champs = data.topChampions.map(c => {
-      const champName = CHAMPION_MAP[c.championId] || `Champion ${c.championId}`;
-      const champImg = `https://ddragon.leagueoflegends.com/cdn/14.18.1/img/champion/${ddragonFileFromName(champName)}`;
+      const champName = displayNameFromId(c.championId);
+      const file = ddragonFileFromName(champName);
+      const champImg = `https://ddragon.leagueoflegends.com/cdn/14.18.1/img/champion/${file}`;
       return `
         <div class="champion-card">
-          <img src="${champImg}" class="champion-img" alt="${champName}">
+          <img src="${champImg}" class="champion-img" alt="${champName}"
+               onerror="this.onerror=null;this.src='https://ddragon.leagueoflegends.com/cdn/14.18.1/img/profileicon/1.png'">
           <div>
             <h5>${champName}</h5>
-            <p>Level ${c.championLevel} • ${c.championPoints.toLocaleString()} pts</p>
+            <p>Level ${c.championLevel} • ${Number(c.championPoints || 0).toLocaleString()} pts</p>
           </div>
         </div>`;
     }).join("");
