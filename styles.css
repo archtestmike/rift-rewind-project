@@ -8,7 +8,9 @@ body {
   font-family: "Cinzel", "Georgia", serif;
   color: #f1e6c8;
   background: radial-gradient(circle at 40% 20%, #1b2735 0%, #0a0f18 80%);
+  background-attachment: fixed;
   min-height: 100vh;
+  overflow-x: hidden;
 }
 
 .topbar {
@@ -32,16 +34,21 @@ body {
 }
 
 .hero h1 {
-  font-size: 52px;
+  font-size: 54px;
   color: #c8aa6e;
   text-shadow: 0 0 12px rgba(200, 155, 60, 0.4);
+  animation: titleGlow 3s ease-in-out infinite alternate;
+}
+
+@keyframes titleGlow {
+  from { text-shadow: 0 0 12px rgba(200,155,60,0.3); }
+  to { text-shadow: 0 0 24px rgba(255,215,120,0.7); }
 }
 
 .tagline {
   color: #a7a9ac;
   font-size: 18px;
   margin-top: 10px;
-  font-weight: 400;
 }
 
 .league-lookup {
@@ -51,7 +58,7 @@ body {
   padding: 40px;
   margin: 40px auto;
   width: 90%;
-  max-width: 600px;
+  max-width: 640px;
   box-shadow: 0 0 25px rgba(200, 155, 60, 0.15);
 }
 
@@ -95,13 +102,6 @@ select {
   font-size: 15px;
 }
 
-input:focus,
-select:focus {
-  outline: none;
-  border-color: #c8aa6e;
-  box-shadow: 0 0 6px rgba(200, 155, 60, 0.4);
-}
-
 .lookup-submit-btn {
   background: linear-gradient(90deg, #c8aa6e, #8c7853);
   border: none;
@@ -114,10 +114,28 @@ select:focus {
   margin: 20px auto;
   transition: all 0.2s ease;
 }
-
 .lookup-submit-btn:hover {
   transform: translateY(-2px);
   box-shadow: 0 0 10px rgba(200, 155, 60, 0.4);
+}
+
+.loading {
+  text-align: center;
+  color: #c8aa6e;
+  font-weight: 600;
+  margin-top: 16px;
+}
+
+.shimmer {
+  background: linear-gradient(90deg, rgba(200,155,60,0.1) 25%, rgba(200,155,60,0.3) 50%, rgba(200,155,60,0.1) 75%);
+  background-size: 200% 100%;
+  animation: shimmerMove 1.5s infinite;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+@keyframes shimmerMove {
+  from { background-position: -200% 0; }
+  to { background-position: 200% 0; }
 }
 
 .lookup-message {
@@ -127,12 +145,10 @@ select:focus {
   border-radius: 6px;
   padding: 10px;
 }
-
 .lookup-message.success {
   background: rgba(22, 44, 29, 0.5);
   color: #00ff99;
 }
-
 .lookup-message.error {
   background: rgba(44, 22, 22, 0.5);
   color: #ff6b6b;
@@ -144,30 +160,49 @@ select:focus {
   border-radius: 10px;
   padding: 20px;
   color: #f1e6c8;
+  animation: fadeIn 0.8s ease forwards;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 .summoner-card {
   text-align: center;
   margin-bottom: 20px;
 }
-
 .summoner-card h5 {
-  font-size: 22px;
+  font-size: 26px;
   color: #c8aa6e;
+  text-shadow: 0 0 8px rgba(200,155,60,0.5);
 }
 
 .champions-grid {
   display: grid;
-  gap: 12px;
+  gap: 16px;
   grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
 }
 
 .champion-card {
+  background: rgba(18, 22, 30, 0.9);
   border: 1px solid #3d4044;
   border-left: 4px solid #c8aa6e;
+  border-radius: 8px;
   padding: 12px;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  animation: fadeIn 0.8s ease forwards;
+}
+
+.champion-img {
+  width: 60px;
+  height: 60px;
   border-radius: 6px;
-  background: rgba(18, 22, 30, 0.8);
+  object-fit: cover;
+  border: 2px solid #c8aa6e;
+  box-shadow: 0 0 8px rgba(200,155,60,0.5);
 }
 
 footer {
@@ -176,4 +211,12 @@ footer {
   font-size: 14px;
   padding: 40px 0;
   margin-top: 40px;
+}
+
+/* Mobile optimization */
+@media (max-width: 768px) {
+  .hero h1 { font-size: 36px; }
+  .league-lookup { padding: 24px; }
+  .lookup-submit-btn { width: 100%; }
+  .topbar { font-size: 12px; padding: 4px 8px; }
 }
