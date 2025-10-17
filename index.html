@@ -14,7 +14,7 @@
     <div class="wrap">
       <h1 class="neon-title">RIFT RAFT ⚡</h1>
       <p class="subtitle">
-        Riot Games + AWS Amplify + Lambda integration demo — Challenge 1 rebuild.  
+        Riot Games + AWS Amplify + Lambda integration demo — Challenge 1 rebuild.<br>
         Test live Riot IDs directly below.
       </p>
     </div>
@@ -38,9 +38,11 @@
               <option value="la1">Latin America North (LA1)</option>
               <option value="la2">Latin America South (LA2)</option>
               <option value="oc1">Oceania (OC1)</option>
+              <option value="tr1">Turkey (TR1)</option>
+              <option value="ru">Russia (RU)</option>
+              <option value="jp1">Japan (JP1)</option>
             </select>
           </div>
-
           <div>
             <label for="riotId">Riot ID</label>
             <input id="riotId" class="ui-input" placeholder="GameName#TAG" />
@@ -49,7 +51,7 @@
         <button class="btn" type="submit">Look Up Summoner</button>
       </form>
 
-      <div id="lambda-status" class="tiny muted" style="margin-top:8px;">Checking Lambda connection...</div>
+      <div id="lambda-status" class="tiny muted" style="margin-top:8px;">Checking Lambda connection…</div>
 
       <div id="riot-results" class="panel result-panel">
         <h3 class="muted">Summoner Info</h3>
@@ -62,7 +64,7 @@
     </footer>
   </main>
 
-  <!-- Inject your Lambda URL here -->
+  <!-- Your Lambda URL -->
   <script>
     window.__LAMBDA_URL__ = "https://qhn53vmz4dsaf34lowcbnao3ya0ncvem.lambda-url.us-east-1.on.aws/";
   </script>
