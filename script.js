@@ -4,12 +4,14 @@ const CHAMPION_MAP = {
   7: "LeBlanc", 268: "Azir", 517: "Sylas", 1: "Annie", 103: "Ahri",
   64: "Lee Sin", 11: "Master Yi", 81: "Ezreal", 157: "Yasuo", 84: "Akali", 222: "Jinx"
 };
+
 const DDRAGON_FILE = {
   "LeBlanc": "Leblanc", "Cho'Gath": "Chogath", "Kai'Sa": "Kaisa", "Kha'Zix": "Khazix",
   "Vel'Koz": "Velkoz", "Kog'Maw": "KogMaw", "Rek'Sai": "RekSai", "Bel'Veth": "Belveth",
   "Nunu & Willump": "Nunu", "Jarvan IV": "JarvanIV", "Wukong": "MonkeyKing",
   "Renata Glasc": "Renata", "Dr. Mundo": "DrMundo", "Tahm Kench": "TahmKench"
 };
+
 function ddragonFileFromName(name) {
   if (!name) return '';
   if (DDRAGON_FILE[name]) return `${DDRAGON_FILE[name]}.png`;
@@ -116,6 +118,7 @@ function animateParticles() {
   const canvas = document.getElementById("particles");
   const ctx = canvas.getContext("2d");
   let w, h;
+
   const particles = Array.from({ length: 40 }, () => ({
     x: Math.random() * window.innerWidth,
     y: Math.random() * window.innerHeight,
@@ -135,4 +138,43 @@ function animateParticles() {
     ctx.clearRect(0, 0, w, h);
     particles.forEach(p => {
       ctx.beginPath();
-      ctx.arc(p.x
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fillStyle = "rgba(200,155,60,0.4)";
+      ctx.fill();
+      p.x += p.dx;
+      p.y += p.dy;
+      if (p.x < 0 || p.x > w) p.dx *= -1;
+      if (p.y < 0 || p.y > h) p.dy *= -1;
+    });
+    requestAnimationFrame(draw);
+  }
+  draw();
+}
+
+/* Typing effect for "Coming Soon" section */
+function typeEffect() {
+  const textLines = [
+    "> initializing Bedrock agent...",
+    "> connecting to Riot Data Brain...",
+    "> calibrating AI model...",
+    "> RiftRaft AI ready for deployment_"
+  ];
+  const typingEl = document.getElementById("typing-text");
+  let lineIndex = 0;
+  let charIndex = 0;
+
+  function typeLine() {
+    if (lineIndex >= textLines.length) return;
+    if (charIndex < textLines[lineIndex].length) {
+      typingEl.textContent += textLines[lineIndex][charIndex];
+      charIndex++;
+      setTimeout(typeLine, 40);
+    } else {
+      typingEl.textContent += "\n";
+      charIndex = 0;
+      lineIndex++;
+      setTimeout(typeLine, 300);
+    }
+  }
+  typeLine();
+}
