@@ -1,4 +1,5 @@
-const RIOT_API_URL = "https://qhn53vmz4dsaf34lowcbnao3ya0ncvem.lambda-url.us-east-1.on.aws/";
+const RIOT_API_URL = "https://qhn53vmz4dsaf34lowcbnao3ya0ncvem.lambda-url.us-east-1.on.aws/"; 
+// 👆 Replace this with your *current* function URL from AWS Console.
 
 const CHAMPION_MAP = {
   7: "LeBlanc", 268: "Azir", 517: "Sylas", 1: "Annie", 103: "Ahri",
@@ -52,18 +53,24 @@ document.addEventListener("DOMContentLoaded", function () {
         body: JSON.stringify({ summonerName, region }),
       });
 
-      const data = await response.json();
+      const text = await response.text(); // <-- read as text first
+      let data;
+      try { data = JSON.parse(text); } catch { data = { error: text }; }
+
       loadingDiv.style.display = "none";
 
-      if (response.ok) {
+      if (response.ok && data.summoner) {
         displaySummonerData(data);
-        showMessage("Summoner data retrieved!", "success");
+        showMessage("Summoner data retrieved successfully!", "success");
       } else {
-        showMessage(data.error || "Failed to fetch data", "error");
+        const errMsg = data?.error || `Lambda returned ${response.status}`;
+        showMessage(errMsg, "error");
       }
-    } catch {
+
+    } catch (err) {
       loadingDiv.style.display = "none";
-      showMessage("Network error. Try again.", "error");
+      showMessage("Network or CORS error — check Lambda URL or permissions.", "error");
+      console.error("Lambda fetch failed:", err);
     }
 
     lookupBtn.textContent = "Summon Data";
@@ -116,6 +123,7 @@ function showMessage(text, type) {
 /* Particle background animation */
 function animateParticles() {
   const canvas = document.getElementById("particles");
+  if (!canvas) return;
   const ctx = canvas.getContext("2d");
   let w, h;
 
@@ -151,30 +159,28 @@ function animateParticles() {
   draw();
 }
 
-/* Typing effect for "Coming Soon" section */
+/* Typing effect for AI teaser */
 function typeEffect() {
-  const textLines = [
+  const lines = [
     "> initializing Bedrock agent...",
     "> connecting to Riot Data Brain...",
     "> calibrating AI model...",
-    "> RiftRaft AI ready for deployment_"
+    "> Rift Rewind AI ready for deployment_"
   ];
-  const typingEl = document.getElementById("typing-text");
-  let lineIndex = 0;
-  let charIndex = 0;
+  const el = document.getElementById("typing-text");
+  let line = 0, char = 0;
 
-  function typeLine() {
-    if (lineIndex >= textLines.length) return;
-    if (charIndex < textLines[lineIndex].length) {
-      typingEl.textContent += textLines[lineIndex][charIndex];
-      charIndex++;
-      setTimeout(typeLine, 40);
+  function type() {
+    if (line >= lines.length) return;
+    if (char < lines[line].length) {
+      el.textContent += lines[line][char++];
+      setTimeout(type, 35);
     } else {
-      typingEl.textContent += "\n";
-      charIndex = 0;
-      lineIndex++;
-      setTimeout(typeLine, 300);
+      el.textContent += "\n";
+      char = 0;
+      line++;
+      setTimeout(type, 250);
     }
   }
-  typeLine();
-}
+  type();
+}                                      
