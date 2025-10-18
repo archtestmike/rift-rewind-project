@@ -3,35 +3,24 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Rift Rewind — League Data Lookup</title>
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <title>Rift Raft — League Lookup</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <!-- Background -->
-  <div id="background">
-    <div class="mist"></div>
-    <canvas id="particles"></canvas>
-  </div>
-
-  <!-- Header -->
   <header class="topbar">
     <span class="terminal-tag">@mikear815</span>
   </header>
 
   <main>
     <section class="hero">
-      <h1>Rift Rewind</h1>
-      <p class="tagline">
-        League of Legends Analytics Powered by 
-        <img src="https://upload.wikimedia.org/wikipedia/commons/9/93/Amazon_Web_Services_Logo.svg" 
-             alt="AWS" class="aws-logo"> Lambda
-      </p>
+      <h1>Rift Raft</h1>
+      <p class="tagline">League of Legends Player Lookup powered by AWS Lambda</p>
     </section>
 
     <section class="league-lookup">
-      <h3>Summoner Lookup</h3>
-      <p>Enter a Riot ID to reveal summoner stats and top champions.</p>
+      <h3>League Data Lookup</h3>
+      <p>Enter a Riot ID to see their level and top champions!</p>
 
       <div id="lookup-message" class="lookup-message" style="display:none;"></div>
 
@@ -42,34 +31,36 @@
         </div>
         <div class="form-group">
           <label for="region">Region</label>
-          <select id="region">
+          <select id="region" name="region">
             <option value="na1">North America</option>
             <option value="euw1">Europe West</option>
+            <option value="eun1">Europe Nordic & East</option>
             <option value="kr">Korea</option>
+            <option value="br1">Brazil</option>
             <option value="la1">Latin America North</option>
             <option value="la2">Latin America South</option>
             <option value="oc1">Oceania</option>
+            <option value="tr1">Turkey</option>
+            <option value="ru">Russia</option>
+            <option value="jp1">Japan</option>
           </select>
         </div>
-        <button id="lookup-btn" class="lookup-submit-btn">Summon Data</button>
+        <button type="button" id="lookup-btn" class="lookup-submit-btn">Look Up Summoner</button>
       </div>
 
-      <div id="loading" class="loading" style="display:none;">
-        <div class="rune-loader"></div>
-        <p>Summoning Data from the Rift...</p>
-      </div>
+      <div id="loading" class="loading shimmer" style="display:none;">Summoning data from the Rift...</div>
 
       <div id="summoner-results" class="summoner-results" style="display:none;">
         <div id="summoner-info"></div>
         <div id="champion-mastery"></div>
       </div>
     </section>
-
-    <section class="ai-comingsoon">
-      <h3>⚡ Rift Rewind AI — Coming Soon</h3>
-      <pre id="typing-text"></pre>
-    </section>
   </main>
 
   <footer>
-    <p>© 2025 Michael Ramirez • Built with ❤️‍🔥 on AWS</p
+    <p>© 2025 Michael Ramirez • Built with ❤️‍🔥 on AWS</p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>

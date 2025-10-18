@@ -1,29 +1,48 @@
-const RIOT_API_URL = "https://qhn53vmz4dsaf34lowcbnao3ya0ncvem.lambda-url.us-east-1.on.aws/"; 
-// 👆 Replace this with your *current* function URL from AWS Console.
+const RIOT_API_URL = "https://qhn53vmz4dsaf34lowcbnao3ya0ncvem.lambda-url.us-east-1.on.aws/";
 
+/* Display names for a few common champion IDs; fallback shows "Champion {id}" */
 const CHAMPION_MAP = {
-  7: "LeBlanc", 268: "Azir", 517: "Sylas", 1: "Annie", 103: "Ahri",
-  64: "Lee Sin", 11: "Master Yi", 81: "Ezreal", 157: "Yasuo", 84: "Akali", 222: "Jinx"
+  7: "LeBlanc",
+  268: "Azir",
+  517: "Sylas",
+  1: "Annie",
+  103: "Ahri",
+  64: "Lee Sin",
+  11: "Master Yi",
+  81: "Ezreal",
+  157: "Yasuo",
+  84: "Akali",
+  222: "Jinx"
 };
 
+/* DDragon filename exceptions + normalizer */
 const DDRAGON_FILE = {
-  "LeBlanc": "Leblanc", "Cho'Gath": "Chogath", "Kai'Sa": "Kaisa", "Kha'Zix": "Khazix",
-  "Vel'Koz": "Velkoz", "Kog'Maw": "KogMaw", "Rek'Sai": "RekSai", "Bel'Veth": "Belveth",
-  "Nunu & Willump": "Nunu", "Jarvan IV": "JarvanIV", "Wukong": "MonkeyKing",
-  "Renata Glasc": "Renata", "Dr. Mundo": "DrMundo", "Tahm Kench": "TahmKench"
+  "LeBlanc": "Leblanc",
+  "Cho'Gath": "Chogath",
+  "Kai'Sa": "Kaisa",
+  "Kha'Zix": "Khazix",
+  "Vel'Koz": "Velkoz",
+  "Kog'Maw": "KogMaw",
+  "Rek'Sai": "RekSai",
+  "Bel'Veth": "Belveth",
+  "Nunu & Willump": "Nunu",
+  "Jarvan IV": "JarvanIV",
+  "Wukong": "MonkeyKing",
+  "Renata Glasc": "Renata",
+  "Dr. Mundo": "DrMundo",
+  "Tahm Kench": "TahmKench"
 };
-
 function ddragonFileFromName(name) {
-  if (!name) return '';
+  if (!name) return "";
   if (DDRAGON_FILE[name]) return `${DDRAGON_FILE[name]}.png`;
-  const clean = name.replace(/['’.&]/g, '').replace(/\s+/g, '').trim();
+  const clean = name.replace(/['’.&]/g, "").replace(/\s+/g, "").trim();
   return `${clean}.png`;
+}
+function displayNameFromId(id) {
+  return CHAMPION_MAP[id] || `Champion ${id}`;
 }
 
 document.addEventListener("DOMContentLoaded", function () {
-  animateParticles();
-  typeEffect();
-
   const lookupBtn = document.getElementById("lookup-btn");
   const summonerInput = document.getElementById("summoner-name");
   const regionSelect = document.getElementById("region");
@@ -40,7 +59,7 @@ document.addEventListener("DOMContentLoaded", function () {
       return;
     }
 
-    lookupBtn.textContent = "Summoning...";
+    lookupBtn.textContent = "Looking up...";
     lookupBtn.disabled = true;
     messageDiv.style.display = "none";
     resultsDiv.style.display = "none";
@@ -53,28 +72,26 @@ document.addEventListener("DOMContentLoaded", function () {
         body: JSON.stringify({ summonerName, region }),
       });
 
-      const text = await response.text(); // <-- read as text first
-      let data;
-      try { data = JSON.parse(text); } catch { data = { error: text }; }
-
+      const data = await response.json();
       loadingDiv.style.display = "none";
 
-      if (response.ok && data.summoner) {
+      if (response.ok) {
         displaySummonerData(data);
-        showMessage("Summoner data retrieved successfully!", "success");
+        showMessage("Summoner found!", "success");
       } else {
-        const errMsg = data?.error || `Lambda returned ${response.status}`;
-        showMessage(errMsg, "error");
+        showMessage(data.error || "Failed to fetch data", "error");
       }
-
     } catch (err) {
       loadingDiv.style.display = "none";
-      showMessage("Network or CORS error — check Lambda URL or permissions.", "error");
-      console.error("Lambda fetch failed:", err);
+      showMessage("Network error. Try again.", "error");
     }
 
-    lookupBtn.textContent = "Summon Data";
+    lookupBtn.textContent = "Look Up Summoner";
     lookupBtn.disabled = false;
+  });
+
+  summonerInput.addEventListener("keypress", (e) => {
+    if (e.key === "Enter") lookupBtn.click();
   });
 });
 
@@ -90,17 +107,18 @@ function displaySummonerData(data) {
     </div>
   `;
 
-  if (data.topChampions?.length) {
+  if (data.topChampions && data.topChampions.length > 0) {
     const champs = data.topChampions.map(c => {
-      const champName = CHAMPION_MAP[c.championId] || `Champion ${c.championId}`;
-      const img = ddragonFileFromName(champName);
-      const champImg = `https://ddragon.leagueoflegends.com/cdn/14.18.1/img/champion/${img}`;
+      const champName = displayNameFromId(c.championId);
+      const file = ddragonFileFromName(champName);
+      const champImg = `https://ddragon.leagueoflegends.com/cdn/14.18.1/img/champion/${file}`;
       return `
         <div class="champion-card">
-          <img src="${champImg}" class="champion-img" alt="${champName}">
+          <img src="${champImg}" class="champion-img" alt="${champName}"
+               onerror="this.onerror=null;this.src='https://ddragon.leagueoflegends.com/cdn/14.18.1/img/profileicon/1.png'">
           <div>
             <h5>${champName}</h5>
-            <p>Level ${c.championLevel} • ${c.championPoints.toLocaleString()} pts</p>
+            <p>Level ${c.championLevel} • ${Number(c.championPoints || 0).toLocaleString()} pts</p>
           </div>
         </div>`;
     }).join("");
@@ -119,68 +137,3 @@ function showMessage(text, type) {
   div.style.display = "block";
   setTimeout(() => (div.style.display = "none"), 8000);
 }
-
-/* Particle background animation */
-function animateParticles() {
-  const canvas = document.getElementById("particles");
-  if (!canvas) return;
-  const ctx = canvas.getContext("2d");
-  let w, h;
-
-  const particles = Array.from({ length: 40 }, () => ({
-    x: Math.random() * window.innerWidth,
-    y: Math.random() * window.innerHeight,
-    r: Math.random() * 2 + 1,
-    dx: (Math.random() - 0.5) * 0.4,
-    dy: (Math.random() - 0.5) * 0.4
-  }));
-
-  function resize() {
-    w = canvas.width = window.innerWidth;
-    h = canvas.height = window.innerHeight;
-  }
-  window.addEventListener("resize", resize);
-  resize();
-
-  function draw() {
-    ctx.clearRect(0, 0, w, h);
-    particles.forEach(p => {
-      ctx.beginPath();
-      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-      ctx.fillStyle = "rgba(200,155,60,0.4)";
-      ctx.fill();
-      p.x += p.dx;
-      p.y += p.dy;
-      if (p.x < 0 || p.x > w) p.dx *= -1;
-      if (p.y < 0 || p.y > h) p.dy *= -1;
-    });
-    requestAnimationFrame(draw);
-  }
-  draw();
-}
-
-/* Typing effect for AI teaser */
-function typeEffect() {
-  const lines = [
-    "> initializing Bedrock agent...",
-    "> connecting to Riot Data Brain...",
-    "> calibrating AI model...",
-    "> Rift Rewind AI ready for deployment_"
-  ];
-  const el = document.getElementById("typing-text");
-  let line = 0, char = 0;
-
-  function type() {
-    if (line >= lines.length) return;
-    if (char < lines[line].length) {
-      el.textContent += lines[line][char++];
-      setTimeout(type, 35);
-    } else {
-      el.textContent += "\n";
-      char = 0;
-      line++;
-      setTimeout(type, 250);
-    }
-  }
-  type();
-}                                      
