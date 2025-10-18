@@ -1,14 +1,14 @@
 const RIOT_API_URL = "https://qhn53vmz4dsaf34lowcbnao3ya0ncvem.lambda-url.us-east-1.on.aws/";
 
 const CHAMPION_MAP = {
-  7: "LeBlanc", 268: "Azir", 517: "Sylas", 1: "Annie", 103: "Ahri", 64: "Lee Sin",
-  11: "Master Yi", 81: "Ezreal", 157: "Yasuo", 84: "Akali", 222: "Jinx"
+  7: "LeBlanc", 268: "Azir", 517: "Sylas", 1: "Annie", 103: "Ahri",
+  64: "Lee Sin", 11: "Master Yi", 81: "Ezreal", 157: "Yasuo", 84: "Akali", 222: "Jinx"
 };
 const DDRAGON_FILE = {
-  "LeBlanc": "Leblanc","Cho'Gath": "Chogath","Kai'Sa": "Kaisa","Kha'Zix": "Khazix",
-  "Vel'Koz": "Velkoz","Kog'Maw": "KogMaw","Rek'Sai": "RekSai","Bel'Veth": "Belveth",
-  "Nunu & Willump": "Nunu","Jarvan IV": "JarvanIV","Wukong": "MonkeyKing",
-  "Renata Glasc": "Renata","Dr. Mundo": "DrMundo","Tahm Kench": "TahmKench"
+  "LeBlanc": "Leblanc", "Cho'Gath": "Chogath", "Kai'Sa": "Kaisa", "Kha'Zix": "Khazix",
+  "Vel'Koz": "Velkoz", "Kog'Maw": "KogMaw", "Rek'Sai": "RekSai", "Bel'Veth": "Belveth",
+  "Nunu & Willump": "Nunu", "Jarvan IV": "JarvanIV", "Wukong": "MonkeyKing",
+  "Renata Glasc": "Renata", "Dr. Mundo": "DrMundo", "Tahm Kench": "TahmKench"
 };
 function ddragonFileFromName(name) {
   if (!name) return '';
@@ -19,6 +19,7 @@ function ddragonFileFromName(name) {
 
 document.addEventListener("DOMContentLoaded", function () {
   animateParticles();
+  typeEffect();
 
   const lookupBtn = document.getElementById("lookup-btn");
   const summonerInput = document.getElementById("summoner-name");
@@ -110,7 +111,7 @@ function showMessage(text, type) {
   setTimeout(() => (div.style.display = "none"), 8000);
 }
 
-/* Subtle particle background */
+/* Particle background animation */
 function animateParticles() {
   const canvas = document.getElementById("particles");
   const ctx = canvas.getContext("2d");
@@ -134,15 +135,4 @@ function animateParticles() {
     ctx.clearRect(0, 0, w, h);
     particles.forEach(p => {
       ctx.beginPath();
-      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-      ctx.fillStyle = "rgba(200,155,60,0.4)";
-      ctx.fill();
-      p.x += p.dx;
-      p.y += p.dy;
-      if (p.x < 0 || p.x > w) p.dx *= -1;
-      if (p.y < 0 || p.y > h) p.dy *= -1;
-    });
-    requestAnimationFrame(draw);
-  }
-  draw();
-}
+      ctx.arc(p.x

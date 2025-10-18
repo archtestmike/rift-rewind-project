@@ -8,8 +8,20 @@ body {
   min-height: 100vh;
 }
 
+/* Background & mist */
 #background { position: fixed; inset: 0; z-index: -1; overflow: hidden; }
 canvas#particles { width: 100%; height: 100%; display: block; }
+.mist {
+  position: absolute; inset: 0;
+  background: radial-gradient(circle at 20% 30%, rgba(120, 80, 255, 0.15), transparent 70%),
+              radial-gradient(circle at 80% 70%, rgba(0, 224, 184, 0.15), transparent 70%);
+  animation: mistFlow 30s infinite alternate ease-in-out;
+  filter: blur(80px);
+}
+@keyframes mistFlow {
+  0% { transform: scale(1) translate(0, 0); opacity: 0.8; }
+  100% { transform: scale(1.2) translate(30px, 40px); opacity: 0.9; }
+}
 
 .topbar {
   position: fixed;
@@ -23,11 +35,7 @@ canvas#particles { width: 100%; height: 100%; display: block; }
   z-index: 10;
 }
 
-.hero {
-  text-align: center;
-  margin-top: 140px;
-  padding: 40px 20px;
-}
+.hero { text-align: center; margin-top: 140px; padding: 40px 20px; }
 .hero h1 {
   font-family: "Cinzel", serif;
   font-size: 56px;
@@ -35,15 +43,14 @@ canvas#particles { width: 100%; height: 100%; display: block; }
   text-shadow: 0 0 20px rgba(200,155,60,0.5);
   animation: glow 3s ease-in-out infinite alternate;
 }
-.hero .tagline {
-  color: #a7a9ac; margin-top: 10px; font-size: 18px;
-}
+.hero .tagline { color: #a7a9ac; margin-top: 10px; font-size: 18px; }
 @keyframes glow {
   from { text-shadow: 0 0 12px rgba(200,155,60,0.3); }
   to { text-shadow: 0 0 28px rgba(255,215,120,0.7); }
 }
 
 .league-lookup {
+  position: relative;
   background: rgba(15,20,28,0.9);
   border: 1px solid rgba(200,155,60,0.6);
   border-radius: 10px;
@@ -54,9 +61,14 @@ canvas#particles { width: 100%; height: 100%; display: block; }
     0 0 25px rgba(200,155,60,0.15),
     inset 0 0 15px rgba(255,215,120,0.05);
 }
-
-.league-lookup h3 { text-align: center; color: #f1e6c8; font-size: 28px; margin-bottom: 10px; font-family: "Cinzel", serif; }
-.league-lookup > p { text-align: center; color: #9da3a6; margin-bottom: 24px; }
+.league-lookup::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(255,255,255,0.05), transparent 50%);
+  border-radius: inherit;
+  pointer-events: none;
+}
 
 .lookup-form-container { max-width: 400px; margin: 0 auto; }
 label { color: #c8aa6e; font-weight: 600; display: block; margin-bottom: 6px; }
@@ -78,20 +90,22 @@ input, select {
   box-shadow: 0 0 10px rgba(200,155,60,0.4);
 }
 
-.loading { text-align: center; color: #c8aa6e; font-weight: 600; margin-top: 16px; }
-.shimmer {
-  background: linear-gradient(90deg,rgba(200,155,60,0.1) 25%,rgba(200,155,60,0.3) 50%,rgba(200,155,60,0.1) 75%);
-  background-size: 200% 100%;
-  animation: shimmerMove 1.5s infinite;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+/* Rune Loader */
+.loading { text-align: center; color: #c8aa6e; margin-top: 16px; }
+.rune-loader {
+  width: 64px; height: 64px;
+  border: 3px solid rgba(200,155,60,0.2);
+  border-top: 3px solid #c8aa6e;
+  border-radius: 50%;
+  margin: 0 auto 12px;
+  animation: spin 1.2s linear infinite;
 }
-@keyframes shimmerMove {
-  from { background-position: -200% 0; }
-  to { background-position: 200% 0; }
-}
+@keyframes spin { to { transform: rotate(360deg); } }
 
-.lookup-message { text-align: center; font-weight: 600; margin-bottom: 20px; border-radius: 6px; padding: 10px; }
+.lookup-message {
+  text-align: center; font-weight: 600; margin-bottom: 20px;
+  border-radius: 6px; padding: 10px;
+}
 .lookup-message.success { background: rgba(22,44,29,0.5); color: #00ff99; }
 .lookup-message.error { background: rgba(44,22,22,0.5); color: #ff6b6b; }
 
@@ -102,8 +116,18 @@ input, select {
   padding: 20px;
   animation: fadeIn 0.8s ease forwards;
 }
-.summoner-card { text-align: center; margin-bottom: 20px; }
-.summoner-card h5 { font-size: 26px; color: #c8aa6e; text-shadow: 0 0 8px rgba(200,155,60,0.5); }
+.summoner-card {
+  text-align: center;
+  margin-bottom: 20px;
+  background: rgba(20,25,35,0.6);
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: inset 0 0 20px rgba(200,155,60,0.05);
+}
+.summoner-card h5 {
+  font-size: 26px; color: #c8aa6e;
+  text-shadow: 0 0 8px rgba(200,155,60,0.5);
+}
 
 .champions-grid {
   display: grid; gap: 16px;
@@ -120,12 +144,9 @@ input, select {
   transition: transform .2s, box-shadow .2s;
 }
 .champion-card:hover { transform: scale(1.03); box-shadow: 0 0 14px rgba(200,155,60,0.4); }
-
 .champion-img {
-  width: 60px; height: 60px;
-  border-radius: 6px;
-  border: 2px solid #c8aa6e;
-  object-fit: cover;
+  width: 60px; height: 60px; border-radius: 6px;
+  border: 2px solid #c8aa6e; object-fit: cover;
   box-shadow: 0 0 6px rgba(200,155,60,0.4);
 }
 
@@ -139,19 +160,11 @@ input, select {
   box-shadow: 0 0 25px rgba(200,155,60,0.1);
 }
 .ai-comingsoon h3 { color: #c8aa6e; font-family: "Cinzel", serif; margin-bottom: 10px; }
+#typing-text { text-align: left; color: #f1e6c8; font-family: "Courier New", monospace; font-size: 14px; }
 
-footer {
-  text-align: center; color: #777;
-  font-size: 14px; padding: 40px 0;
-}
+footer { text-align: center; color: #777; font-size: 14px; padding: 40px 0; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-/* Animations */
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-/* Responsive */
 @media (max-width:768px) {
   .hero h1 { font-size: 38px; }
   .league-lookup { padding: 24px; }
